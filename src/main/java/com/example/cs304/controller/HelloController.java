@@ -1,2 +1,12 @@
-package com.example.cs304.controller;public class HelloController {
+package com.example.cs304.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+public class HelloController {
+    @GetMapping("/hello")
+    public String hello() {
+        return "Hello World!";
+    }
 }
