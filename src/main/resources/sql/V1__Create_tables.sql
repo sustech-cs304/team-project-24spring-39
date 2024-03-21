@@ -33,7 +33,7 @@ create table if not exists students
     name varchar(50) not null,
     SID int not null unique ,
     password varchar(50) not null default '000000',
-    class varchar(50) not null,
+    klass varchar(50) not null,
     major varchar(50) not null references major
     );
 
