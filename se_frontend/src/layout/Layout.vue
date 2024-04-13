@@ -6,7 +6,7 @@ import Aside from "./components/Aside/Aside.vue";
 <template>
   <el-container class="common-layout">
     <!-- 侧边导航栏 -->
-    <el-aside width="200px">
+    <el-aside :width="$store.state.layoutStore.isExpand ? '200px' : '64px'">
       <Aside />
     </el-aside>
     <el-container>
@@ -28,6 +28,7 @@ import Aside from "./components/Aside/Aside.vue";
   height: 100vh;
 
   .el-aside {
+    // 侧边栏收缩过渡效果
     transition: width 0.3s ease-out;
 
     .logo {
@@ -37,11 +38,6 @@ import Aside from "./components/Aside/Aside.vue";
       font-size: 26px;
       font-weight: bold;
       text-align: center;
-    }
-
-    .el-menu-vertical-demo:not(.el-menu--collapse) {
-      width: 200px;
-      min-height: 400px;
     }
   }
 
