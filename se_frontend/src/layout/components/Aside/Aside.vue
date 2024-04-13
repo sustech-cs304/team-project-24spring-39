@@ -1,6 +1,4 @@
-<script setup>
-import Menu from "./Menu/Menu.vue";
-</script>
+
 
 <template>
   <!--  滚动条-->
@@ -16,5 +14,9 @@ import Menu from "./Menu/Menu.vue";
     <Menu />
   </el-scrollbar>
 </template>
+
+<script setup>
+import Menu from "./Menu/Menu.vue";
+</script>
 
 <style scoped lang="scss"></style>
