@@ -30,7 +30,7 @@ export default {
     activeYear: {
       // 初始选中年份
       type: Number,
-      default: 2020,
+      default: 2023,
     },
   },
   data() {
@@ -62,7 +62,8 @@ export default {
       text-align: center;
       transform: translateY(-100%+14px);
       .u-year {
-        font-size: 28px;
+        margin: 5px;
+        font-size: 20px;
         font-weight: 500;
         color: #333;
         transform: translateY(-8px);

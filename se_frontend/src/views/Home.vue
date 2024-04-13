@@ -8,19 +8,16 @@ const circleUrl = ref(
 
 const timelineData = ref([
   {
-    year: 2022,
-  },
-  {
     year: 2021,
   },
   {
-    year: 2020,
+    year: 2022,
   },
   {
-    year: 2019,
+    year: 2023,
   },
   {
-    year: 2018,
+    year: 2024,
   },
 ]);
 
@@ -133,7 +130,7 @@ const tables = ref({
   </el-row>
   <!--  时间轴-->
   <el-row>
-    <HorizonTimeLine :timelineData="timelineData" />
+    <HorizonTimeLine class="h-timeline" :timelineData="timelineData" />
   </el-row>
   <!--  消息提醒-->
   <el-row class="message-reminding">
@@ -163,6 +160,10 @@ const tables = ref({
     align-items: center;
     justify-content: space-around;
   }
+}
+
+.h-timeline {
+  width: 100%;
 }
 
 .message-reminding {
