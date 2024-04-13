@@ -1,12 +1,16 @@
 <script setup>
 import ExpandToggle from "@/layout/components/Header/component/ExpandToggle.vue";
+import Breadcrumb from "@/layout/components/Header/component/Breadcrumb.vue";
 </script>
 
 <template>
   <div class="header">
     <!-- 左侧 -->
     <div class="header_left">
+      <!--      菜单收缩按钮-->
       <ExpandToggle />
+      <!--      面包屑-->
+      <Breadcrumb />
     </div>
     <!-- 右侧 -->
     <div class="header_right"></div>
