@@ -1,8 +1,3 @@
-<script setup>
-import Header from "./components/Header/Header.vue";
-import Aside from "./components/Aside/Aside.vue";
-</script>
-
 <template>
   <el-container class="common-layout">
     <!-- 侧边导航栏 -->
@@ -17,11 +12,15 @@ import Aside from "./components/Aside/Aside.vue";
       <!-- 内容区 -->
       <el-main>
         <router-view />
-        <!--        <Main />-->
       </el-main>
     </el-container>
   </el-container>
 </template>
+
+<script setup>
+import Header from "./components/Header/Header.vue";
+import Aside from "./components/Aside/Aside.vue";
+</script>
 
 <style lang="scss">
 .common-layout {
