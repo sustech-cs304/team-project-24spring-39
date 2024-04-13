@@ -1,6 +1,11 @@
 package com.example.cs304.entity;
 
 import jakarta.persistence.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author phystar
@@ -31,7 +36,12 @@ public class Course {
 
 	@Column(name = "capacity")
 	private Integer capacity;
-
+	@ManyToMany
+	@JoinTable(
+	  name = "course_professor",
+	  joinColumns = @JoinColumn(name = "course_id"),
+	  inverseJoinColumns = @JoinColumn(name = "professor_id"))
+	private Set<Professor> professors = new HashSet<>();
 	public Course() {}
 
 	public Course(Integer id, String name, Integer departmentId, Integer credit, Double rate, Integer capacity) {
@@ -102,5 +112,10 @@ public class Course {
 	public void setCapacity(Integer capacity) {
 		this.capacity = capacity;
 	}
-
+	public Set<Professor> getProfessors() {
+		return this.professors;
+	}
+	public void setProfessors(Set<Professor> professors) {
+		this.professors = professors;
+	}
 }

@@ -2,6 +2,9 @@ package com.example.cs304.entity;
 
 import jakarta.persistence.*;
 
+import java.util.HashSet;
+import java.util.Set;
+
 /**
  * @author phystar
  * @create 2024-03-22 01:37:35 
@@ -25,7 +28,8 @@ public class Professor {
 
 	@Column(name = "department_id")
 	private Integer departmentId;
-
+	@ManyToMany(mappedBy = "professors")
+	private Set<Course> courses = new HashSet<>();
 	public Professor() {}
 
 	public Professor(Integer id, Integer pid, String name, Integer departmentId) {
@@ -77,4 +81,11 @@ public class Professor {
 		this.departmentId = departmentId;
 	}
 
+	public Set<Course> getCourses() {
+		return courses;
+	}
+
+	public void setCourses(Set<Course> courses) {
+		this.courses = courses;
+	}
 }
