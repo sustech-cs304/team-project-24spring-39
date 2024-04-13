@@ -16,7 +16,8 @@ import Aside from "./components/Aside/Aside.vue";
       </el-header>
       <!-- 内容区 -->
       <el-main>
-        <Main />
+        <router-view />
+        <!--        <Main />-->
       </el-main>
     </el-container>
   </el-container>
