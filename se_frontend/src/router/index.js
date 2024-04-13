@@ -1,8 +1,5 @@
 import { createRouter, createWebHistory } from "vue-router";
 
-//布局组件
-const Layout = () => import("../layout/Layout.vue");
-
 const routes = [
   {
     path: "/login",
@@ -12,19 +9,7 @@ const routes = [
   {
     path: "/",
     name: "layout",
-    component: Layout,
-    children: [
-      {
-        path: "/",
-        name: "Home",
-        component: () => import("../views/Home.vue"),
-      },
-      {
-        path: "/selection",
-        name: "courseSelection",
-        component: () => import("../views/courseSelect.vue"),
-      },
-    ],
+    component: () => import("../layout/Layout.vue"),
   },
 ];
 

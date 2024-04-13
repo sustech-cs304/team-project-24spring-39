@@ -1,4 +1,6 @@
-
+<script setup>
+import Menu from "./Menu/Menu.vue";
+</script>
 
 <template>
   <!--  滚动条-->
@@ -9,16 +11,10 @@
     }"
   >
     <!-- logo -->
-    <div class="logo">
-      {{ $store.state.layoutStore.isExpand ? "AsideBar" : "Bar" }}
-    </div>
+    <div class="logo">LOGO</div>
     <!-- 导航菜单 -->
     <Menu />
   </el-scrollbar>
 </template>
-
-<script setup>
-import Menu from "./Menu/Menu.vue";
-</script>
 
 <style scoped lang="scss"></style>

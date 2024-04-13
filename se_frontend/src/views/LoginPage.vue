@@ -1,3 +1,67 @@
+<script setup>
+import { ref, reactive, toRaw } from "vue";
+import { Avatar, Lock } from "@element-plus/icons-vue";
+import { useStore } from "vuex";
+// import { login } from "@/api/user";
+
+// 获取到vuex的store
+const store = useStore();
+
+// 获取到表单元素
+const loginFormRef = ref(null);
+
+// 登录的表单数据
+const loginForm = reactive({
+  username: "admin",
+  password: "admin888",
+  captchaSuccess: false,
+});
+
+// 登录按钮的加载loading
+const btnLoading = ref(false);
+
+// 登录表单的校验规则
+const loginRules = reactive({
+  username: [
+    {
+      required: true,
+      message: "userError",
+      trigger: "blur",
+    },
+  ],
+  password: [
+    {
+      required: true,
+      message: "PWError",
+      trigger: "blur",
+    },
+    {
+      min: 3,
+      max: 8,
+      message: "PWSubError",
+      trigger: "blur",
+    },
+  ],
+});
+
+// 滑动验证码校验成功
+function captchaSuccess() {
+  loginForm.captchaSuccess = true;
+}
+
+// 处理登录
+async function handleLogin() {
+  try {
+    // const res = await login(loginForm)
+    // 用通过vuex发送网络请求
+    const res = await store.dispatch("handleLogin", toRaw(loginForm));
+    console.log(res);
+  } catch (error) {
+    console.log(error);
+  }
+}
+</script>
+
 <template>
   <div class="login-container">
     <div class="container">
@@ -80,10 +144,10 @@
               width="100%"
               :height="38"
               :radius="6"
-              :bgColor="'#fff'"
-              :textColor="'#000'"
-              :borderColor="'#dcdfe6'"
-              :logo="logoImg"
+              bgColor="#fff"
+              textColor="#000"
+              borderColor="#dcdfe6"
+              logo="logoImg"
               @success="captchaSuccess"
             />
           </div>
@@ -112,74 +176,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-import { ref, reactive, toRaw } from "vue";
-import { Avatar, Lock } from "@element-plus/icons-vue";
-import { useStore } from "vuex";
-// import { login } from "@/api/user";
-import useMessage from "@/hooks/useMessage";
-
-const logoImg = require("@/assets/imgs/logo.png");
-
-// 获取到vuex的store
-const store = useStore();
-
-const { ElMessage } = useMessage();
-
-// 获取到表单元素
-const loginFormRef = ref(null);
-
-// 登录的表单数据
-const loginForm = reactive({
-  username: "admin",
-  password: "admin888",
-  captchaSuccess: false,
-});
-
-// 登录按钮的加载loading
-const btnLoading = ref(false);
-
-// 登录表单的校验规则
-const loginRules = reactive({
-  username: [{ required: true, message: "userError", trigger: "blur" }],
-  password: [
-    { required: true, message: "PWError", trigger: "blur" },
-    { min: 3, max: 8, message: "length:3-8", trigger: "blur" },
-  ],
-});
-
-// 滑动验证码校验成功
-function captchaSuccess() {
-  loginForm.captchaSuccess = true;
-}
-
-// 处理登录
-async function handleLogin() {
-  if (!loginForm.captchaSuccess) {
-    ElMessage({
-      showClose: true,
-      message: "captchaError",
-      type: "error",
-    });
-    return;
-  }
-  await loginFormRef.value.validate(async (valid, fields) => {
-    if (valid) {
-      try {
-        // const res = await login(loginForm)
-        // 用通过vuex发送网络请求
-        const res = await store.dispatch("handleLogin", toRaw(loginForm));
-        console.log(res);
-      } catch (error) {
-        console.log(error);
-      }
-    } else {
-      console.log("error submit!", fields);
-    }
-  });
-}
-</script>
 
 <style lang="scss" scoped>
 //@import "@/style/mixin.scss";
@@ -236,7 +232,7 @@ async function handleLogin() {
 
           /* vue3中的样式穿透 */
           ::v-deep(.el-form-item__content) {
-            margin-left: 0 !important;
+            margin-left: 0px !important;
           }
         }
 
@@ -249,8 +245,8 @@ async function handleLogin() {
         width: 38px;
         height: 40px;
         position: absolute;
-        right: 0;
-        top: 0;
+        right: 0px;
+        top: 0px;
       }
 
       .theme {
@@ -258,7 +254,7 @@ async function handleLogin() {
         height: 40px;
         position: absolute;
         right: 38px;
-        top: 0;
+        top: 0px;
       }
     }
   }
