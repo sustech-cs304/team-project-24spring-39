@@ -17,11 +17,13 @@ import java.util.stream.Collectors;
 @RequestMapping("/courses")
 public class CourseController {
 
-    @Autowired
-    private CourseRepository courseRepository;
 
-    @Autowired
-    private ProfessorRepository professorRepository;
+    private final CourseRepository courseRepository;
+    private final ProfessorRepository professorRepository;
+    public CourseController(CourseRepository courseRepository, ProfessorRepository professorRepository) {
+        this.courseRepository = courseRepository;
+        this.professorRepository = professorRepository;
+    }
 
 
     @PostMapping
