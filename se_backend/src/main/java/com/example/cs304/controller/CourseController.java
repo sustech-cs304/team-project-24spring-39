@@ -24,22 +24,29 @@ public class CourseController {
     private ProfessorRepository professorRepository;
 
 
-@PostMapping
-public ResponseEntity<Course> addCourse(@RequestBody Course course, @RequestBody Set<Integer> professorIds) {
-    Set<Professor> professors = professorIds.stream()
-        .map(id -> professorRepository.findById(id).orElseThrow(() -> new RuntimeException("Professor not found")))
-        .collect(Collectors.toSet());
-    course.setProfessors(professors);
-    for (Professor professor : professors) {
-        professor.getCourses().add(course);
+    @PostMapping
+    public ResponseEntity<Course> addCourse(@RequestBody Course course, @RequestBody Set<Integer> professorIds) {
+        Set<Professor> professors = professorIds.stream()
+            .map(id -> professorRepository.findById(id).orElseThrow(() -> new RuntimeException("Professor not found")))
+            .collect(Collectors.toSet());
+        course.setProfessors(professors);
+        for (Professor professor : professors) {
+            professor.getCourses().add(course);
+        }
+        Course savedCourse = courseRepository.save(course);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+            .buildAndExpand(savedCourse.getId()).toUri();
+        return ResponseEntity.created(location).body(savedCourse);
     }
-    Course savedCourse = courseRepository.save(course);
-    URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-        .buildAndExpand(savedCourse.getId()).toUri();
-    return ResponseEntity.created(location).body(savedCourse);
-}
     @DeleteMapping("/{id}")
     public void deleteCourse(@PathVariable Integer id) {
         courseRepository.deleteById(id);
     }
+
+    @GetMapping
+    public ResponseEntity<Iterable<Course>> getCourses() {
+        Iterable<Course> courses = courseRepository.findAll();
+        return ResponseEntity.ok(courses);
+    }
+
 }
