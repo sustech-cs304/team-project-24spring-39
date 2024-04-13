@@ -10,7 +10,7 @@ import jakarta.persistence.*;
 
 @Entity
 @SuppressWarnings("all")
-public class Students {
+public class Student {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -32,9 +32,9 @@ public class Students {
 	@Column(name = "major")
 	private String major;
 
-	public Students() {}
+	public Student() {}
 
-	public Students(Integer id, String name, Integer sid, String password, String klass, String major) {
+	public Student(Integer id, String name, Integer sid, String password, String klass, String major) {
 		this.id = id;
 		this.name = name;
 		this.sid = sid;
