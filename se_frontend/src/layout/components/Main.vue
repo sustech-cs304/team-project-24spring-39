@@ -1,5 +1,5 @@
 <script setup></script>
 
-<template><div></div></template>
+<template></template>
 
 <style scoped lang="scss"></style>
