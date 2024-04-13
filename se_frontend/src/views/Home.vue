@@ -6,6 +6,27 @@ const circleUrl = ref(
   "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
 );
 
+// //todolist
+// const generateData = () => {
+//   const data = [];
+//   for (let i = 1; i <= 15; i++) {
+//     data.push({
+//       key: i,
+//       label: `Option ${i}`,
+//       disabled: i % 4 === 0,
+//     });
+//   }
+//   return data;
+// };
+//
+// const data = ref(generateData());
+// const rightValue = ref([1]);
+//
+// // 右侧列表元素变化时触发（目前没用）
+// const handleChange = (value, direction, movedKeys) => {
+//   console.log(value, direction, movedKeys);
+// };
+
 const timelineData = ref([
   {
     year: 2021,
@@ -110,9 +131,9 @@ const tables = ref({
 </script>
 
 <template>
-  <el-row>
+  <el-row class="upon-timeline" justify="space-evenly">
     <!--    头像和用户信息-->
-    <el-col :span="8">
+    <el-col :span="6">
       <el-card class="card">
         <div class="card-body">
           <el-avatar :size="75" :src="circleUrl" />
@@ -123,10 +144,35 @@ const tables = ref({
         </div>
       </el-card>
     </el-col>
-    <!--    今日课程-->
-    <el-col :span="16">
-      <div class="today-classes" />
-    </el-col>
+    <!--    todolist-->
+    <!--    <el-col :span="12">-->
+    <!--      <el-transfer-->
+    <!--        class="transfer-pane"-->
+    <!--        v-model="rightValue"-->
+    <!--        style="text-align: left; display: inline-block"-->
+    <!--        filterable-->
+    <!--        :left-default-checked="[2, 3]"-->
+    <!--        :right-default-checked="[1]"-->
+    <!--        :titles="['Source', 'Target']"-->
+    <!--        :button-texts="['To left', 'To right']"-->
+    <!--        :format="{-->
+    <!--          noChecked: '${total}',-->
+    <!--          hasChecked: '${checked}/${total}',-->
+    <!--        }"-->
+    <!--        :data="data"-->
+    <!--        @change="handleChange"-->
+    <!--      >-->
+    <!--        <template #default="{ option }">-->
+    <!--          <span>{{ option.key }} - {{ option.label }}</span>-->
+    <!--        </template>-->
+    <!--        <template #left-footer>-->
+    <!--          <el-button class="transfer-footer" size="small">Operation</el-button>-->
+    <!--        </template>-->
+    <!--        <template #right-footer>-->
+    <!--          <el-button class="transfer-footer" size="small">Operation</el-button>-->
+    <!--        </template>-->
+    <!--      </el-transfer>-->
+    <!--    </el-col>-->
   </el-row>
   <!--  时间轴-->
   <el-row>
@@ -150,15 +196,24 @@ const tables = ref({
 </template>
 
 <style scoped lang="scss">
-.card {
-  align-items: center;
-  padding: 20px;
+.upon-timeline {
+  display: flex;
 
-  // el-card使用flex没用，因为里面还有一个el-card__body,所以我们自己嵌套一层div，在这个div上使用flex
-  .card-body {
-    display: flex;
+  .card {
     align-items: center;
-    justify-content: space-around;
+    padding: 20px;
+
+    // el-card使用flex没用，因为里面还有一个el-card__body,所以我们自己嵌套一层div，在这个div上使用flex
+    .card-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-around;
+    }
+  }
+
+  .transfer-pane {
+    transform: scale(0.8); // 缩放为原来的 60%
+    transform-origin: top; // 缩放的基点设为顶部
   }
 }
 
