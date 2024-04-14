@@ -31,7 +31,7 @@
         <el-input
           v-model="textarea"
           style="width: 240px"
-          :rows="6"
+          :rows="4"
           type="textarea"
           placeholder="Please input"
         />
@@ -117,7 +117,7 @@ span {
 }
 
 .el-input {
-  height: 500px;
+  height: 100px;
   width: 100%;
 }
 </style>

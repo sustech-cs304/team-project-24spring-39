@@ -9,7 +9,9 @@ import RatingComponent from "../component/Evaluate/RatingComponent.vue";
     <el-container style="height: 100%">
       <el-container>
         <el-aside width="200px">
-          <div style="text-align: center">已选课程</div>
+          <div style="text-align: center; margin-top: 30px; font-size: 18px">
+            已选课程
+          </div>
           <CourseList />
         </el-aside>
         <el-main>
@@ -58,7 +60,7 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 40%; /* 或者根据需要调整高度 */
+  height: 60%; /* 或者根据需要调整高度 */
 }
 </style>
 
