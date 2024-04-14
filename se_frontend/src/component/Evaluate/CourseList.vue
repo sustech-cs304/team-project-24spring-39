@@ -43,7 +43,7 @@ const load = () => {
 };
 </script>
 
-<style>
+<style scoped>
 .infinite-list {
   height: 60%;
   padding: 0;

@@ -57,7 +57,7 @@ const form = reactive({
 });
 </script>
 
-<style>
+<style scoped>
 .radio-container {
   display: flex;
   flex-direction: column;
