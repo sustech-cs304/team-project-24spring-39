@@ -1,54 +1,34 @@
 package com.example.cs304.entity;
 
-import jakarta.persistence.*;
-
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "department")
 public class Department {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
-	@Column(name = "name")
-	private String name;
+    public Integer getId() {
+        return id;
+    }
 
-	public Department() {}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Department(Integer id, String name) {
-		this.id = id;
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String toString() {
-		return "Department{" +
-				"id='" + id + '\'' +
-				", name='" + name + '\'' +
-				'}';
-	}
-
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
 }

@@ -2,66 +2,43 @@ package com.example.cs304.entity;
 
 import jakarta.persistence.*;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
-
 @Entity
-@SuppressWarnings("all")
+@Table(name = "post_category")
 public class PostCategory {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
-	@Column(name = "post_id")
-	private Integer postId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "category", nullable = false, referencedColumnName = "name")
+    private Category category;
 
-	@Column(name = "category_id")
-	private Integer categoryId;
+    public Integer getId() {
+        return id;
+    }
 
-	public PostCategory() {}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public PostCategory(Integer id, Integer postId, Integer categoryId) {
-		this.id = id;
-		this.postId = postId;
-		this.categoryId = categoryId;
-	}
+    public Post getPost() {
+        return post;
+    }
 
-	@Override
-	public String toString() {
-		return "PostCategory{" +
-				"id='" + id + '\'' +
-				", postId='" + postId + '\'' +
-				", categoryId='" + categoryId + '\'' +
-				'}';
-	}
+    public void setPost(Post post) {
+        this.post = post;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Category getCategory() {
+        return category;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getPostId() {
-		return this.postId;
-	}
-
-	public void setPostId(Integer postId) {
-		this.postId = postId;
-	}
-
-	public Integer getCategoryId() {
-		return this.categoryId;
-	}
-
-	public void setCategoryId(Integer categoryId) {
-		this.categoryId = categoryId;
-	}
+    public void setCategory(Category category) {
+        this.category = category;
+    }
 
 }

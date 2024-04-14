@@ -1,106 +1,139 @@
 package com.example.cs304.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import java.util.Map;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "course")
 public class Course {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
-	@Column(name = "name")
-	private String name;
+    @Column(name = "CID", nullable = false, length = 5)
+    private String cid;
 
-	@Column(name = "department_id")
-	private Integer departmentId;
+    @Lob
+    @Column(name = "type", nullable = false)
+    private String type;
 
-	@Column(name = "credit")
-	private Integer credit;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "department", nullable = false, referencedColumnName = "name")
+    private Department department;
 
-	@Column(name = "rate")
-	private Double rate;
+    @Column(name = "credit", nullable = false)
+    private Integer credit;
 
-	@Column(name = "capacity")
-	private Integer capacity;
+    @Column(name = "hours", nullable = false)
+    private Integer hours;
 
-	public Course() {}
+    @Column(name = "capacity", nullable = false)
+    private Integer capacity;
 
-	public Course(Integer id, String name, Integer departmentId, Integer credit, Double rate, Integer capacity) {
-		this.id = id;
-		this.name = name;
-		this.departmentId = departmentId;
-		this.credit = credit;
-		this.rate = rate;
-		this.capacity = capacity;
-	}
+    @ColumnDefault("0")
+    @Column(name = "selected", nullable = false)
+    private Integer selected;
 
-	@Override
-	public String toString() {
-		return "Course{" +
-				"id='" + id + '\'' +
-				", name='" + name + '\'' +
-				", departmentId='" + departmentId + '\'' +
-				", credit='" + credit + '\'' +
-				", rate='" + rate + '\'' +
-				", capacity='" + capacity + '\'' +
-				'}';
-	}
+    @Column(name = "location", nullable = false, length = 50)
+    private String location;
 
-	public Integer getId() {
-		return this.id;
-	}
+    @Column(name = "time", nullable = false)
+    @JdbcTypeCode(SqlTypes.JSON)
+    private Map<String, Object> time;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Integer getDepartmentId() {
-		return this.departmentId;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setDepartmentId(Integer departmentId) {
-		this.departmentId = departmentId;
-	}
+    public String getCid() {
+        return cid;
+    }
 
-	public Integer getCredit() {
-		return this.credit;
-	}
+    public void setCid(String cid) {
+        this.cid = cid;
+    }
 
-	public void setCredit(Integer credit) {
-		this.credit = credit;
-	}
+    public String getType() {
+        return type;
+    }
 
-	public Double getRate() {
-		return this.rate;
-	}
+    public void setType(String type) {
+        this.type = type;
+    }
 
-	public void setRate(Double rate) {
-		this.rate = rate;
-	}
+    public Department getDepartment() {
+        return department;
+    }
 
-	public Integer getCapacity() {
-		return this.capacity;
-	}
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
 
-	public void setCapacity(Integer capacity) {
-		this.capacity = capacity;
-	}
+    public Integer getCredit() {
+        return credit;
+    }
+
+    public void setCredit(Integer credit) {
+        this.credit = credit;
+    }
+
+    public Integer getHours() {
+        return hours;
+    }
+
+    public void setHours(Integer hours) {
+        this.hours = hours;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
+
+    public Integer getSelected() {
+        return selected;
+    }
+
+    public void setSelected(Integer selected) {
+        this.selected = selected;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    public Map<String, Object> getTime() {
+        return time;
+    }
+
+    public void setTime(Map<String, Object> time) {
+        this.time = time;
+    }
 
 }

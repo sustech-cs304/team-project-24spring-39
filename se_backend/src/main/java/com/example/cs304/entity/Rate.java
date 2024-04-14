@@ -1,132 +1,109 @@
 package com.example.cs304.entity;
 
 import jakarta.persistence.*;
-
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "rate")
 public class Rate {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "course_id", nullable = false, referencedColumnName = "CID")
+    private Course course;
 
-	@Column(name = "course_id")
-	private Integer courseId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "student_id", nullable = false, referencedColumnName = "SID")
+    private Student student;
 
-	@Column(name = "student_id")
-	private Integer studentId;
+    @ColumnDefault("0")
+    @Column(name = "rate", nullable = false)
+    private Integer rate;
 
-	@Column(name = "rate")
-	private Integer rate;
+    @ColumnDefault("normal")
+    @Lob
+    @Column(name = "difficulty", nullable = false)
+    private String difficulty;
 
-	@Column(name = "difficulty")
-	private String difficulty;
+    @ColumnDefault("normal")
+    @Lob
+    @Column(name = "workload", nullable = false)
+    private String workload;
 
-	@Column(name = "workload")
-	private String workload;
+    @ColumnDefault("normal")
+    @Lob
+    @Column(name = "grading", nullable = false)
+    private String grading;
 
-	@Column(name = "grading")
-	private String grading;
+    @ColumnDefault("normal")
+    @Lob
+    @Column(name = "gain", nullable = false)
+    private String gain;
 
-	@Column(name = "gain")
-	private String gain;
+    public Integer getId() {
+        return id;
+    }
 
-	public Rate() {}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Rate(Integer id, Integer courseId, Integer studentId, Integer rate, String difficulty, String workload, String grading, String gain) {
-		this.id = id;
-		this.courseId = courseId;
-		this.studentId = studentId;
-		this.rate = rate;
-		this.difficulty = difficulty;
-		this.workload = workload;
-		this.grading = grading;
-		this.gain = gain;
-	}
+    public Course getCourse() {
+        return course;
+    }
 
-	@Override
-	public String toString() {
-		return "Rate{" +
-				"id='" + id + '\'' +
-				", courseId='" + courseId + '\'' +
-				", studentId='" + studentId + '\'' +
-				", rate='" + rate + '\'' +
-				", difficulty='" + difficulty + '\'' +
-				", workload='" + workload + '\'' +
-				", grading='" + grading + '\'' +
-				", gain='" + gain + '\'' +
-				'}';
-	}
+    public void setCourse(Course course) {
+        this.course = course;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Student getStudent() {
+        return student;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 
-	public Integer getCourseId() {
-		return this.courseId;
-	}
+    public Integer getRate() {
+        return rate;
+    }
 
-	public void setCourseId(Integer courseId) {
-		this.courseId = courseId;
-	}
+    public void setRate(Integer rate) {
+        this.rate = rate;
+    }
 
-	public Integer getStudentId() {
-		return this.studentId;
-	}
+    public String getDifficulty() {
+        return difficulty;
+    }
 
-	public void setStudentId(Integer studentId) {
-		this.studentId = studentId;
-	}
+    public void setDifficulty(String difficulty) {
+        this.difficulty = difficulty;
+    }
 
-	public Integer getRate() {
-		return this.rate;
-	}
+    public String getWorkload() {
+        return workload;
+    }
 
-	public void setRate(Integer rate) {
-		this.rate = rate;
-	}
+    public void setWorkload(String workload) {
+        this.workload = workload;
+    }
 
-	public String getDifficulty() {
-		return this.difficulty;
-	}
+    public String getGrading() {
+        return grading;
+    }
 
-	public void setDifficulty(String difficulty) {
-		this.difficulty = difficulty;
-	}
+    public void setGrading(String grading) {
+        this.grading = grading;
+    }
 
-	public String getWorkload() {
-		return this.workload;
-	}
+    public String getGain() {
+        return gain;
+    }
 
-	public void setWorkload(String workload) {
-		this.workload = workload;
-	}
-
-	public String getGrading() {
-		return this.grading;
-	}
-
-	public void setGrading(String grading) {
-		this.grading = grading;
-	}
-
-	public String getGain() {
-		return this.gain;
-	}
-
-	public void setGain(String gain) {
-		this.gain = gain;
-	}
+    public void setGain(String gain) {
+        this.gain = gain;
+    }
 
 }

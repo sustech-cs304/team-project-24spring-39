@@ -1,107 +1,82 @@
 package com.example.cs304.entity;
 
-import java.util.Date;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import java.time.Instant;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "secondary_reply")
 public class SecondaryReply {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "reply_id", nullable = false)
+    private Reply reply;
 
-	@Column(name = "reply_id")
-	private Integer replyId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "author_id", nullable = false, referencedColumnName = "SID")
+    private Student author;
 
-	@Column(name = "author_id")
-	private Integer authorId;
+    @Column(name = "content", nullable = false, length = 1000)
+    private String content;
 
-	@Column(name = "content")
-	private String content;
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "time", nullable = false)
+    private Instant time;
 
-	@Column(name = "time")
-	private Date time;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id")
+    private File file;
 
-	@Column(name = "file_id")
-	private Integer fileId;
+    public Integer getId() {
+        return id;
+    }
 
-	public SecondaryReply() {}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public SecondaryReply(Integer id, Integer replyId, Integer authorId, String content, Date time, Integer fileId) {
-		this.id = id;
-		this.replyId = replyId;
-		this.authorId = authorId;
-		this.content = content;
-		this.time = time;
-		this.fileId = fileId;
-	}
+    public Reply getReply() {
+        return reply;
+    }
 
-	@Override
-	public String toString() {
-		return "SecondaryReply{" +
-				"id='" + id + '\'' +
-				", replyId='" + replyId + '\'' +
-				", authorId='" + authorId + '\'' +
-				", content='" + content + '\'' +
-				", time='" + time + '\'' +
-				", fileId='" + fileId + '\'' +
-				'}';
-	}
+    public void setReply(Reply reply) {
+        this.reply = reply;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Student getAuthor() {
+        return author;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setAuthor(Student author) {
+        this.author = author;
+    }
 
-	public Integer getReplyId() {
-		return this.replyId;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public void setReplyId(Integer replyId) {
-		this.replyId = replyId;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public Integer getAuthorId() {
-		return this.authorId;
-	}
+    public Instant getTime() {
+        return time;
+    }
 
-	public void setAuthorId(Integer authorId) {
-		this.authorId = authorId;
-	}
+    public void setTime(Instant time) {
+        this.time = time;
+    }
 
-	public String getContent() {
-		return this.content;
-	}
+    public File getFile() {
+        return file;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public Date getTime() {
-		return this.time;
-	}
-
-	public void setTime(Date time) {
-		this.time = time;
-	}
-
-	public Integer getFileId() {
-		return this.fileId;
-	}
-
-	public void setFileId(Integer fileId) {
-		this.fileId = fileId;
-	}
+    public void setFile(File file) {
+        this.file = file;
+    }
 
 }
