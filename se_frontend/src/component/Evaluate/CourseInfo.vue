@@ -1,7 +1,7 @@
 <template>
   <div>
     <span>{{ selectedCourseName }}</span>
-    <p>{{ "courseIntro" }}</p>
+    <p>{{ selectedCourseIntro }}</p>
   </div>
 </template>
 
@@ -13,5 +13,9 @@ const store = useStore();
 
 const selectedCourseName = computed(
   () => store.state.userStore.selectedCourse.name
+);
+
+const selectedCourseIntro = computed(
+  () => store.state.userStore.selectedCourse.intro
 );
 </script>

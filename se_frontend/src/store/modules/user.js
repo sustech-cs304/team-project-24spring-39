@@ -11,15 +11,15 @@ export default {
       JSON.parse(localStorage.getItem("MENU_LIST") || "[]"),
 
     courses: [
-      { id: 1, name: "课程1" },
-      { id: 2, name: "课程2" },
-      { id: 3, name: "课程3" },
-      { id: 4, name: "课程4" },
-      { id: 5, name: "课程5" },
-      { id: 6, name: "课程6" },
+      { id: 1, name: "课程1", intro: "intro_1" },
+      { id: 2, name: "课程2", intro: "intro_2" },
+      { id: 3, name: "课程3", intro: "intro_3" },
+      { id: 4, name: "课程4", intro: "intro_4" },
+      { id: 5, name: "课程5", intro: "intro_5" },
+      { id: 6, name: "课程6", intro: "intro_6" },
     ],
 
-    selectedCourse: { id: 6, name: "课程6" },
+    selectedCourse: { id: -1, name: "课程名称", intro: "课程介绍" },
   },
   mutations: {
     // 设置登录状态

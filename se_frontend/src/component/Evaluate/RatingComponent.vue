@@ -47,12 +47,18 @@ import { ref } from "vue";
 import { reactive } from "vue";
 import axios from "axios";
 import { ElMessageBox } from "element-plus";
+import { computed } from "vue";
+import { useStore } from "vuex";
 const radio1 = ref(3);
 const radio2 = ref(3);
 const radio3 = ref(3);
 const radio4 = ref(3);
 const value = ref();
 const textarea = ref("");
+const store = useStore();
+const selectedCourseId = computed(
+  () => store.state.userStore.selectedCourse.id
+);
 // do not use same name with ref
 const form = reactive({
   name: "",
@@ -67,6 +73,7 @@ const form = reactive({
 const submitData = async () => {
   // 这里是您要发送的数据
   const payload = {
+    courseID: selectedCourseId,
     radio1: radio1.value,
     radio2: radio2.value,
     radio3: radio3.value,
