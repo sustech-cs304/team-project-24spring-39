@@ -18,6 +18,8 @@ export default {
       { id: 5, name: "课程5" },
       { id: 6, name: "课程6" },
     ],
+
+    selectedCourse: { id: 6, name: "课程6" },
   },
   mutations: {
     // 设置登录状态
@@ -29,8 +31,12 @@ export default {
       state.menuList = menuList;
       localStorage.setItem("MENU_LIST", JSON.stringify(menuList));
     },
-    SET_COURSES(state, newCourses) {
+    setCourses(state, newCourses) {
       state.courses = newCourses;
+    },
+    setSelectedCourse(state, course) {
+      state.selectedCourse = course; // 设置选中的课程
+      console.log(state.selectedCourse);
     },
   },
   actions: {
@@ -63,6 +69,10 @@ export default {
       } catch (error) {
         console.error("Error:", error);
       }
+    },
+
+    selectCourse({ commit }, course) {
+      commit("setSelectedCourse", course); // 调用mutation更新状态
     },
   },
 };

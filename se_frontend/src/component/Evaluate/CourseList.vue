@@ -1,9 +1,10 @@
 <template>
-  <ul v-infinite-scroll="load" class="infinite-list" style="overflow: auto">
+  <ul class="infinite-list" style="overflow: auto">
     <li
       v-for="course in courses"
       :key="course.id"
       class="infinite-list-item clickable"
+      @click="selectCourse(course)"
     >
       {{ course.name }}
     </li>
@@ -15,19 +16,15 @@
 
 <script setup>
 // 定义一个接口来描述课程对象
-import { ref } from "vue";
+// import { ref } from "vue";
 import { computed } from "vue";
 import { useStore } from "vuex";
 const store = useStore();
 const courses = computed(() => store.state.userStore.courses);
 
-// function selectCourse(course) {
-//   selectedCourse.value = course;
-// }
-const count = ref(0);
-const load = () => {
-  count.value += 2;
-};
+function selectCourse(course) {
+  store.commit("setSelectedCourse", course);
+}
 </script>
 
 <style scoped>
