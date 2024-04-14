@@ -54,6 +54,10 @@ const shadowStyle = computed(() => {
 }
 
 .course-name {
+  margin-top: 0; /* 减少上外边距 */
+  margin-bottom: 0; /* 减少下外边距 */
+  padding-top: 0; /* 移除上内边距 */
+  padding-bottom: 0; /* 移除下内边距 */
   margin-left: 25px; /* 与左边界的距离 */
   font-family: "Arial Black", Gadget, sans-serif; /* 醒目的字体 */
   font-weight: bold; /* 字体加粗 */

@@ -60,7 +60,7 @@ html {
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 60%; /* 或者根据需要调整高度 */
+  height: 70%; /* 或者根据需要调整高度 */
 }
 </style>
 
