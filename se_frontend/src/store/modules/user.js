@@ -9,6 +9,15 @@ export default {
     menuList:
       // []
       JSON.parse(localStorage.getItem("MENU_LIST") || "[]"),
+
+    courses: [
+      { id: 1, name: "课程1" },
+      { id: 2, name: "课程2" },
+      { id: 3, name: "课程3" },
+      { id: 4, name: "课程4" },
+      { id: 5, name: "课程5" },
+      { id: 6, name: "课程6" },
+    ],
   },
   mutations: {
     // 设置登录状态
@@ -19,6 +28,9 @@ export default {
     setMenuList(state, menuList) {
       state.menuList = menuList;
       localStorage.setItem("MENU_LIST", JSON.stringify(menuList));
+    },
+    SET_COURSES(state, newCourses) {
+      state.courses = newCourses;
     },
   },
   actions: {
@@ -40,6 +52,16 @@ export default {
         await router.push("/");
       } catch (error) {
         console.log("登录失败：", error);
+      }
+    },
+
+    async fetchCourses({ commit }) {
+      try {
+        const response = await fetch("https://example.com/api/courses");
+        const data = await response.json();
+        commit("SET_COURSES", data);
+      } catch (error) {
+        console.error("Error:", error);
       }
     },
   },
