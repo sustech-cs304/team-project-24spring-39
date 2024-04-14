@@ -1,6 +1,7 @@
 <script setup>
-import ExpandToggle from "@/layout/components/Header/component/ExpandToggle.vue";
-import Breadcrumb from "@/layout/components/Header/component/Breadcrumb.vue";
+import ExpandToggle from "./component/ExpandToggle.vue";
+import Breadcrumb from "./component/Breadcrumb.vue";
+import Tabs from "./component/Tabs.vue";
 </script>
 
 <template>
@@ -10,12 +11,14 @@ import Breadcrumb from "@/layout/components/Header/component/Breadcrumb.vue";
       <!--      菜单收缩按钮-->
       <ExpandToggle />
       <!--      面包屑-->
-      <Breadcrumb />
+      <Breadcrumb style="margin-left: 10px" />
     </div>
     <!-- 右侧 -->
     <div class="header_right"></div>
     <!-- tag标签 -->
-    <div class="header_tag"></div>
+    <div class="header_tag">
+      <Tabs />
+    </div>
   </div>
 </template>
 
@@ -49,10 +52,10 @@ import Breadcrumb from "@/layout/components/Header/component/Breadcrumb.vue";
     /* @include bg_color(); */
     background-color: var(--el-bg-color);
     border-bottom: 1px solid var(--el-border-color);
-    border-top: 1px solid var(--el-border-color);
+    //border-top: 1px solid var(--el-border-color);
     display: flex;
     align-items: center;
-    padding: 5px;
+    //padding: 5px;
     /* box-shadow: 0 1px 3px 0 rgb(0 0 0 / 12%), 0 0 3px 0 rgb(0 0 0 / 4%); */
   }
 }

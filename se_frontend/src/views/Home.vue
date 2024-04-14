@@ -133,7 +133,7 @@ const tables = ref({
 <template>
   <el-row class="upon-timeline" justify="space-evenly">
     <!--    头像和用户信息-->
-    <el-col :span="6">
+    <el-col :span="6" style="margin-top: 30px">
       <el-card class="card">
         <div class="card-body">
           <el-avatar :size="75" :src="circleUrl" />
