@@ -38,14 +38,15 @@
       </el-form-item>
     </el-form>
 
-    <el-button type="success" round>提交</el-button>
+    <el-button type="success" round @click="submitData">提交</el-button>
   </div>
 </template>
 
 <script setup>
 import { ref } from "vue";
 import { reactive } from "vue";
-
+import axios from "axios";
+import { ElMessageBox } from "element-plus";
 const radio1 = ref(3);
 const radio2 = ref(3);
 const radio3 = ref(3);
@@ -63,6 +64,35 @@ const form = reactive({
   resource: "",
   desc: "",
 });
+const submitData = async () => {
+  // 这里是您要发送的数据
+  const payload = {
+    radio1: radio1.value,
+    radio2: radio2.value,
+    radio3: radio3.value,
+    radio4: radio4.value,
+    value: value.value,
+    textarea: textarea.value,
+  };
+
+  try {
+    // 使用 axios 发送 POST 请求
+    const response = await axios.post("您的服务器地址/api/submit", payload);
+    // 处理响应
+    console.log(response.data);
+    ElMessageBox.alert("提交成功", "成功", {
+      confirmButtonText: "确定",
+      type: "success",
+    });
+  } catch (error) {
+    // 处理错误
+    console.error(error);
+    ElMessageBox.alert("提交失败", "错误", {
+      confirmButtonText: "确定",
+      type: "error",
+    });
+  }
+};
 </script>
 
 <style scoped>
