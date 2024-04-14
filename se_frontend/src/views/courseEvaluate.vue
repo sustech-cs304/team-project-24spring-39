@@ -1,7 +1,7 @@
 <script setup>
-import CourseList from "./components/CourseList.vue";
-import CourseInfo from "./components/CourseInfo.vue";
-import RatingComponent from "./components/RatingComponent.vue";
+import CourseList from "../component/Evaluate/CourseList.vue";
+import CourseInfo from "../component/Evaluate/CourseInfo.vue";
+import RatingComponent from "../component/Evaluate/RatingComponent.vue";
 </script>
 
 <template>
