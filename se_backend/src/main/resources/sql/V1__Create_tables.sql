@@ -58,7 +58,7 @@ create table if not exists course
     credit int not null,
     hours int not null,
     capacity int not null,
-    professor int not null,
+    professor varchar(8) not null,
     selected int not null default 0,
     location varchar(50) not null,
     time json not null,
@@ -82,8 +82,8 @@ create table if not exists course_student
 create table if not exists course_professor
 (
     id int auto_increment primary key,
-    course_id int not null,
-    professor_id int not null,
+    course_id varchar(5) not null,
+    professor_id varchar(8) not null,
     foreign key (course_id) references course(CID),
     foreign key (professor_id) references professor(PID),
     unique (course_id, professor_id)
