@@ -13,7 +13,7 @@
   </div> -->
 </template>
 
-<script lang="ts" setup>
+<script setup>
 // 定义一个接口来描述课程对象
 import { ref } from "vue";
 const courses = ref([

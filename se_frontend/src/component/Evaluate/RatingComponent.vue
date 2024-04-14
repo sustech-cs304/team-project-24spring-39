@@ -35,7 +35,7 @@
   </div>
 </template>
 
-<script lang="ts" setup>
+<script setup>
 import { ref } from "vue";
 import { reactive } from "vue";
 
