@@ -14,7 +14,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/courses")
+@RequestMapping("/course")
 public class CourseController {
 
 
@@ -27,7 +27,7 @@ public class CourseController {
 
 
     @PostMapping
-    public ResponseEntity<Course> addCourse(@RequestBody Course course, @RequestBody Set<Integer> professorIds) {
+    public ResponseEntity<Course> addCourse(@RequestBody Course course, @RequestBody Set<Integer> professorIds) {//待完善
         Set<Professor> professors = professorIds.stream()
             .map(id -> professorRepository.findById(id).orElseThrow(() -> new RuntimeException("Professor not found")))
             .collect(Collectors.toSet());
