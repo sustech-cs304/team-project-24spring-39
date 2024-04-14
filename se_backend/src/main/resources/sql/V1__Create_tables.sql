@@ -4,7 +4,7 @@ create table if not exists department
 (
     id int auto_increment primary key,
     name varchar(50) not null unique
-    );
+);
 
 -- major
 create table if not exists major
@@ -13,7 +13,7 @@ create table if not exists major
     name varchar(50) not null unique,
     department varchar(50) not null,
     foreign key (department) references department(name)
-    );
+);
 
 -- professor
 create table if not exists professor
@@ -23,7 +23,7 @@ create table if not exists professor
     name varchar(50) not null,
     department varchar(50) not null,
     foreign key (department) references department(name)
-    );
+);
 
 -- admin
 create table if not exists admin
@@ -31,7 +31,7 @@ create table if not exists admin
     id int auto_increment primary key,
     name varchar(50) not null,
     password varchar(50) not null default '000000'
-    );
+);
 
 -- student class
 create table if not exists student
@@ -43,16 +43,7 @@ create table if not exists student
     class varchar(50) not null,
     major varchar(50) not null,
     foreign key (major) references major(name)
-    );
-
--- time slot
-create table if not exists time_slot
-(
-    id int auto_increment primary key,
-    start_time time not null,
-    end_time time not null,
-    weekday enum('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday') not null
-    );
+);
 
 -- course
 create table if not exists course
@@ -68,19 +59,10 @@ create table if not exists course
     professor int not null,
     selected int not null default 0,
     location varchar(50) not null,
+    time json not null,
     foreign key (professor) references professor(PID),
     foreign key (department) references department(name)
-    );
-
-create table if not exists course_time_slot
-(
-    id int auto_increment primary key,
-    course_id int not null,
-    time_slot_id int not null,
-    foreign key (course_id) references course(CID),
-    foreign key (time_slot_id) references time_slot(id),
-    unique (course_id, time_slot_id)
-    );
+);
 
 create table if not exists course_student
 (
@@ -92,7 +74,7 @@ create table if not exists course_student
     foreign key (course_id) references course(CID),
     foreign key (student_id) references student(SID),
     unique (course_id, student_id)
-    );
+);
 
 create table if not exists course_professor
 (
@@ -102,7 +84,7 @@ create table if not exists course_professor
     foreign key (course_id) references course(CID),
     foreign key (professor_id) references professor(PID),
     unique (course_id, professor_id)
-    );
+);
 
 create table if not exists rate
 (
@@ -117,27 +99,26 @@ create table if not exists rate
     foreign key (course_id) references course(CID),
     foreign key (student_id) references student(SID),
     unique (course_id, student_id)
-    );
+);
 
 create table if not exists room
 (
     id int auto_increment primary key,
     name varchar(50) not null unique,
     capacity int not null
-    );
+);
 
 create table if not exists reservation
 (
     id int auto_increment primary key,
     student_id int not null,
     room_id int not null,
-    time_slot_id int not null,
+    time json not null,
     purpose varchar(50) not null,
     foreign key (student_id) references student(SID),
     foreign key (room_id) references room(id),
-    foreign key (time_slot_id) references time_slot(id),
-    unique (student_id, room_id, time_slot_id)
-    );
+    unique (student_id, room_id)
+);
 
 create table if not exists file
 (
@@ -148,7 +129,7 @@ create table if not exists file
     uploader_id int not null,
     foreign key (uploader_id) references student(SID),
     upload_time timestamp not null default now()
-    );
+);
 
 create table if not exists post
 (
@@ -160,7 +141,7 @@ create table if not exists post
     file_id int,
     foreign key (author_id) references student(SID),
     foreign key (file_id) references file(id)
-    );
+);
 
 create table if not exists reply
 (
@@ -174,7 +155,7 @@ create table if not exists reply
     foreign key (author_id) references student(SID),
     foreign key (file_id) references file(id),
     unique (author_id, time)
-    );
+);
 
 create table if not exists secondary_reply
 (
@@ -188,13 +169,13 @@ create table if not exists secondary_reply
     foreign key (author_id) references student(SID),
     foreign key (file_id) references file(id),
     unique (author_id, time)
-    );
+);
 
 create table if not exists category
 (
     id int auto_increment primary key,
     name varchar(50) not null unique
-    );
+);
 
 create table if not exists post_category
 (
@@ -204,7 +185,7 @@ create table if not exists post_category
     foreign key (post_id) references post(id),
     foreign key (category) references category(name),
     unique (post_id, category)
-    );
+);
 
 create table if not exists `like`
 (
@@ -214,7 +195,7 @@ create table if not exists `like`
     foreign key (post_id) references post(id),
     foreign key (author_id) references student(SID),
     unique (post_id, author_id)
-    );
+);
 
 create table if not exists message
 (
@@ -223,4 +204,4 @@ create table if not exists message
     content varchar(1000) not null,
     time timestamp not null default now(),
     foreign key (receiver_id) references student(SID)
-    );
+);
