@@ -24,7 +24,7 @@ import RatingComponent from "../component/Evaluate/RatingComponent.vue";
   </div>
 </template>
 
-<style>
+<style scoped>
 body,
 html {
   height: 100%;
