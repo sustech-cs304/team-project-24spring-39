@@ -7,7 +7,6 @@ import RatingComponent from "../component/Evaluate/RatingComponent.vue";
 <template>
   <div id="app">
     <el-container style="height: 100%">
-      <el-header>评教系统</el-header>
       <el-container>
         <el-aside width="200px">
           <div style="text-align: center">已选课程</div>
