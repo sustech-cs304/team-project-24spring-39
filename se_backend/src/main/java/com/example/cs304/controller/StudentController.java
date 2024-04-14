@@ -16,13 +16,4 @@ public class StudentController {
         this.studentService = studentService;
     }
 
-    @PostMapping("/login")
-    public ResponseEntity<String> login(@RequestBody Student student) {
-        boolean isValid = studentService.validateStudent(student.getSid(), student.getPassword());
-        if (isValid) {
-            return ResponseEntity.ok("Login successful");
-        } else {
-            return ResponseEntity.status(401).body("Invalid username or password");
-        }
-    }
 }

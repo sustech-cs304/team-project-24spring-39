@@ -14,11 +14,12 @@ public class StudentService {
         this.studentRepository = studentRepository;
     }
 
-    public boolean validateStudent(Integer SID, String password) {
-        Student student = studentRepository.findById(SID).orElse(null);
-        if (student != null) {
-            return student.getPassword().equals(password);
+    public Student validateStudent(Integer sid, String password) {
+        Student student = studentRepository.findBySid(sid);
+        if (student != null && student.getPassword().equals(password)) {
+            return student;
+        } else {
+            return null;
         }
-        return false;
     }
 }
