@@ -4,7 +4,6 @@ import com.example.cs304.entity.Course;
 import com.example.cs304.entity.Professor;
 import com.example.cs304.repository.CourseRepository;
 import com.example.cs304.repository.ProfessorRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;

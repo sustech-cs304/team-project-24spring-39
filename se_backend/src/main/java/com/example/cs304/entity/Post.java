@@ -1,107 +1,81 @@
 package com.example.cs304.entity;
 
-import java.util.Date;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import java.time.Instant;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "post")
 public class Post {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "author_id", nullable = false, referencedColumnName = "SID")
+    private Student author;
 
-	@Column(name = "author_id")
-	private Integer authorId;
+    @Column(name = "title", nullable = false, length = 50)
+    private String title;
 
-	@Column(name = "title")
-	private String title;
+    @Column(name = "content", nullable = false, length = 1000)
+    private String content;
 
-	@Column(name = "content")
-	private String content;
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "posting_time", nullable = false)
+    private Instant postingTime;
 
-	@Column(name = "posting_time")
-	private Date postingTime;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id")
+    private File file;
 
-	@Column(name = "file_id")
-	private Integer fileId;
+    public Integer getId() {
+        return id;
+    }
 
-	public Post() {}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Post(Integer id, Integer authorId, String title, String content, Date postingTime, Integer fileId) {
-		this.id = id;
-		this.authorId = authorId;
-		this.title = title;
-		this.content = content;
-		this.postingTime = postingTime;
-		this.fileId = fileId;
-	}
+    public Student getAuthor() {
+        return author;
+    }
 
-	@Override
-	public String toString() {
-		return "Post{" +
-				"id='" + id + '\'' +
-				", authorId='" + authorId + '\'' +
-				", title='" + title + '\'' +
-				", content='" + content + '\'' +
-				", postingTime='" + postingTime + '\'' +
-				", fileId='" + fileId + '\'' +
-				'}';
-	}
+    public void setAuthor(Student author) {
+        this.author = author;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public Integer getAuthorId() {
-		return this.authorId;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public void setAuthorId(Integer authorId) {
-		this.authorId = authorId;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public String getTitle() {
-		return this.title;
-	}
+    public Instant getPostingTime() {
+        return postingTime;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setPostingTime(Instant postingTime) {
+        this.postingTime = postingTime;
+    }
 
-	public String getContent() {
-		return this.content;
-	}
+    public File getFile() {
+        return file;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
-
-	public Date getPostingTime() {
-		return this.postingTime;
-	}
-
-	public void setPostingTime(Date postingTime) {
-		this.postingTime = postingTime;
-	}
-
-	public Integer getFileId() {
-		return this.fileId;
-	}
-
-	public void setFileId(Integer fileId) {
-		this.fileId = fileId;
-	}
+    public void setFile(File file) {
+        this.file = file;
+    }
 
 }

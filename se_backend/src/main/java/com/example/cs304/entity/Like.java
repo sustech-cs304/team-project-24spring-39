@@ -2,66 +2,43 @@ package com.example.cs304.entity;
 
 import jakarta.persistence.*;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
-
 @Entity
-@SuppressWarnings("all")
+@Table(name = "`like`")
 public class Like {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
-	@Column(name = "post_id")
-	private Integer postId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "author_id", nullable = false, referencedColumnName = "SID")
+    private Student author;
 
-	@Column(name = "author_id")
-	private Integer authorId;
+    public Integer getId() {
+        return id;
+    }
 
-	public Like() {}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Like(Integer id, Integer postId, Integer authorId) {
-		this.id = id;
-		this.postId = postId;
-		this.authorId = authorId;
-	}
+    public Post getPost() {
+        return post;
+    }
 
-	@Override
-	public String toString() {
-		return "Like{" +
-				"id='" + id + '\'' +
-				", postId='" + postId + '\'' +
-				", authorId='" + authorId + '\'' +
-				'}';
-	}
+    public void setPost(Post post) {
+        this.post = post;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Student getAuthor() {
+        return author;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getPostId() {
-		return this.postId;
-	}
-
-	public void setPostId(Integer postId) {
-		this.postId = postId;
-	}
-
-	public Integer getAuthorId() {
-		return this.authorId;
-	}
-
-	public void setAuthorId(Integer authorId) {
-		this.authorId = authorId;
-	}
+    public void setAuthor(Student author) {
+        this.author = author;
+    }
 
 }

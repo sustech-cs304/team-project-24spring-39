@@ -4,5 +4,5 @@ import com.example.cs304.entity.Student;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface StudentRepository extends JpaRepository<Student, Integer> {
-    Student findBySid(Integer SID);
+    Student findBySid(String SID);
 }

@@ -1,106 +1,78 @@
 package com.example.cs304.entity;
 
 import jakarta.persistence.*;
-
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "student")
 public class Student {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
-	@Column(name = "name")
-	private String name;
+    @Column(name = "SID", nullable = false, length = 8)
+    private String sid;
 
-	@Column(name = "SID")
-	private Integer sid;
+    @ColumnDefault("000000")
+    @Column(name = "password", nullable = false, length = 50)
+    private String password;
 
-	@Column(name = "password")
-	private String password;
+    @Column(name = "class", nullable = false, length = 50)
+    private String classField;
 
-	@Column(name = "klass")
-	private String klass;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "major", nullable = false, referencedColumnName = "name")
+    private Major major;
 
-	@Column(name = "major")
-	private String major;
+    public Integer getId() {
+        return id;
+    }
 
-	public Student() {}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Student(Integer id, String name, Integer sid, String password, String klass, String major) {
-		this.id = id;
-		this.name = name;
-		this.sid = sid;
-		this.password = password;
-		this.klass = klass;
-		this.major = major;
-	}
+    public String getName() {
+        return name;
+    }
 
-	@Override
-	public String toString() {
-		return "Students{" +
-				"id='" + id + '\'' +
-				", name='" + name + '\'' +
-				", sid='" + sid + '\'' +
-				", password='" + password + '\'' +
-				", klass='" + klass + '\'' +
-				", major='" + major + '\'' +
-				'}';
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public String getSid() {
+        return sid;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setSid(String sid) {
+        this.sid = sid;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
-	public Integer getSid() {
-		return this.sid;
-	}
+    public String getClassField() {
+        return classField;
+    }
 
-	public void setSid(Integer sid) {
-		this.sid = sid;
-	}
+    public void setClassField(String classField) {
+        this.classField = classField;
+    }
 
-	public String getPassword() {
-		return this.password;
-	}
+    public Major getMajor() {
+        return major;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
-
-	public String getKlass() {
-		return this.klass;
-	}
-
-	public void setKlass(String klass) {
-		this.klass = klass;
-	}
-
-	public String getMajor() {
-		return this.major;
-	}
-
-	public void setMajor(String major) {
-		this.major = major;
-	}
+    public void setMajor(Major major) {
+        this.major = major;
+    }
 
 }

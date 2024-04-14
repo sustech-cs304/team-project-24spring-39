@@ -1,10 +1,10 @@
 package com.example.cs304.controller;
 
+import com.example.cs304.entity.Admin;
 import com.example.cs304.entity.Student;
-import com.example.cs304.response.MetaResponse;
-import com.example.cs304.response.StatusCode;
+import com.example.cs304.response.Response;
+import com.example.cs304.service.AdminService;
 import com.example.cs304.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -14,17 +14,79 @@ public class LoginController {
 
     private final StudentService studentService;
 
-    public LoginController(StudentService studentService) {
+    private final AdminService adminService;
+
+    public LoginController(StudentService studentService, AdminService adminService) {
         this.studentService = studentService;
+        this.adminService = adminService;
     }
 
-    @PostMapping
-    public ResponseEntity<Student> login(@RequestBody Student student) {//还有问题，需要返回用户身份（是否是管理员）
-        Student validStudent = studentService.validateStudent(student.getSid(), student.getPassword());
-        if (validStudent != null) {
-            return ResponseEntity.ok(validStudent);
+       @PostMapping
+    public ResponseEntity<Response<Object>> login(@RequestBody User user) {
+        String id = user.getId();
+        String password = user.getPassword();
+        Response<Object> response = new Response<>();
+        if (id.charAt(0) == '2') {
+            Admin admin = adminService.validateAdmin(id, password);
+            if (admin != null) {
+                response.setStatus(200);
+                response.setMessage("Login successful");
+                response.setData(admin);
+                return ResponseEntity.ok(response);
+            } else {
+                response.setStatus(400);
+                response.setMessage("Invalid id or password");
+                response.setData(null);
+                return ResponseEntity.status(401).body(response);
+            }
         } else {
-            return ResponseEntity.status(401).body(null);
+            Student student = studentService.validateStudent(id, password);
+            if (student != null) {
+                response.setStatus(200);
+                response.setMessage("Login successful");
+                response.setData(student);
+                return ResponseEntity.ok(response);
+            } else {
+                response.setStatus(400);
+                response.setMessage("Invalid id or password");
+                response.setData(null);
+                return ResponseEntity.status(401).body(response);
+            }
         }
+    }
+    }
+class User {
+    private String id;
+    private String password;
+    private String role;
+
+    public User(String id, String password, String role) {
+        this.id = id;
+        this.password = password;
+        this.role = role;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
     }
 }

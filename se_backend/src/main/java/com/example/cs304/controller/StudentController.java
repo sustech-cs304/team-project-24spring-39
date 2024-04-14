@@ -1,9 +1,6 @@
 package com.example.cs304.controller;
 
-import com.example.cs304.entity.Student;
 import com.example.cs304.service.StudentService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
