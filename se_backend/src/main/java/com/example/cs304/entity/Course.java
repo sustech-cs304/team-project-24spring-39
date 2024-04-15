@@ -48,10 +48,7 @@ public class Course {
 
     @Column(name = "time", nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
-
     private Map<String, Object> time;
-
-
 
     @ManyToMany
     @JoinTable(
