@@ -11,7 +11,7 @@
       </el-header>
       <!-- 内容区 -->
       <el-main>
-        <router-view />
+        <Main />
       </el-main>
     </el-container>
   </el-container>
@@ -20,6 +20,7 @@
 <script setup>
 import Header from "./components/Header/Header.vue";
 import Aside from "./components/Aside/Aside.vue";
+import Main from "./components/Main.vue";
 </script>
 
 <style lang="scss">

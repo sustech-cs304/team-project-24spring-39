@@ -35,6 +35,10 @@ const routes = [
       {
         path: "/evaluation",
         name: "courseEvaluation",
+        meta: {
+          title: "评教",
+          breadcrumb: ["评教"],
+        },
         component: () => import("../views/courseEvaluate.vue"),
       },
     ],
