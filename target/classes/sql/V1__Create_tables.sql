@@ -61,6 +61,7 @@ create table if not exists course
     capacity int not null,
     selected int not null default 0,
     location varchar(50) not null,
+    description varchar(1000),
     time json not null,
     foreign key (department) references department(name),
     constraint check_CID check (CID REGEXP '[A-Z]{2}[0-9]{3}$')
@@ -98,6 +99,7 @@ create table if not exists rate
     workload enum('light', 'normal', 'heavy') not null default 'normal',
     grading enum('lenient', 'normal', 'strict') not null default 'normal',
     gain enum('low', 'normal', 'high') not null default 'normal',
+    description varchar(1000),
     foreign key (course_id) references course(CID),
     foreign key (student_id) references student(SID),
     unique (course_id, student_id)
@@ -243,14 +245,14 @@ INSERT INTO student (name, SID, password, class, major) VALUES ('学生戊', '10
 INSERT INTO student (name, SID, password, class, major) VALUES ('学生己', '10210006', '123456', '3班', '数学与应用数学');
 
 -- 插入课程数据
-INSERT INTO course (name, CID, type, department, credit, hours, capacity, selected, location, time)
-VALUES ('数据结构', 'CS101', '专业必修课', '计算机科学', 4, 64, 100, 0, 'A101', '{"days": ["Monday", "Wednesday", "Friday"], "times": ["09:00", "10:00", "11:00"]}');
-INSERT INTO course (name, CID, type, department, credit, hours, capacity, selected, location, time)
-VALUES ('电路原理', 'EE200', '专业必修课', '电子工程', 4, 64, 100, 0, 'B202', '{"days": ["Tuesday", "Thursday"], "times": ["13:00", "14:00"]}');
-INSERT INTO course (name, CID, type, department, credit, hours, capacity, selected, location, time)
-VALUES ('材料力学', 'ME301', '专业必修课', '机械工程', 4, 64, 100, 0, 'C303', '{"days": ["Monday", "Wednesday"], "times": ["15:00", "16:00"]}');
-INSERT INTO course (name, CID, type, department, credit, hours, capacity, selected, location, time)
-VALUES ('有机化学', 'CH402', '专业必修课', '化学工程', 4, 64, 100, 0, 'D404', '{"days": ["Tuesday", "Friday"], "times": ["09:00", "10:00"]}');
+INSERT INTO course (name, CID, type, department, credit, hours, capacity, location, description, time)
+VALUES ('数据结构', 'CS101', '专业必修课', '计算机科学', 3, 48, 100, '教学楼101', '数据结构课程描述', '{"day": "周一", "start": "08:00", "end": "09:40"}');
+INSERT INTO course (name, CID, type, department, credit, hours, capacity, location, description, time)
+VALUES ('电路原理', 'EE200', '专业必修课', '电子工程', 3, 48, 100, '教学楼201', '电路原理课程描述', '{"day": "周二", "start": "10:00", "end": "11:40"}');
+INSERT INTO course (name, CID, type, department, credit, hours, capacity, location, description, time)
+VALUES ('机械设计', 'ME301', '专业必修课', '机械工程', 3, 48, 100, '教学楼301', '机械设计课程描述', '{"day": "周三", "start": "14:00", "end": "15:40"}');
+INSERT INTO course (name, CID, type, department, credit, hours, capacity, location, description, time)
+VALUES ('化学原理', 'CH402', '专业选修课', '化学工程', 3, 48, 100, '教学楼401', '化学原理课程描述', '{"day": "周四", "start": "16:00", "end": "17:40"}');
 
 -- 插入课程学生关系数据
 INSERT INTO course_student (course_id, student_id) VALUES ('CS101', '20210001');
@@ -267,12 +269,12 @@ INSERT INTO course_professor (course_id, professor_id) VALUES ('ME301', '0000000
 INSERT INTO course_professor (course_id, professor_id) VALUES ('CH402', '00000004');
 
 -- 插入评分数据
-INSERT INTO rate (course_id, student_id, rate, difficulty, workload, grading, gain)
-VALUES ('CS101', '20210001', 4, 'normal', 'normal', 'normal', 'high');
-INSERT INTO rate (course_id, student_id, rate, difficulty, workload, grading, gain)
-VALUES ('EE200', '20210003', 3, 'hard', 'heavy', 'strict', 'normal');
-INSERT INTO rate (course_id, student_id, rate, difficulty, workload, grading, gain)
-VALUES ('ME301', '20210005', 5, 'easy', 'light', 'lenient', 'high');
+INSERT INTO rate (course_id, student_id, rate, difficulty, workload, grading, gain, description)
+VALUES ('CS101', '20210001', 5, 'normal', 'normal', 'normal', 'normal', '这门课很有趣。');
+INSERT INTO rate (course_id, student_id, rate, difficulty, workload, grading, gain, description)
+VALUES ('EE200', '20210002', 4, 'normal', 'normal', 'normal', 'normal', '这门课很有趣。');
+INSERT INTO rate (course_id, student_id, rate, difficulty, workload, grading, gain, description)
+VALUES ('ME301', '20210003', 3, 'normal', 'normal', 'normal', 'normal', '这门课很有趣。');
 
 -- 插入房间数据
 INSERT INTO room (name, capacity) VALUES ('会议室1', 50);
