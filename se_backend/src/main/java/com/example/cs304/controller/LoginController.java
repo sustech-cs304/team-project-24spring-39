@@ -34,7 +34,7 @@ public class LoginController {
                 response.setData(admin);
                 return ResponseEntity.ok(response);
             } else {
-                response.setStatus(400);
+                response.setStatus(401);
                 response.setMessage("Invalid id or password");
                 response.setData(null);
                 return ResponseEntity.status(401).body(response);
@@ -47,7 +47,7 @@ public class LoginController {
                 response.setData(student);
                 return ResponseEntity.ok(response);
             } else {
-                response.setStatus(400);
+                response.setStatus(401);
                 response.setMessage("Invalid id or password");
                 response.setData(null);
                 return ResponseEntity.status(401).body(response);
@@ -58,13 +58,7 @@ public class LoginController {
 class User {
     private String id;
     private String password;
-    private String role;
 
-    public User(String id, String password, String role) {
-        this.id = id;
-        this.password = password;
-        this.role = role;
-    }
 
     public String getId() {
         return id;
@@ -82,11 +76,4 @@ class User {
         this.password = password;
     }
 
-    public String getRole() {
-        return role;
-    }
-
-    public void setRole(String role) {
-        this.role = role;
-    }
 }

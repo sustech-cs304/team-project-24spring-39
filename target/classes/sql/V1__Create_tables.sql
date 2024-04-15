@@ -231,16 +231,16 @@ INSERT INTO professor (PID, name, department) VALUES ('00000004', '赵六', '化
 INSERT INTO professor (PID, name, department) VALUES ('00000005', '钱七', '数学');
 
 -- 插入管理员数据
-INSERT INTO admin (account, password) VALUES ('admin', 'admin123');
-INSERT INTO admin (account, password) VALUES ('root', 'root123');
+INSERT INTO admin (account, password) VALUES ('20210001', 'admin123');
+INSERT INTO admin (account, password) VALUES ('20210221', 'root123');
 
 -- 插入学生数据
-INSERT INTO student (name, SID, password, class, major) VALUES ('学生甲', '20210001', '123456', '1班', '计算机科学与技术');
-INSERT INTO student (name, SID, password, class, major) VALUES ('学生乙', '20210002', '123456', '1班', '软件工程');
-INSERT INTO student (name, SID, password, class, major) VALUES ('学生丙', '20210003', '123456', '2班', '电子工程');
-INSERT INTO student (name, SID, password, class, major) VALUES ('学生丁', '20210004', '123456', '2班', '机械工程');
-INSERT INTO student (name, SID, password, class, major) VALUES ('学生戊', '20210005', '123456', '3班', '化学工程');
-INSERT INTO student (name, SID, password, class, major) VALUES ('学生己', '20210006', '123456', '3班', '数学与应用数学');
+INSERT INTO student (name, SID, password, class, major) VALUES ('学生甲', '10210001', '123456', '1班', '计算机科学与技术');
+INSERT INTO student (name, SID, password, class, major) VALUES ('学生乙', '10210002', '123456', '1班', '软件工程');
+INSERT INTO student (name, SID, password, class, major) VALUES ('学生丙', '10210003', '123456', '2班', '电子工程');
+INSERT INTO student (name, SID, password, class, major) VALUES ('学生丁', '10210004', '123456', '2班', '机械工程');
+INSERT INTO student (name, SID, password, class, major) VALUES ('学生戊', '10210005', '123456', '3班', '化学工程');
+INSERT INTO student (name, SID, password, class, major) VALUES ('学生己', '10210006', '123456', '3班', '数学与应用数学');
 
 -- 插入课程数据
 INSERT INTO course (name, CID, type, department, credit, hours, capacity, selected, location, time)

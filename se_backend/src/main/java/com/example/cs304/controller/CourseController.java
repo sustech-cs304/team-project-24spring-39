@@ -4,11 +4,13 @@ import com.example.cs304.entity.Course;
 import com.example.cs304.entity.Professor;
 import com.example.cs304.repository.CourseRepository;
 import com.example.cs304.repository.ProfessorRepository;
+import org.hibernate.Hibernate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -44,10 +46,14 @@ public class CourseController {
         courseRepository.deleteById(id);
     }
 
-    @GetMapping
-    public ResponseEntity<Iterable<Course>> getCourses() {
-        Iterable<Course> courses = courseRepository.findAll();
-        return ResponseEntity.ok(courses);
+   @GetMapping
+public ResponseEntity<List<Course>> getCourses() {
+    List<Course> courses = courseRepository.findAll();
+    for (Course course : courses) {
+        System.out.println(course.getProfessors());
     }
+
+    return ResponseEntity.ok(courses);
+}
 
 }
