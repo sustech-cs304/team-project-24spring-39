@@ -25,9 +25,9 @@ export default {
           {
             id: 6,
             pid: 1,
-            title: "选课1",
+            title: "我要选课",
             icon: "House",
-            url: "/selection1",
+            url: "/selection",
             children: null,
           },
           {
