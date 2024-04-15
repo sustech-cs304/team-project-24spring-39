@@ -2,17 +2,16 @@ package com.example.cs304.controller;
 
 
 import com.example.cs304.entity.Course;
-import com.example.cs304.entity.Message;
 import com.example.cs304.entity.Professor;
 import com.example.cs304.repository.CourseRepository;
 import com.example.cs304.repository.ProfessorRepository;
-import org.hibernate.Hibernate;
+import com.example.cs304.service.CourseService;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -25,10 +24,12 @@ public class CourseController {
 
     private final CourseRepository courseRepository;
     private final ProfessorRepository professorRepository;
+    private final CourseService courseService;
 
-    public CourseController(CourseRepository courseRepository, ProfessorRepository professorRepository) {
+    public CourseController(CourseService courseService,CourseRepository courseRepository, ProfessorRepository professorRepository) {
         this.courseRepository = courseRepository;
         this.professorRepository = professorRepository;
+        this.courseService = courseService;
     }
 
 
@@ -58,4 +59,18 @@ public class CourseController {
         List<Map<String, Object>> courses = courseRepository.findAllCoursesProfessors();
         return ResponseEntity.ok(courses);
     }
+
+    @PostMapping("/selectCourse")
+    public ResponseEntity<Void> selectCourse(@RequestParam String course_id, @RequestParam String student_id, @RequestParam int score) {
+        try {
+            courseService.selectCourse(course_id, student_id, score);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            // Return an appropriate error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
 }

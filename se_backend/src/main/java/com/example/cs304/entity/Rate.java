@@ -7,6 +7,7 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "rate")
 public class Rate {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -41,6 +42,9 @@ public class Rate {
     @Lob
     @Column(name = "gain", nullable = false)
     private String gain;
+
+    @Column(name = "description", length = 1000)
+    private String description;
 
     public Integer getId() {
         return id;
@@ -104,6 +108,14 @@ public class Rate {
 
     public void setGain(String gain) {
         this.gain = gain;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
 }

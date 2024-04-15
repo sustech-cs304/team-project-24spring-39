@@ -44,6 +44,7 @@ create table if not exists student
     password varchar(50) not null default '000000',
     class varchar(50) not null,
     major varchar(50) not null,
+    score int not null default 100,
     foreign key (major) references major(name),
     constraint check_SID check (SID REGEXP '^[0-9]{8}$')
 );
