@@ -5,7 +5,7 @@
     :default-active="defaultActive"
     text-color="#fff"
     router
-    :collapse="false"
+    :collapse="!store.state.layoutStore.isExpand"
     class="el-menu-vertical-demo"
     style="height: 100%"
     :unique-opened="false"

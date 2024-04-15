@@ -27,7 +27,7 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   function (response) {
     // 对响应数据做点什么
-    if (response.data.meta.status !== 200) {
+    if (response.data.status !== 200) {
       ElMessage({
         showClose: true,
         message: response.data.msg,

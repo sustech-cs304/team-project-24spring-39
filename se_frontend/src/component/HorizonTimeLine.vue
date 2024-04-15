@@ -51,7 +51,7 @@ export default {
 <style lang="less" scoped>
 @themeColor: #1890ff;
 .m-timeline-wrap {
-  margin: 150px auto;
+  margin: 100px auto;
   height: 3px;
   background: #8dc6f5;
   .m-time-dot {

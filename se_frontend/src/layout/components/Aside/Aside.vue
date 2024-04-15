@@ -7,7 +7,9 @@
     }"
   >
     <!-- logo -->
-    <div class="logo">LOGO</div>
+    <div class="logo">
+      {{ $store.state.layoutStore.isExpand ? "AsideBar" : "Bar" }}
+    </div>
     <!-- 导航菜单 -->
     <Menu />
   </el-scrollbar>
