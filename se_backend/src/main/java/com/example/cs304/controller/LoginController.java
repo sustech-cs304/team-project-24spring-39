@@ -5,6 +5,7 @@ import com.example.cs304.entity.Student;
 import com.example.cs304.response.Response;
 import com.example.cs304.service.AdminService;
 import com.example.cs304.service.StudentService;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -56,6 +57,7 @@ public class LoginController {
     }
     }
 class User {
+    @JsonProperty("username")
     private String id;
     private String password;
 
