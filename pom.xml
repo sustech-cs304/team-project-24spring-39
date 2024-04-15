@@ -46,6 +46,9 @@
 	</dependencies>
 
 	<build>
+
+		<sourceDirectory>se_backend/src/main/java</sourceDirectory>
+		<testSourceDirectory>se_backend/src/test/java</testSourceDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
