@@ -2,7 +2,7 @@
   <el-col class="courseSelect">
     <div>
       <el-card shadow="hover" style="margin-top: 20px">
-        <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form :inline="true" :model="formInline">
           <el-form-item label="课程名称">
             <el-input
               v-model="formInline.user"
@@ -10,23 +10,15 @@
               clearable
             />
           </el-form-item>
-          <el-form-item label="开设部门">
+          <el-form-item label="开设部门" style="width: 250px">
             <el-select
               v-model="formInline.region"
               placeholder="请输入开设部门"
               clearable
             >
-              <el-option label="Zone one" value="shanghai" />
-              <el-option label="Zone two" value="beijing" />
+              <el-option label="体育中心" value="shanghai" />
+              <el-option label="艺术中心" value="beijing" />
             </el-select>
-          </el-form-item>
-          <el-form-item label="">
-            <el-date-picker
-              v-model="formInline.date"
-              type="date"
-              placeholder="Pick a date"
-              clearable
-            />
           </el-form-item>
           <el-form-item>
             <el-button type="primary" @click="HandleQuery">查询</el-button>
@@ -51,8 +43,8 @@
       @tab-click="handleClick"
       style="margin-top: 20px"
     >
-      <el-tab-pane label="已选" name="first">
-        <el-table :data="tableData" style="width: 100%" max-height="250">
+      <el-tab-pane label="全部" name="first">
+        <el-table :data="tableData" style="width: 100%" max-height="400">
           <el-table-column prop="courseType" label="课程类型" width="150" />
           <el-table-column prop="courseName" label="课程名称" width="120" />
           <el-table-column prop="courseID" label="课程代码" width="120" />
@@ -69,7 +61,7 @@
             width="120"
           />
           <el-table-column
-            prop="capacity/selectedNumber"
+            prop="capacitySelectedNumber"
             label="容量/已选"
             width="120"
           />
@@ -93,12 +85,12 @@
           <el-pagination
             v-model:current-page="currentPage4"
             v-model:page-size="pageSize4"
-            :page-sizes="[100, 200, 300, 400]"
+            :page-sizes="[25, 50, 75, 100]"
             :small="small"
             :disabled="disabled"
             :background="background"
             layout="total, sizes, prev, pager, next, jumper"
-            :total="400"
+            :total="totalItems"
             @size-change="handleSizeChange"
             @current-change="handleCurrentChange"
           />
@@ -112,8 +104,11 @@
 </template>
 
 <script setup>
-import { reactive, ref } from "vue";
-import axios from "axios";
+import { reactive, ref, onMounted } from "vue";
+import { useStore } from "vuex";
+
+// 获取到vuex的store
+const store = useStore();
 
 const formInline = reactive({
   user: " ",
@@ -126,21 +121,35 @@ const HandleQuery = () => {
 
 const activeName = ref("first");
 
+// 分页
+const totalItems = ref(0);
+
 function handleClick(tab, event) {
   console.log(tab, event);
 }
-
-const tableData = reactive([]);
+let tableData = ref([]); // 使用 ref 为表格数据定义一个响应式引用
+onMounted(() => {
+  getTableData();
+});
 const getTableData = async () => {
-  await axios
-    .get("https://mock.apifox.com/m1/4204805-3845248-default/course")
-    .then((res) => {
-      console.log(res);
-      Array.isArray(res.data.data);
-      tableData.splice(0, tableData.length, res.data.data);
-    });
+  try {
+    const res = await store.dispatch("getTableALLDataList");
+    console.log("resS:", res);
+    tableData.value = res.map((item) => ({
+      courseType: item.type,
+      courseName: item.name,
+      courseID: item.CID,
+      courseCredit: item.credit,
+      coursePeriod: item.hours,
+      courseDepartment: item.department,
+      courseInformation: `${item.professor_name}; ${item.location}; ${item.time}`,
+      capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
+    }));
+    totalItems.value = tableData.value.length;
+  } catch (error) {
+    console.log("error:", error);
+  }
 };
-getTableData();
 
 const AddCourse = reactive({
   credit: " ",
@@ -148,8 +157,10 @@ const AddCourse = reactive({
 function HandleAdd() {
   console.log("add!");
 }
-const currentPage4 = ref(4);
-const pageSize4 = ref(100);
+
+// 分页
+const currentPage4 = ref(1);
+const pageSize4 = ref(25);
 const small = ref(false);
 const background = ref(false);
 const disabled = ref(false);
