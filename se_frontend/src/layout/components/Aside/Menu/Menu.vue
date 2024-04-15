@@ -32,7 +32,9 @@ const defaultActive = computed(() => {
 const menuList = computed(() => store.state.userStore.menuList);
 
 async function handleSelect(index) {
-  if (index == 2) {
+  console.log(index);
+  if (index == "/evaluation") {
+    console.log("enter handel select976");
     await store.dispatch("fetchCourses", 1);
   }
 }
