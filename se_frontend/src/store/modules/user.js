@@ -1,4 +1,4 @@
-import { login } from "@/api/user";
+import { fetchCoursesInside, login } from "@/api/user";
 import router from "@/router/index";
 
 export default {
@@ -70,9 +70,9 @@ export default {
       }
     },
 
-    async fetchCourses({ commit }) {
+    async fetchCourses({ commit }, studentNumber) {
       try {
-        const response = await fetch("");
+        const response = await fetchCoursesInside(studentNumber);
         const data = await response.json();
         commit("SET_COURSES", data);
       } catch (error) {

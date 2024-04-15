@@ -20,3 +20,11 @@ export function getMenuList() {
     url: "/userInfo{1}",
   });
 }
+
+export function fetchCoursesInside(studentNumber) {
+  const url = "/evaluation?StudentNumber=" + String(studentNumber);
+  return request({
+    method: "get",
+    url: url,
+  });
+}

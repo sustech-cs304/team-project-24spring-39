@@ -9,6 +9,7 @@
     class="el-menu-vertical-demo"
     style="height: 100%"
     :unique-opened="false"
+    @select="handleSelect"
   >
     <MenuItem v-for="item in menuList" :key="item.id" :data="item" />
   </el-menu>
@@ -29,6 +30,12 @@ const defaultActive = computed(() => {
 
 // 菜单列表数据
 const menuList = computed(() => store.state.userStore.menuList);
+
+async function handleSelect(index) {
+  if (index == 2) {
+    await store.dispatch("fetchCourses", 1);
+  }
+}
 </script>
 
 <style lang="scss">
