@@ -28,3 +28,11 @@ export function fetchCoursesInside(studentNumber) {
     url: url,
   });
 }
+
+export function submitRatingInside(payLoad) {
+  return request({
+    method: "post",
+    url: "/evaluation",
+    payLoad,
+  });
+}

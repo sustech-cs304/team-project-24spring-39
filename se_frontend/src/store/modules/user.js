@@ -1,6 +1,6 @@
-import { fetchCoursesInside, login } from "@/api/user";
+import { fetchCoursesInside, submitRatingInside, login } from "@/api/user";
 import router from "@/router/index";
-
+import { ElMessageBox } from "element-plus";
 export default {
   state: {
     isLogin: localStorage.getItem("ISLOGIN") || false,
@@ -73,6 +73,7 @@ export default {
     async fetchCourses({ commit }, studentNumber) {
       try {
         const response = await fetchCoursesInside(studentNumber);
+        console.log("fetch course success");
         const data = await response.json();
         commit("SET_COURSES", data);
       } catch (error) {
@@ -80,6 +81,23 @@ export default {
       }
     },
 
+    async submitRating(payLoad) {
+      try {
+        const response = await submitRatingInside(payLoad);
+        const data = await response.json();
+        console.log(data);
+        ElMessageBox.alert("提交成功", "成功", {
+          confirmButtonText: "确定",
+          type: "success",
+        });
+      } catch (error) {
+        console.error("Error:", error);
+        ElMessageBox.alert("提交失败", "错误", {
+          confirmButtonText: "确定",
+          type: "error",
+        });
+      }
+    },
     selectCourse({ commit }, course) {
       commit("setSelectedCourse", course); // 调用mutation更新状态
     },
