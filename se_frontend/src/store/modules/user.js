@@ -72,7 +72,7 @@ export default {
 
     async fetchCourses({ commit }) {
       try {
-        const response = await fetch("https://example.com/api/courses");
+        const response = await fetch("");
         const data = await response.json();
         commit("SET_COURSES", data);
       } catch (error) {
