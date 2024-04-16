@@ -44,7 +44,7 @@ import Main from "./components/Main.vue";
   .el-header {
     display: flex;
     align-items: center;
-    margin-bottom: 34px;
+    margin-bottom: 0px;
     padding: 0;
   }
 
@@ -52,6 +52,7 @@ import Main from "./components/Main.vue";
     width: 100%;
     /* background-color: #f0f2f5; */
     padding: 0;
+    align-items: baseline;
   }
 }
 </style>
