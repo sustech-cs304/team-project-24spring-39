@@ -9,6 +9,7 @@ import * as ElementPlusIconsVue from "@element-plus/icons-vue";
 // 滑动验证码
 import MakeitCaptcha from "makeit-captcha";
 import "makeit-captcha/dist/captcha.min.css";
+import "element-plus/dist/index.css";
 
 const app = createApp(App);
 
