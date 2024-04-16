@@ -3,6 +3,10 @@ import router from "@/router/index";
 
 export default {
   state: {
+    // 用户信息
+    userInfo:
+      JSON.parse(localStorage.getItem(process.env.VUE_APP_USER_INFO)) || [],
+    // 登录状态
     isLogin: localStorage.getItem("ISLOGIN") || false,
 
     // 用户的菜单列表数据
@@ -91,6 +95,14 @@ export default {
     selectedCourse: { id: 6, name: "课程6" },
   },
   mutations: {
+    // 设置用户信息
+    setUserInfo(state, userInfo) {
+      state.userInfo = userInfo;
+      localStorage.setItem(
+        process.env.VUE_APP_USER_INFO,
+        JSON.stringify(userInfo)
+      );
+    },
     // 设置登录状态
     setLoginState(state, flag) {
       state.isLogin = flag;
@@ -118,6 +130,8 @@ export default {
 
         // 1. 设置登录状态
         commit("setLoginState", true);
+        // 2. 设置用户信息
+        commit("setUserInfo", res.data);
         // 2. 设置token
         // commit("setTooken", res.data.token);
         // 3. 设置菜单列表

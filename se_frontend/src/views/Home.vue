@@ -1,10 +1,15 @@
 <script setup>
-import { ref } from "vue";
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
 import HorizonTimeLine from "@/component/HorizonTimeLine.vue";
+
+const store = useStore();
 
 const circleUrl = ref(
   "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
 );
+
+const userInfo = computed(() => store.state.userStore.userInfo);
 
 // //todolist
 // const generateData = () => {
@@ -138,8 +143,8 @@ const tables = ref({
         <div class="card-body">
           <el-avatar :size="75" :src="circleUrl" />
           <div class="user-info">
-            <p>用户名</p>
-            <p>用户角色</p>
+            <p>{{ userInfo.name }}</p>
+            <p>{{ userInfo.sid }}</p>
           </div>
         </div>
       </el-card>
