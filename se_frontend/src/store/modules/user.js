@@ -162,9 +162,10 @@ export default {
     async fetchCourses({ commit }, studentNumber) {
       try {
         const response = await fetchCoursesInside(studentNumber);
-        console.log("fetch course success");
-        const data = await response.json();
-        commit("SET_COURSES", data);
+        console.log("response:", response);
+        // const data = await response.json();
+        // console.log("data:", data);
+        commit("SET_COURSES", response);
       } catch (error) {
         console.error("Error:", error);
       }

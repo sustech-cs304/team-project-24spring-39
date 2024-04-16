@@ -30,12 +30,12 @@ const defaultActive = computed(() => {
 
 // 菜单列表数据
 const menuList = computed(() => store.state.userStore.menuList);
-const sid = computed(() => store.state.userStore.userInfo.sid);
+// const sid = computed(() => store.state.userStore.userInfo.sid);
 async function handleSelect(index) {
   console.log(index);
   if (index == "/evaluation") {
     console.log("enter handel select976");
-    await store.dispatch("fetchCourses", sid);
+    await store.dispatch("fetchCourses", "00000001");
   }
 }
 </script>

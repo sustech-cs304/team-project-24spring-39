@@ -22,7 +22,7 @@ export function getMenuList() {
 }
 
 export function fetchCoursesInside(studentNumber) {
-  const url = "/evaluation?StudentNumber=" + String(studentNumber);
+  const url = "/students/" + String(studentNumber);
   return request({
     method: "get",
     url: url,
