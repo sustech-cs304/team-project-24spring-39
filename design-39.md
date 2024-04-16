@@ -2,7 +2,7 @@
 
 ## 1. Architecture Design
 
-![architecture_design](C:\Users\Simon\AppData\Roaming\Typora\typora-user-images\architecture_design.png)
+![architecture_design](images/architecture_design.png)
 
 1. 系统主要分为5个component
    1. 选课：提供积分选课、课程推荐服务
@@ -25,24 +25,24 @@
 
 1. 页面布局设计：
 
-   ![UI-布局](C:\Users\Simon\AppData\Roaming\Typora\typora-user-images\UI-布局.png)
+   ![UI-布局](images/UI-布局.png)
 
 2. 主体部分-首页：
 
-   ![UI-首页](C:\Users\Simon\AppData\Roaming\Typora\typora-user-images\UI-首页.png)
+   ![UI-首页](images/UI-首页.png)
 
 3. 主体部分-选课系统：
 
-   ![UI-选课系统](C:\Users\Simon\AppData\Roaming\Typora\typora-user-images\UI-选课系统.png)
+   ![UI-选课系统](images/UI-选课系统.png)
 
 4. 主体部分-评教系统：
 
-   ![UI-评教系统](C:\Users\Simon\AppData\Roaming\Typora\typora-user-images\UI-评教系统.png)
+   ![UI-评教系统](images/UI-评教系统.png)
 
 5. 主体部分-课程论坛：
 
-   ![UI-课程论坛](C:\Users\Simon\AppData\Roaming\Typora\typora-user-images\UI-课程论坛.png)
+   ![UI-课程论坛](images/UI-课程论坛.png)
 
 6. 主体部分-自习室预约系统
 
-   ![UI-自习室预约](C:\Users\Simon\AppData\Roaming\Typora\typora-user-images\UI-自习室预约.png)
+   ![UI-自习室预约](images/UI-自习室预约.png)
