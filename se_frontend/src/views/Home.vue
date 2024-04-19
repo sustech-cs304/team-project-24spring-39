@@ -1,7 +1,7 @@
 <script setup>
 import { ref, computed } from "vue";
 import { useStore } from "vuex";
-import HorizonTimeLine from "@/component/HorizonTimeLine.vue";
+import HorizonTimeLine from "@/component/Home/HorizonTimeLine.vue";
 
 const store = useStore();
 

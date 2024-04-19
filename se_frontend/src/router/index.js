@@ -41,6 +41,15 @@ const routes = [
         },
         component: () => import("../views/courseEvaluate.vue"),
       },
+      {
+        path: "/reservation",
+        name: "reservation",
+        meta: {
+          title: "自习室预约",
+          breadcrumb: ["自习室预约"],
+        },
+        component: () => import("../views/Reservation.vue"),
+      },
     ],
   },
 ];
