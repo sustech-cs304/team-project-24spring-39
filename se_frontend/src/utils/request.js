@@ -43,11 +43,11 @@ service.interceptors.response.use(
   },
   function (error) {
     // 对响应错误进行处理
-    ElMessage({
-      showClose: true,
-      message: error.message || "网络错误或服务器问题",
-      type: "error",
-    });
+    // ElMessage({
+    //   showClose: true,
+    //   message: error.message || "网络错误或服务器问题",
+    //   type: "error",
+    // });
     return Promise.reject(error);
   }
 );

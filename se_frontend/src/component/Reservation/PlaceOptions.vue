@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, defineEmits, onMounted } from "vue";
 
 const rooms = ref([
   {
@@ -31,6 +31,19 @@ const rooms = ref([
     color: "#E6A23C",
   },
 ]);
+
+const emit = defineEmits(["selectRoom"]);
+
+function selectRoom(roomId) {
+  emit("selectRoom", roomId);
+}
+
+// 在组件挂载后立即选择第一个房间
+onMounted(() => {
+  if (rooms.value.length > 0) {
+    selectRoom(rooms.value[0].id);
+  }
+});
 </script>
 
 <template>
@@ -40,6 +53,7 @@ const rooms = ref([
       :key="room.id"
       class="room-card"
       :style="{ backgroundColor: room.color }"
+      @click="selectRoom(room.id)"
     >
       <i :class="room.icon"></i>
       <div class="room-name">{{ room.name }}</div>
