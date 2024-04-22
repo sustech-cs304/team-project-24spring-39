@@ -75,8 +75,8 @@
                   clearable
                 />
                 <el-button type="primary" @click="HandleAdd" width="30px"
-                  >Add</el-button
-                >
+                  >Add
+                </el-button>
               </el-form-item>
             </el-form>
           </el-table-column>
@@ -127,6 +127,7 @@ const totalItems = ref(0);
 function handleClick(tab, event) {
   console.log(tab, event);
 }
+
 let tableData = ref([]); // 使用 ref 为表格数据定义一个响应式引用
 onMounted(() => {
   getTableData();
@@ -154,6 +155,7 @@ const getTableData = async () => {
 const AddCourse = reactive({
   credit: " ",
 });
+
 function HandleAdd() {
   console.log("add!");
 }
