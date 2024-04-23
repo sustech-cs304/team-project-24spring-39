@@ -8,5 +8,4 @@ public class Cs304Application {
 	public static void main(String[] args) {
 		SpringApplication.run(Cs304Application.class, args);
 	}
-
 }

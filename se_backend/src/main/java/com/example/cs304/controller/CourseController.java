@@ -1,11 +1,14 @@
 package com.example.cs304.controller;
 
 
+import com.example.cs304.converter.JsonParser;
 import com.example.cs304.entity.Course;
 import com.example.cs304.entity.Message;
 import com.example.cs304.entity.Professor;
 import com.example.cs304.repository.CourseRepository;
 import com.example.cs304.repository.ProfessorRepository;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.hibernate.Hibernate;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -54,8 +57,15 @@ public class CourseController {
 
 
     @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> getCoursesTest() {
+    public ResponseEntity<List<Map<String, Object>>> getCourses() {
         List<Map<String, Object>> courses = courseRepository.findAllCoursesProfessors();
+
+        return ResponseEntity.ok(courses);
+    }
+
+    @GetMapping("/test")
+    public ResponseEntity<List<Course>> getCoursestest() {
+         List<Course> courses = courseRepository.findAllCoursesTest();
         return ResponseEntity.ok(courses);
     }
 }

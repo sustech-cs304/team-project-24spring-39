@@ -10,6 +10,6 @@ import java.util.Map;
 public interface StudentRepository extends JpaRepository<Student, Integer> {
     Student findBySid(String SID);
 
-    @Query(value="select course_id from course_student where student_id = ?1 and valid = 1;",nativeQuery = true)
+    @Query(value="select course_id from course_student where student_id = ?1 and valid = true;",nativeQuery = true)
     List<Map<String,Object>> findCourses(String SID);
 }
