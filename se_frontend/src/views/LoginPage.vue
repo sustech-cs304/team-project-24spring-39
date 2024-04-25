@@ -170,7 +170,7 @@ async function handleLogin() {
         // const res = await login(loginForm)
         // 用通过vuex发送网络请求
         const res = await store.dispatch("handleLogin", toRaw(loginForm));
-        console.log(res);
+        console.log("res: " + res);
       } catch (error) {
         console.log(error);
       }

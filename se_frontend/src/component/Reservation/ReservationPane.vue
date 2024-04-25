@@ -1,0 +1,325 @@
+<script setup>
+import { ref, reactive, computed, watch, defineProps } from "vue";
+
+import {
+  fetchBookingsByPlace,
+  searchStudentBySid,
+  submitReservation,
+} from "@/api/reservation";
+import { ElMessage, ElMessageBox } from "element-plus";
+
+const props = defineProps({
+  placeId: {
+    type: Number,
+    required: true,
+  },
+});
+
+watch(
+  () => props.placeId,
+  async (newPlaceId) => {
+    if (newPlaceId) {
+      try {
+        const res = await fetchBookingsByPlace(newPlaceId);
+        bookings.value = res.data.reserveList;
+      } catch (error) {
+        ElMessage({
+          showClose: true,
+          message: error.message || "获取预约信息失败",
+          type: "error",
+        });
+      }
+    }
+  },
+  { immediate: true }
+);
+
+const bookings = ref([]);
+
+const hours = computed(() => {
+  const startHour = 6;
+  const endHour = 18;
+  const times = [];
+  for (let hour = startHour; hour <= endHour; hour++) {
+    times.push(`${hour}:00`);
+  }
+  return times;
+});
+
+// 计算开始的网格线位置
+const getGridStart = (timeslot) => {
+  const [start] = timeslot
+    .split(" - ")
+    .map((time) => time.trim().split(":")[0]);
+  // 假设你的网格是从6点开始的，则6点对应网格线1
+  return parseInt(start) - 6 + 3;
+};
+
+// 计算结束的网格线位置
+const getGridEnd = (timeslot) => {
+  const [, end] = timeslot
+    .split(" - ")
+    .map((time) => time.trim().split(":")[0]);
+  // 结束时间对应的网格线需要比实际时间多1，因为它是跨越到的下一个网格线
+  return parseInt(end) - 6 + 4;
+};
+
+const dialogVisible = ref(false);
+const currentBooking = ref({});
+
+const openDialog = (booking) => {
+  currentBooking.value = booking;
+  dialogVisible.value = true;
+};
+
+const handleClose = (done) => {
+  const isFormEmpty = Object.values(form).every(
+    (value) =>
+      value === "" ||
+      value === null ||
+      value === undefined ||
+      (Array.isArray(value) && value.length === 0)
+  );
+  if (isFormEmpty) {
+    done();
+  } else {
+    ElMessageBox.confirm("可能还有未保存的数据，确定关闭吗？")
+      .then(() => {
+        // 用户点击确定按钮触发的分支
+        done(); // el-dialog的回调函数，用于关闭对话框
+        resetForm();
+      })
+      .catch(() => {
+        // 用户点击取消按钮触发的分支
+      });
+  }
+};
+
+const addSelectedPerson = (person) => {
+  form.addedPersons.push(person.value);
+  form.searchState = "";
+};
+
+const querySearchAsync = async (studentId, cb) => {
+  if (studentId.length !== 8) {
+    //学号长度不符合要求，取消请求
+    cb([]); // 传递空数组，无需进一步处理
+    return; // 提前返回，不执行后续代码
+  }
+
+  try {
+    const response = await searchStudentBySid(studentId);
+    console.log(response.data.name);
+    const result = response.data.sid + " " + response.data.name;
+    cb([{ value: result }]);
+  } catch (error) {
+    console.error("搜索学生信息请求失败:", error);
+    cb([]); // 在错误情况下传递空数组或适当的错误处理
+  }
+};
+
+// 表单引用
+const formRef = ref(null);
+
+// 表单数据
+const form = reactive({
+  startTime: "",
+  endTime: "",
+  searchState: "",
+  addedPersons: [],
+});
+
+// 表单校验规则
+const rules = reactive({
+  startTime: [{ required: true, message: "请选择开始时间", trigger: "blur" }],
+  endTime: [
+    { required: true, message: "请选择结束时间", trigger: "blur" },
+    {
+      validator: (rule, value, callback) => {
+        if (value <= form.startTime) {
+          callback(new Error("结束时间必须大于开始时间"));
+        } else {
+          callback();
+        }
+      },
+      trigger: "blur",
+    },
+  ],
+  addedPersons: [
+    {
+      type: "array",
+      required: true,
+      min: 1,
+      message: "至少添加一位人员",
+      trigger: "change",
+    },
+  ],
+});
+
+// 提交表单
+const submitForm = () => {
+  formRef.value.validate(async (valid) => {
+    if (valid) {
+      try {
+        await submitReservation({
+          room: currentBooking.value.room,
+          startTime: form.startTime,
+          endTime: form.endTime,
+          persons: form.addedPersons.map((person) => person.slice(0, 8)),
+        });
+        ElMessage({
+          // 响应码相关已在拦截器中处理
+          showClose: true,
+          message: "预约成功",
+          type: "success",
+        });
+        dialogVisible.value = false;
+        resetForm();
+      } catch (error) {
+        // 错误处理
+        ElMessage({
+          showClose: true,
+          message: error.message || "提交失败",
+          type: "error",
+        });
+      }
+    } else {
+      ElMessage({
+        showClose: true,
+        message: "表单验证失败，请检查输入",
+        type: "warning",
+      });
+    }
+  });
+};
+
+// 函数：重置表单
+const resetForm = (showMessage = false) => {
+  formRef.value.resetFields();
+  if (showMessage) {
+    ElMessage({
+      showClose: true,
+      message: "表单已重置",
+      type: "info",
+      grouping: true,
+    });
+  }
+};
+</script>
+
+<template>
+  <div class="scrollable-panel">
+    <div class="time-header">
+      <div>场地</div>
+      <div>操作</div>
+      <div v-for="hour in hours" :key="hour">{{ hour }}</div>
+    </div>
+    <div class="booking-row" v-for="booking in bookings" :key="booking.id">
+      <div
+        :style="{
+          'grid-column-start': 1,
+          'grid-column-end': 2,
+        }"
+      >
+        {{ booking.room }}
+      </div>
+      <div>
+        <el-button type="primary" plain @click="openDialog(booking)"
+          >预约
+        </el-button>
+      </div>
+      <div
+        class="booking-slot"
+        :style="{
+          'grid-column-start': getGridStart(booking.timeslot),
+          'grid-column-end': getGridEnd(booking.timeslot),
+        }"
+      >
+        {{ booking.status }}
+      </div>
+    </div>
+  </div>
+
+  <el-dialog
+    v-model="dialogVisible"
+    :title="currentBooking.room || '预约'"
+    :before-close="handleClose"
+  >
+    <el-form ref="formRef" :model="form" :rules="rules">
+      <el-form-item label="预约时间" required>
+        <el-form-item prop="startTime">
+          <el-time-select
+            v-model="form.startTime"
+            style="width: 240px"
+            :max-time="form.endTime"
+            placeholder="Start time"
+            start="08:00"
+            step="00:30"
+            end="22:00"
+          />
+        </el-form-item>
+        <el-form-item prop="endTime">
+          <el-time-select
+            v-model="form.endTime"
+            style="width: 240px"
+            :min-time="form.startTime"
+            placeholder="End time"
+            start="08:00"
+            step="00:30"
+            end="22:00"
+          />
+        </el-form-item>
+      </el-form-item>
+      <el-form-item label="输入学号添加人员" required>
+        <el-autocomplete
+          v-model="form.searchState"
+          :fetch-suggestions="querySearchAsync"
+          placeholder="Add people"
+          @select="addSelectedPerson"
+        ></el-autocomplete>
+      </el-form-item>
+      <el-form-item label="已添加的人员：" prop="addedPersons">
+        <div v-if="form.addedPersons.length > 0">
+          <ul>
+            <li v-for="person in form.addedPersons" :key="person.id">
+              {{ person }}
+            </li>
+          </ul>
+        </div>
+      </el-form-item>
+    </el-form>
+    <template #footer>
+      <div class="dialog-footer">
+        <el-button @click="resetForm(true)">Reset</el-button>
+        <el-button type="primary" @click="submitForm"> Confirm </el-button>
+      </div>
+    </template>
+  </el-dialog>
+</template>
+
+<style lang="scss" scoped>
+.scrollable-panel {
+  width: 1000px;
+  max-height: 500px;
+  overflow: auto;
+  border-collapse: collapse; // 合并边框，目前好像没用
+  display: grid;
+  grid-template-columns: auto auto repeat(13, 1fr);
+
+  .time-header div,
+  .booking-row div {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+    text-align: center;
+  }
+
+  .booking-row {
+    display: contents;
+  }
+
+  .time-header {
+    display: contents;
+    background-color: #f0f0f0;
+  }
+}
+</style>

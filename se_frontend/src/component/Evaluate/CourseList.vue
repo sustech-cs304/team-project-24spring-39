@@ -9,9 +9,6 @@
       {{ course.name }}
     </li>
   </ul>
-  <!-- <div class="course-display" v-if="selectedCourse">
-    <h3>{{ selectedCourse.name }}</h3>
-  </div> -->
 </template>
 
 <script setup>
@@ -42,6 +39,10 @@ function selectCourse(course) {
   background: var(--el-color-primary-light-9);
   margin: 10px;
   color: var(--el-color-primary);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  color: rgb(0, 0, 103);
+  border: 1px solid #cfcfcf; /* 添加边框 */
+  border-radius: 10px; /* 设置边框为圆角 */
 }
 .infinite-list .infinite-list-item + .list-item {
   margin-top: 10px;

@@ -27,19 +27,27 @@ service.interceptors.request.use(
 service.interceptors.response.use(
   function (response) {
     // 对响应数据做点什么
-    if (response.data.status !== 200) {
+    if (response.data.status === 200) {
+      console.log("响应拦截器", response.data);
+      return response.data; // response.data 才是在apifox里定义的那些。response.data里包括status、message和data
+    } else {
       ElMessage({
         showClose: true,
-        message: response.data.msg,
+        message:
+          response.data.message ||
+          "服务器给的响应码为：" + response.data.status,
         type: "error",
       });
-    } else {
-      console.log("响应拦截器", response.data);
-      return response.data;
+      return Promise.reject(new Error(response.data.message || "Error"));
     }
   },
   function (error) {
-    // 对响应错误做点什么
+    // 对响应错误进行处理
+    // ElMessage({
+    //   showClose: true,
+    //   message: error.message || "网络错误或服务器问题",
+    //   type: "error",
+    // });
     return Promise.reject(error);
   }
 );
