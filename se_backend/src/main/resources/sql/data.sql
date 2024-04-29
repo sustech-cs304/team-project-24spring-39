@@ -25,11 +25,11 @@ INSERT INTO student (name, SID, class, major, score) VALUES ('小刚', '00000003
 
 -- Course 表
 INSERT INTO course (name, CID, semester, type, department, credit, hours, capacity, location, description, time) VALUES
-    ('计算机网络', 'CN001', 'semester_value', '专业必修课', '计算机科学与技术系', 3, 48, 50, 'A楼301教室', '计算机网络原理及应用', '{"Monday": ["08:00-10:00"], "Wednesday": ["14:00-16:00"]}');
+    ('计算机网络', 'CN001', '24Spring', '专业必修课', '计算机科学与技术系', 3, 48, 50, 'A楼301教室', '计算机网络原理及应用', '{"Monday": ["08:00-10:00"], "Wednesday": ["14:00-16:00"]}');
 INSERT INTO course (name, CID, semester, type, department, credit, hours, capacity, location, description, time) VALUES
-    ('古代文学', 'WL002', 'semester_value', '专业必修课', '文学与新闻学院', 4, 64, 40, 'B楼202教室', '中国古代文学经典研读', '{"Tuesday": ["10:00-12:00"], "Thursday": ["16:00-18:00"]}');
+    ('古代文学', 'WL002', '24Spring', '专业必修课', '文学与新闻学院', 4, 64, 40, 'B楼202教室', '中国古代文学经典研读', '{"Tuesday": ["10:00-12:00"], "Thursday": ["16:00-18:00"]}');
 INSERT INTO course (name, CID, semester, type, department, credit, hours, capacity, location, description, time) VALUES
-    ('市场营销', 'MG003', 'semester_value', '专业必修课', '经济管理学院', 3, 36, 60, 'C楼103教室', '现代市场营销策略分析', '{"Monday": ["14:00-16:00"], "Friday": ["08:00-10:00"]}');
+    ('市场营销', 'MG003', '24Spring', '专业必修课', '经济管理学院', 3, 36, 60, 'C楼103教室', '现代市场营销策略分析', '{"Monday": ["14:00-16:00"], "Friday": ["08:00-10:00"]}');
 
 -- Course_Student 表
 INSERT INTO course_student (course_id, student_id, score, valid) VALUES ('CN001', '00000001', 85, true);
