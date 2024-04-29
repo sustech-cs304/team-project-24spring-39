@@ -25,4 +25,11 @@ public class StudentController {
         List<Map<String, Object>> courses = studentRepository.findCourses(SID);
         return ResponseEntity.ok(courses);
     }
+
+    @GetMapping("/{SID}/info")
+    public ResponseEntity<List<Map<String, Object>>> studentInfo(@PathVariable("SID") String SID) {
+        List<Map<String, Object>> studentInfo = studentRepository.studentInfo(SID);
+        return ResponseEntity.ok(studentInfo);
+    }
+
 }

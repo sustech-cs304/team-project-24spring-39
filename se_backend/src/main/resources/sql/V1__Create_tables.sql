@@ -4,7 +4,8 @@ use cs304proj;
 create table if not exists department
 (
     id int auto_increment primary key,
-    name varchar(50) not null unique
+    name varchar(50) not null unique,
+    avatar BLOB
 );
 
 -- major
@@ -55,6 +56,7 @@ create table if not exists course
     id int auto_increment primary key,
     name varchar(50) not null unique,
     CID varchar(5) not null unique,
+    semester varchar(50) not null,
     type enum('通识必修课', '通识选修课', '专业必修课','专业选修课') not null,
     department varchar(50) not null,
     credit int not null,

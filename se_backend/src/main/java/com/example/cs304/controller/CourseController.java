@@ -60,7 +60,7 @@ public class CourseController {
         return ResponseEntity.ok(courses);
     }
 
-    @PostMapping("/selectCourse")
+    @PostMapping("/addCourse")
     public ResponseEntity<Void> selectCourse(@RequestParam String course_id, @RequestParam String student_id, @RequestParam int score) {
         try {
             courseService.selectCourse(course_id, student_id, score);
@@ -72,5 +72,23 @@ public class CourseController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
+
+    @PostMapping("/deleteSelectedCourse")
+    public ResponseEntity<Void> dropCourse(@RequestParam String course_id, @RequestParam String student_id) {
+        try {
+            courseService.dropCourse(course_id, student_id);
+            return ResponseEntity.ok().build();
+        } catch (Exception e) {
+            // Log the exception
+            e.printStackTrace();
+            // Return an appropriate error response
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+//    @RequestMapping("/getAllCourses")
+//    public String getAllCourses() {
+//        return courseService.getAllCourses().toString();
+//    }
 
 }

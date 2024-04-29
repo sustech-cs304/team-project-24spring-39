@@ -22,4 +22,9 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     @Query(value = "insert into course_student(course_id, student_id, score) values (:courseId, :studentId, :score)", nativeQuery = true)
     void selectCourse(@Param("courseId") String courseId, @Param("studentId") String studentId, @Param("score") int score);
 
+    // delete course from course_student
+    @Modifying
+    @Query(value = "delete from course_student where course_id = :courseId and student_id = :studentId", nativeQuery = true)
+    void dropCourse(@Param("courseId") String courseId, @Param("studentId") String studentId);
+
 }

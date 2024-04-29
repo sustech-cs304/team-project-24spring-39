@@ -15,4 +15,9 @@ public interface StudentRepository extends JpaRepository<Student, Integer> {
             "LEFT JOIN course_student cs ON c.CID = cs.course_id\n" +
             "where cs.student_id = ?1 and cs.valid = 1;",nativeQuery = true)
     List<Map<String,Object>> findCourses(String SID);
+
+
+
+    @Query(value="select * from student where SID=?;",nativeQuery = true)
+    List<Map<String,Object>> studentInfo(String SID);
 }
