@@ -1,16 +1,15 @@
 import request from "@/utils/request";
 
-export function getAllCourse() {
+export function fetchDataByType(type) {
   return request({
     method: "get",
-    url: "/course",
+    url: `/Course/getCourse/${type}`, // 使用模板字符串插入type变量
   });
 }
 
-// export function addCourse(data) {
-//   return request({
-//     method: "post",
-//     url: "/course",
-//     data,
-//   });
-// }
+export function ReturnSelectedCourse() {
+  return request({
+    method: "get",
+    url: `/Course/showSelectedCourse`,
+  });
+}
