@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch, defineProps } from "vue";
+import { ref, reactive, computed, watch } from "vue";
 
 import {
   fetchBookingsByPlace,
@@ -8,6 +8,15 @@ import {
 } from "@/api/reservation";
 import { ElMessage, ElMessageBox } from "element-plus";
 
+const selectedDay = ref("");
+
+const disabledDate = (time) => {
+  return (
+    time.getTime() < Date.now() || time.getTime() > Date.now() + 3 * 8.64e7 // 3 days
+  );
+};
+
+// eslint-disable-next-line no-undef
 const props = defineProps({
   placeId: {
     type: Number,
@@ -208,13 +217,22 @@ const resetForm = (showMessage = false) => {
 </script>
 
 <template>
+  <div class="filter-bar">
+    <el-date-picker
+      v-model="selectedDay"
+      type="date"
+      placeholder="Pick a day"
+      size="default"
+      :disabledDate="disabledDate"
+    />
+  </div>
   <div class="scrollable-panel">
     <div class="time-header">
       <div>场地</div>
       <div>操作</div>
       <div v-for="hour in hours" :key="hour">{{ hour }}</div>
     </div>
-    <div class="booking-row" v-for="booking in bookings" :key="booking.id">
+    <div class="booking-row" v-for="booking in bookings" :key="booking.room">
       <div
         :style="{
           'grid-column-start': 1,

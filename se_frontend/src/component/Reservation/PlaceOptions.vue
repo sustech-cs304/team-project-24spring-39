@@ -1,5 +1,5 @@
 <script setup>
-import { ref, defineEmits, onMounted } from "vue";
+import { ref, onMounted } from "vue";
 
 const rooms = ref([
   {
@@ -32,6 +32,7 @@ const rooms = ref([
   },
 ]);
 
+// eslint-disable-next-line no-undef
 const emit = defineEmits(["selectRoom"]);
 
 function selectRoom(roomId) {
