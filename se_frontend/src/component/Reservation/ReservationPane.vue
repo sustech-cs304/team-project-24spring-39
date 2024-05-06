@@ -323,12 +323,30 @@ const resetForm = (showMessage = false) => {
   border-collapse: collapse; // 合并边框，目前好像没用
   display: grid;
   grid-template-columns: auto auto repeat(13, 1fr);
+  margin-top: 10px; // 为了让筛选框和预约展示表格有一定的间距
+  font-size: 14px;
 
-  .time-header div,
-  .booking-row div {
+  // 设置字体颜色为半透明黑色
+  color: rgba(0, 0, 0, 0.8);
+
+  // 为 scrollable-panel 添加阴影
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); // 调整这个值以获得不同的阴影效果
+
+  .time-header div {
     border: 1px solid #ccc;
     padding: 0.5rem;
     text-align: center;
+    background-color: #f5f5f5;
+  }
+
+  .booking-row div {
+    border: 1px solid #ccc;
+    padding: 0.5rem;
+
+    // 为了让文字垂直居中
+    display: flex;
+    align-items: center; // 垂直居中
+    justify-content: center; // 水平居中
   }
 
   .booking-row {
@@ -337,7 +355,12 @@ const resetForm = (showMessage = false) => {
 
   .time-header {
     display: contents;
-    background-color: #f0f0f0;
+  }
+
+  .booking-slot {
+    background-color: lightskyblue;
+    border-radius: 4px;
+    color: whitesmoke;
   }
 }
 </style>
