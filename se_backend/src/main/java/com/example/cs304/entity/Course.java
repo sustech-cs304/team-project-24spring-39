@@ -13,6 +13,7 @@ import java.util.Set;
 @Table(name = "course")
 public class Course {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -45,6 +46,9 @@ public class Course {
 
     @Column(name = "location", nullable = false, length = 50)
     private String location;
+
+    @Column(name = "description", length = 1000)
+    private String description;
 
     @Column(name = "time", nullable = false)
     @JdbcTypeCode(SqlTypes.JSON)
@@ -144,6 +148,14 @@ public class Course {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     public Map<String, Object> getTime() {

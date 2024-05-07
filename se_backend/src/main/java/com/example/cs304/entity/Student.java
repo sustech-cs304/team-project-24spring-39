@@ -27,6 +27,10 @@ public class Student {
     @JoinColumn(name = "major", nullable = false, referencedColumnName = "name")
     private Major major;
 
+    @ColumnDefault("100")
+    @Column(name = "score", nullable = false)
+    private Integer score;
+
     public Integer getId() {
         return id;
     }
@@ -73,6 +77,14 @@ public class Student {
 
     public void setMajor(Major major) {
         this.major = major;
+    }
+
+    public Integer getScore() {
+        return score;
+    }
+
+    public void setScore(Integer score) {
+        this.score = score;
     }
 
 }
