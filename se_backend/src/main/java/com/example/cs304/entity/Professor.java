@@ -2,9 +2,6 @@ package com.example.cs304.entity;
 
 import jakarta.persistence.*;
 
-import java.util.HashSet;
-import java.util.Set;
-
 @Entity
 @Table(name = "professor")
 public class Professor {
@@ -21,17 +18,6 @@ public class Professor {
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "department", nullable = false, referencedColumnName = "name")
     private Department department;
-
-    @ManyToMany(mappedBy = "professors")
-    private Set<Course> courses = new HashSet<>();
-
-    public Set<Course> getCourses() {
-        return courses;
-    }
-
-    public void setCourses(Set<Course> courses) {
-        this.courses = courses;
-    }
 
     public Integer getId() {
         return id;

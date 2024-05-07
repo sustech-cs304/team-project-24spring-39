@@ -38,9 +38,9 @@ public class CourseController {
         Set<Professor> professors = professorIds.stream()
                 .map(id -> professorRepository.findById(id).orElseThrow(() -> new RuntimeException("Professor not found")))
                 .collect(Collectors.toSet());
-        course.setProfessors(professors);
+//        course.setProfessors(professors);
         for (Professor professor : professors) {
-            professor.getCourses().add(course);
+//            professor.getCourses().add(course);
         }
         Course savedCourse = courseRepository.save(course);
         URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")

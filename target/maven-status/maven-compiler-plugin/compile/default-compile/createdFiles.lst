@@ -1,5 +1,4 @@
 com\example\cs304\service\StudentService.class
-com\example\cs304\entity\PostCategory.class
 com\example\cs304\entity\Professor.class
 com\example\cs304\entity\Major.class
 com\example\cs304\entity\Rate.class
@@ -11,7 +10,6 @@ com\example\cs304\controller\User.class
 com\example\cs304\entity\CourseProfessor.class
 com\example\cs304\entity\Course.class
 com\example\cs304\controller\LoginController.class
-com\example\cs304\entity\Category.class
 com\example\cs304\repository\AdminRepository.class
 com\example\cs304\entity\Student.class
 com\example\cs304\entity\SecondaryReply.class

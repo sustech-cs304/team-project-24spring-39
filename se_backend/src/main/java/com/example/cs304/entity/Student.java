@@ -31,6 +31,9 @@ public class Student {
     @Column(name = "score", nullable = false)
     private Integer score;
 
+    @Column(name = "avatar")
+    private byte[] avatar;
+
     public Integer getId() {
         return id;
     }
@@ -85,6 +88,14 @@ public class Student {
 
     public void setScore(Integer score) {
         this.score = score;
+    }
+
+    public byte[] getAvatar() {
+        return avatar;
+    }
+
+    public void setAvatar(byte[] avatar) {
+        this.avatar = avatar;
     }
 
 }

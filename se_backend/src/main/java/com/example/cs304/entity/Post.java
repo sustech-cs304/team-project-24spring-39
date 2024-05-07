@@ -9,6 +9,7 @@ import java.time.Instant;
 @Table(name = "post")
 public class Post {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -29,6 +30,12 @@ public class Post {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id")
     private File file;
+
+    @Column(name = "major_category", length = 50)
+    private String majorCategory;
+
+    @Column(name = "course_category", length = 50)
+    private String courseCategory;
 
     public Integer getId() {
         return id;
@@ -76,6 +83,22 @@ public class Post {
 
     public void setFile(File file) {
         this.file = file;
+    }
+
+    public String getMajorCategory() {
+        return majorCategory;
+    }
+
+    public void setMajorCategory(String majorCategory) {
+        this.majorCategory = majorCategory;
+    }
+
+    public String getCourseCategory() {
+        return courseCategory;
+    }
+
+    public void setCourseCategory(String courseCategory) {
+        this.courseCategory = courseCategory;
     }
 
 }

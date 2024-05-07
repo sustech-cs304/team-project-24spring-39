@@ -9,7 +9,9 @@ import java.time.Instant;
 @Table(name = "reply")
 public class Reply {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
+
     private Integer id;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
@@ -25,7 +27,7 @@ public class Reply {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "time", nullable = false)
-    private Instant time;
+    private Instant time = Instant.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "file_id")

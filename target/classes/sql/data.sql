@@ -1,77 +1,142 @@
--- Department 表
-INSERT INTO department (name) VALUES ('计算机科学与技术系');
-INSERT INTO department (name) VALUES ('文学与新闻学院');
-INSERT INTO department (name) VALUES ('经济管理学院');
+-- 插入部门数据
+INSERT INTO department (name) VALUES ('计算机科学');
+INSERT INTO department (name) VALUES ('物理学');
+INSERT INTO department (name) VALUES ('数学');
 
--- Major 表
-INSERT INTO major (name, department) VALUES ('计算机科学与技术', '计算机科学与技术系');
-INSERT INTO major (name, department) VALUES ('汉语言文学', '文学与新闻学院');
-INSERT INTO major (name, department) VALUES ('工商管理', '经济管理学院');
+-- 插入专业数据
+INSERT INTO major (name, department) VALUES ('计算机科学', '计算机科学');
+INSERT INTO major (name, department) VALUES ('物理学', '物理学');
+INSERT INTO major (name, department) VALUES ('数学', '数学');
 
--- Professor 表
-INSERT INTO professor (PID, name, department) VALUES ('00000001', '张三', '计算机科学与技术系');
-INSERT INTO professor (PID, name, department) VALUES ('00000002', '李四', '文学与新闻学院');
-INSERT INTO professor (PID, name, department) VALUES ('00000003', '王五', '经济管理学院');
+-- 插入教授数据
+INSERT INTO professor (PID, name, department) VALUES ('20000001', '张三', '计算机科学');
+INSERT INTO professor (PID, name, department) VALUES ('20000002', '李四', '物理学');
+INSERT INTO professor (PID, name, department) VALUES ('20000003', '王五', '数学');
 
--- Admin 表
-INSERT INTO admin (account, password) VALUES ('admin1', '123456');
-INSERT INTO admin (account, password) VALUES ('admin2', 'qwerty');
-INSERT INTO admin (account, password) VALUES ('admin3', 'adminpwd');
+-- 插入学生数据
+INSERT INTO student (SID, name, class, major) VALUES ('10000004', '赵六', '计算机科学一班', '计算机科学');
+INSERT INTO student (SID, name, class, major) VALUES ('10000005', '孙七', '物理学一班', '物理学');
+INSERT INTO student (SID, name, class, major) VALUES ('10000006', '周八', '数学一班', '数学');
 
--- Student 表
-INSERT INTO student (name, SID, class, major, score) VALUES ('小明', '00000001', '计科1801班', '计算机科学与技术', 100);
-INSERT INTO student (name, SID, class, major, score) VALUES ('小红', '00000002', '中文1902班', '汉语言文学', 100);
-INSERT INTO student (name, SID, class, major, score) VALUES ('小刚', '00000003', '工商2003班', '工商管理', 100);
+-- 插入课程数据
+INSERT INTO course (CID, name, semester, type, department, credit, hours, capacity, location, time) VALUES ('CS101', '计算机科学基础', '2022秋季', '专业必修课', '计算机科学', 4, 64, 100, 'A楼101', '{"周一": ["14:00-16:00"], "周三": ["14:00-16:00"]}');
+INSERT INTO course (CID, name, semester, type, department, credit, hours, capacity, location, time) VALUES ('PH101', '物理学基础', '2022秋季', '专业必修课', '物理学', 4, 64, 100, 'B楼202', '{"周二": ["10:00-12:00"], "周四": ["10:00-12:00"]}');
+INSERT INTO course (CID, name, semester, type, department, credit, hours, capacity, location, time) VALUES ('MA101', '数学基础', '2022秋季', '专业必修课', '数学', 4, 64, 100, 'C楼303', '{"周三": ["18:00-20:00"], "周五": ["18:00-20:00"]}');
 
--- Course 表
-INSERT INTO course (name, CID, semester, type, department, credit, hours, capacity, location, description, time) VALUES
-    ('计算机网络', 'CN001', '24Spring', '专业必修课', '计算机科学与技术系', 3, 48, 50, 'A楼301教室', '计算机网络原理及应用', '{"Monday": ["08:00-10:00"], "Wednesday": ["14:00-16:00"]}');
-INSERT INTO course (name, CID, semester, type, department, credit, hours, capacity, location, description, time) VALUES
-    ('古代文学', 'WL002', '24Spring', '专业必修课', '文学与新闻学院', 4, 64, 40, 'B楼202教室', '中国古代文学经典研读', '{"Tuesday": ["10:00-12:00"], "Thursday": ["16:00-18:00"]}');
-INSERT INTO course (name, CID, semester, type, department, credit, hours, capacity, location, description, time) VALUES
-    ('市场营销', 'MG003', '24Spring', '专业必修课', '经济管理学院', 3, 36, 60, 'C楼103教室', '现代市场营销策略分析', '{"Monday": ["14:00-16:00"], "Friday": ["08:00-10:00"]}');
+-- 插入到 post 表
+INSERT INTO post (author_id, title, content, major_category, course_category) VALUES ('10000004', 'Post Title 1', 'Post Content 1', 'Major Category 1', 'Course Category 1');
+INSERT INTO post (author_id, title, content, major_category, course_category) VALUES ('10000005', 'Post Title 2', 'Post Content 2', 'Major Category 2', 'Course Category 2');
+INSERT INTO post (author_id, title, content, major_category, course_category) VALUES ('10000006', 'Post Title 3', 'Post Content 3', 'Major Category 3', 'Course Category 3');
 
--- Course_Student 表
-INSERT INTO course_student (course_id, student_id, score, valid) VALUES ('CN001', '00000001', 85, true);
-INSERT INTO course_student (course_id, student_id, score, valid) VALUES ('WL002', '00000002', 90, true);
-INSERT INTO course_student (course_id, student_id, score, valid) VALUES ('MG003', '00000003', 88, false);
+-- 插入到 reply 表
+INSERT INTO reply (post_id, author_id, content) VALUES (1, '10000004', 'Reply Content 1');
+INSERT INTO reply (post_id, author_id, content) VALUES (2, '10000005', 'Reply Content 2');
+INSERT INTO reply (post_id, author_id, content) VALUES (3, '10000006', 'Reply Content 3');
 
--- Course_Professor 表
-INSERT INTO course_professor (course_id, professor_id) VALUES ('CN001', '00000001');
-INSERT INTO course_professor (course_id, professor_id) VALUES ('WL002', '00000002');
-INSERT INTO course_professor (course_id, professor_id) VALUES ('MG003', '00000003');
+-- 插入到 secondary_reply 表
+INSERT INTO secondary_reply (reply_id, author_id, content) VALUES (1, '10000004', 'Secondary Reply Content 1');
+INSERT INTO secondary_reply (reply_id, author_id, content) VALUES (2, '10000005', 'Secondary Reply Content 2');
+INSERT INTO secondary_reply (reply_id, author_id, content) VALUES (3, '10000006', 'Secondary Reply Content 3');
 
--- Rate 表
-INSERT INTO rate (course_id, student_id, rate, difficulty, workload, grading, gain, description) VALUES ('CN001', '00000001', 4, 'normal', 'normal', 'normal', 'high', '课程难度适中，作业量合理');
-INSERT INTO rate (course_id, student_id, rate, difficulty, workload, grading, gain) VALUES ('WL002', '00000002', 5, 'easy', 'light', 'lenient', 'normal');
-INSERT INTO rate (course_id, student_id, rate, difficulty, workload, grading, gain) VALUES ('MG003', '00000003', 3.5, 'hard', 'heavy', 'strict', 'low');
+-- 插入到 like 表
+INSERT INTO `like` (post_id, author_id) VALUES (1, '10000004');
+INSERT INTO `like` (post_id, author_id) VALUES (2, '10000005');
+INSERT INTO `like` (post_id, author_id) VALUES (3, '10000006');
 
--- Room 表
-INSERT INTO room (name, capacity) VALUES ('A楼101教室', 100);
-INSERT INTO room (name, capacity) VALUES ('B楼202会议室', 50);
-INSERT INTO room (name, capacity) VALUES ('C楼303实验室', 30);
+-- 插入到 message 表
+INSERT INTO message (receiver_id, content) VALUES ('10000004', 'Message Content 1');
+INSERT INTO message (receiver_id, content) VALUES ('10000005', 'Message Content 2');
+INSERT INTO message (receiver_id, content) VALUES ('10000006', 'Message Content 3');
 
--- Reservation 表
-INSERT INTO reservation (student_id, room, time, purpose) VALUES ('00000001', 'A楼101教室', '{"2022-11-01": ["14:00-17:00"]}', '小组讨论');
-INSERT INTO reservation (student_id, room, time, purpose) VALUES ('00000002', 'B楼202会议室', '{"2022-11-03": ["10:00-12:00"]}', '社团会议');
-INSERT INTO reservation (student_id, room, time, purpose) VALUES ('00000003', 'C楼303实验室', '{"2022-11-05": ["18:00-21:00"]}', '实验操作');
+-- department
+INSERT INTO department (id, name) VALUES (1, '计算机科学与技术');
+INSERT INTO department (id, name) VALUES (2, '电子工程');
+INSERT INTO department (id, name) VALUES (3, '机械工程');
+INSERT INTO department (id, name) VALUES (4, '化学工程');
+INSERT INTO department (id, name) VALUES (5, '数学');
 
--- 文件表、帖子表、回复表、二级回复表、分类表以及帖子分类关联表的数据插入示例因缺乏上下文和实际内容，这里不提供具体实例。
+-- major
+INSERT INTO major (id, name, department) VALUES (1, '计算机科学与技术', '计算机科学与技术');
+INSERT INTO major (id, name, department) VALUES (2, '软件工程', '计算机科学与技术');
+INSERT INTO major (id, name, department) VALUES (3, '通信工程', '电子工程');
+INSERT INTO major (id, name, department) VALUES (4, '机械设计制造及其自动化', '机械工程');
+INSERT INTO major (id, name, department) VALUES (5, '化学工程与工艺', '化学工程');
 
--- File 表（假设）
-INSERT INTO file (name, filetype, filepath, uploader_id) VALUES ('封面图片.jpg', 'image', '/uploads/cover.jpg', '00000001');
-INSERT INTO file (name, filetype, filepath, uploader_id) VALUES ('演示视频.mp4', 'video', '/uploads/presentation.mp4', '00000002');
-INSERT INTO file (name, filetype, filepath, uploader_id) VALUES ('报告文档.pdf', 'document', '/uploads/report.pdf', '00000003');
+-- professor
+INSERT INTO professor (id, PID, name, department) VALUES (1, '12345678', '张三', '计算机科学与技术');
+INSERT INTO professor (id, PID, name, department) VALUES (2, '87654321', '李四', '电子工程');
+INSERT INTO professor (id, PID, name, department) VALUES (3, '23456789', '王五', '机械工程');
+INSERT INTO professor (id, PID, name, department) VALUES (4, '98765432', '赵六', '化学工程');
+INSERT INTO professor (id, PID, name, department) VALUES (5, '45678912', '孙七', '数学');
 
--- Post 表（假设）
-INSERT INTO post (author_id, title, content, posting_time, file_id) VALUES ('00000001', '学习分享', '...', NOW(), 1);
-INSERT INTO post (author_id, title, content, posting_time) VALUES ('00000002', '文学交流贴', '...', NOW());
-INSERT INTO post (author_id, title, content, posting_time, file_id) VALUES ('00000003', '案例分析', '...', NOW(), 3);
+-- admin
+INSERT INTO admin (id, account, password) VALUES (1, 'admin1', 'password1');
+INSERT INTO admin (id, account, password) VALUES (2, 'admin2', 'password2');
+INSERT INTO admin (id, account, password) VALUES (3, 'admin3', 'password3');
+INSERT INTO admin (id, account, password) VALUES (4, 'admin4', 'password4');
+INSERT INTO admin (id, account, password) VALUES (5, 'admin5', 'password5');
 
--- Category 表（假设已有）
-INSERT INTO category (name) VALUES ('学习心得'), ('文学交流'), ('商业案例');
+-- student
+INSERT INTO student (id, name, SID, password, class, major, score) VALUES (1, '学生1', '12345678', 'password1', '1班', '计算机科学与技术', 90);
+INSERT INTO student (id, name, SID, password, class, major, score) VALUES (2, '学生2', '87654321', 'password2', '2班', '软件工程', 80);
+INSERT INTO student (id, name, SID, password, class, major, score) VALUES (3, '学生3', '23456789', 'password3', '3班', '通信工程', 85);
+INSERT INTO student (id, name, SID, password, class, major, score) VALUES (4, '学生4', '98765432', 'password4', '4班', '机械设计制造及其自动化', 95);
+INSERT INTO student (id, name, SID, password, class, major, score) VALUES (5, '学生5', '45678912', 'password5', '5班', '化学工程与工艺', 75);
 
--- Post_Category 表（假设已关联）
-INSERT INTO post_category (post_id, category) VALUES ((SELECT id FROM post WHERE author_id = '00000001'), '学习心得');
-INSERT INTO post_category (post_id, category) VALUES ((SELECT id FROM post WHERE author_id = '00000002'), '文学交流');
-INSERT INTO post_category (post_id, category) VALUES ((SELECT id FROM post WHERE author_id = '00000003'), '商业案例');
+-- course
+INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (1, '数据结构', 'CS001', '春季学期', '专业必修课', '计算机科学与技术', 4, 64, 100, 0, '教学楼A101', '数据结构课程描述', '{"days": ["周一", "周三"], "times": ["08:00", "10:00"]}');
+INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (2, '大学物理', 'PH001', '秋季学期', '通识必修课', '电子工程', 3, 48, 150, 0, '实验楼B201', '大学物理课程描述', '{"days": ["周二", "周四"], "times": ["14:00", "16:00"]}');
+INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (4, '有机化学', 'CH001', '秋季学期', '专业必修课', '化学工程', 4, 64, 100, 0, '化学楼C201', '有机化学基础课程，涵盖有机化合物的基本概念和反应机理', '{"days": ["周二", "周四"], "times": ["13:00", "15:00"]}');
+
+-- course_student
+INSERT INTO course_student (id, course_id, student_id, score, valid) VALUES (1, 'CS001', '12345678', 0, false);
+INSERT INTO course_student (id, course_id, student_id, score, valid) VALUES (2, 'PH001', '87654321', 0, false);
+INSERT INTO course_student (id, course_id, student_id, score, valid) VALUES (3, 'CH001', '23456789', 0, false);
+
+-- course_professor
+INSERT INTO course_professor (id, course_id, professor_id) VALUES (1, 'CS001', '12345678');
+INSERT INTO course_professor (id, course_id, professor_id) VALUES (2, 'PH001', '87654321');
+INSERT INTO course_professor (id, course_id, professor_id) VALUES (3, 'CH001', '98765432');
+
+-- rate
+INSERT INTO rate (id, course_id, student_id, rate, difficulty, workload, grading, gain, description) VALUES (1, 'CS001', '12345678', 4, 'normal', 'normal', 'lenient', 'high', '很好的课程，学到了很多');
+INSERT INTO rate (id, course_id, student_id, rate, difficulty, workload, grading, gain, description) VALUES (2, 'PH001', '87654321', 3, 'hard', 'heavy', 'strict', 'low', '课程很难，但教授很严格');
+INSERT INTO rate (id, course_id, student_id, rate, difficulty, workload, grading, gain, description) VALUES (3, 'CH001', '23456789', 5, 'easy', 'light', 'lenient', 'high', '非常容易的课程，推荐');
+
+-- room
+INSERT INTO room (id, name, capacity) VALUES (1, '会议室1', 10);
+INSERT INTO room (id, name, capacity) VALUES (2, '会议室2', 20);
+INSERT INTO room (id, name, capacity) VALUES (3, '图书馆研讨室', 30);
+
+-- reservation
+INSERT INTO reservation (id, student_id, room, time, purpose) VALUES (1, '12345678', '会议室1', '{"date": "2023-04-01", "start": "09:00", "end": "12:00"}', '小组讨论');
+INSERT INTO reservation (id, student_id, room, time, purpose) VALUES (2, '87654321', '会议室2', '{"date": "2023-04-02", "start": "14:00", "end": "16:00"}', '学习小组');
+INSERT INTO reservation (id, student_id, room, time, purpose) VALUES (3, '23456789', '图书馆研讨室', '{"date": "2023-04-03", "start": "10:00", "end": "13:00"}', '项目会议');
+
+-- file
+INSERT INTO file (id, name, filetype, filepath, uploader_id) VALUES (1, '报告.pdf', 'document', '/uploads/12345678/report.pdf', '12345678');
+INSERT INTO file (id, name, filetype, filepath, uploader_id) VALUES (2, '照片.jpg', 'image', '/uploads/87654321/photo.jpg', '87654321');
+INSERT INTO file (id, name, filetype, filepath, uploader_id) VALUES (3, '演讲.mp4', 'video', '/uploads/23456789/presentation.mp4', '23456789');
+
+-- post
+INSERT INTO post (id, author_id, title, content, file_id, major_category, course_category) VALUES (1, '12345678', '数据结构问题', '关于树的部分我不太懂，谁能帮我解释一下？', null, '计算机科学与技术', 'CS001');
+INSERT INTO post (id, author_id, title, content, file_id, major_category, course_category) VALUES (2, '87654321', '物理实验求助', '我在实验室遇到了问题，需要一些帮助', null, '电子工程', 'PH001');
+INSERT INTO post (id, author_id, title, content, file_id, major_category, course_category) VALUES (3, '23456789', '化学课程疑问', '对于这个化学反应，我有几个问题', null, '化学工程', 'CH001');
+
+-- reply
+INSERT INTO reply (id, post_id, author_id, content, file_id) VALUES (1, 1, '87654321', '树的这部分其实很简单的，你可以这样理解...', null);
+INSERT INTO reply (id, post_id, author_id, content, file_id) VALUES (2, 2, '12345678', '我也有同样的问题，希望有人能解答', null);
+
+-- secondary_reply (继续)
+INSERT INTO secondary_reply (id, reply_id, author_id, content, file_id) VALUES (1, 1, '23456789', '谢谢你的解释，我现在明白了', null);
+INSERT INTO secondary_reply (id, reply_id, author_id, content, file_id) VALUES (2, 2, '45678912', '我也是新手，希望大神解答', null);
+
+-- like
+INSERT INTO `like` (id, post_id, author_id) VALUES (1, 1, '87654321');
+INSERT INTO `like` (id, post_id, author_id) VALUES (2, 2, '12345678');
+INSERT INTO `like` (id, post_id, author_id) VALUES (3, 3, '23456789');
+
+-- message
+INSERT INTO message (id, receiver_id, content) VALUES (1, '12345678', '你有一个新的课程通知，请及时查看');
+INSERT INTO message (id, receiver_id, content) VALUES (2, '87654321', '你的选课请求已被批准，请登录系统查看');
+INSERT INTO message (id, receiver_id, content) VALUES (3, '23456789', '你有一条新的站内消息，请及时查看');

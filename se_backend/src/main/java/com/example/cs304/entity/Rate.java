@@ -7,7 +7,6 @@ import org.hibernate.annotations.ColumnDefault;
 @Table(name = "rate")
 public class Rate {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 

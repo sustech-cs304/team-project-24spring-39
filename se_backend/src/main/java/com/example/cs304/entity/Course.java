@@ -5,15 +5,12 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.util.HashSet;
 import java.util.Map;
-import java.util.Set;
 
 @Entity
 @Table(name = "course")
 public class Course {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
 
@@ -22,6 +19,9 @@ public class Course {
 
     @Column(name = "CID", nullable = false, length = 5)
     private String cid;
+
+    @Column(name = "semester", nullable = false, length = 50)
+    private String semester;
 
     @Lob
     @Column(name = "type", nullable = false)
@@ -54,22 +54,6 @@ public class Course {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> time;
 
-    @ManyToMany
-    @JoinTable(
-            name = "course_professor",
-            joinColumns = @JoinColumn(name = "course_id"),
-            inverseJoinColumns = @JoinColumn(name = "professor_id")
-    )
-    private Set<Professor> professors = new HashSet<>();
-
-    public Set<Professor> getProfessors() {
-        return professors;
-    }
-
-    public void setProfessors(Set<Professor> professors) {
-        this.professors = professors;
-    }
-
     public Integer getId() {
         return id;
     }
@@ -92,6 +76,14 @@ public class Course {
 
     public void setCid(String cid) {
         this.cid = cid;
+    }
+
+    public String getSemester() {
+        return semester;
+    }
+
+    public void setSemester(String semester) {
+        this.semester = semester;
     }
 
     public String getType() {
