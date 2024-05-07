@@ -45,6 +45,7 @@ create table if not exists student
     class varchar(50) not null,
     major varchar(50) not null,
     score int not null default 100,
+    avatar BLOB,
     foreign key (major) references major(name),
     constraint check_SID check (SID REGEXP '^[0-9]{8}$')
 );
@@ -55,6 +56,7 @@ create table if not exists course
     id int auto_increment primary key,
     name varchar(50) not null unique,
     CID varchar(5) not null unique,
+    semester varchar(50) not null,
     type enum('通识必修课', '通识选修课', '专业必修课','专业选修课') not null,
     department varchar(50) not null,
     credit int not null,
@@ -144,6 +146,8 @@ create table if not exists post
     content varchar(1000) not null,
     posting_time timestamp not null default now(),
     file_id int,
+    major_category varchar(50),
+    course_category varchar(50),
     foreign key (author_id) references student(SID),
     foreign key (file_id) references file(id)
 );
@@ -174,22 +178,6 @@ create table if not exists secondary_reply
     foreign key (author_id) references student(SID),
     foreign key (file_id) references file(id),
     unique (author_id, time)
-);
-
-create table if not exists category
-(
-    id int auto_increment primary key,
-    name varchar(50) not null unique
-);
-
-create table if not exists post_category
-(
-    id int auto_increment primary key,
-    post_id int not null,
-    category varchar(50) not null,
-    foreign key (post_id) references post(id),
-    foreign key (category) references category(name),
-    unique (post_id, category)
 );
 
 create table if not exists `like`
