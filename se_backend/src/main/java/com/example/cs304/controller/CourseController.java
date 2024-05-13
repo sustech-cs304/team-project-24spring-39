@@ -73,7 +73,7 @@ public class CourseController {
         }
     }
 
-    @PostMapping("/deleteSelectedCourse")
+    @DeleteMapping("/deleteSelectedCourse")
     public ResponseEntity<Void> dropCourse(@RequestParam String course_id, @RequestParam String student_id) {
         try {
             courseService.dropCourse(course_id, student_id);
@@ -86,9 +86,42 @@ public class CourseController {
         }
     }
 
-//    @RequestMapping("/getAllCourses")
-//    public String getAllCourses() {
-//        return courseService.getAllCourses().toString();
-//    }
+    @GetMapping("/selectedStudents")
+    public ResponseEntity<List<Map<String, Object>>> findStudentsInCourse(@RequestParam String CID) {
+        try {
+            List<Map<String, Object>> students = courseRepository.findStudentsInCourse(CID);
+            return ResponseEntity.ok().body(students);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
+    @GetMapping("/getCourse/BiXiu")
+    public ResponseEntity<List<Map<String, Object>>> findObligatoryCourses() {
+        try {
+            List<Map<String, Object>> courses = courseRepository.findObligatoryCourses();
+            return ResponseEntity.ok(courses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/getCourse/XuanXiu")
+    public ResponseEntity<List<Map<String, Object>>> findElectiveCourses() {
+        try {
+            List<Map<String, Object>> courses = courseRepository.findElectiveCourses();
+            return ResponseEntity.ok(courses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/taken/{SID}")
+    public ResponseEntity<List<Map<String, Object>>> findTakenCourses(@PathVariable("SID") String SID) {
+        List<Map<String, Object>> courses = courseRepository.findTakenCourses(SID);
+        return ResponseEntity.ok(courses);
+    }
 }

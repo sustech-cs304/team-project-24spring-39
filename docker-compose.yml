@@ -7,9 +7,10 @@ services:
       MYSQL_DATABASE: cs304proj
     volumes:
       - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
   app:
-    image: phystar/cs304-app:hello
+    image: phystar/cs304-app:1.0
     ports:
       - "8080:8080"
     depends_on:

@@ -23,6 +23,9 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     @Query(value = "select * from reservation;", nativeQuery = true)
     List<Reservation> findAll();
 
+    @Query(value = "select name, capacity from room;", nativeQuery = true)
+    List<String> findRooms();
+
     @Modifying
     @Query(value = "insert into reservation (student_id, room, time, purpose) values (:student_id, :room, :time, :purpose)", nativeQuery = true)
     public void addReservation(String student_id, String room, String time, String purpose);
