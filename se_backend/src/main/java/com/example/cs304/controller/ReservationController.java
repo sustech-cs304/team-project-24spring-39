@@ -17,16 +17,22 @@ public class ReservationController {
         this.reservationRepository = reservationRepository;
     }
 
-    @GetMapping("/student/{student_id}")
+    @GetMapping("/{student_id}")
     public ResponseEntity<List<Reservation>> getReservations(@PathVariable("student_id") String student_id) {
         List<Reservation> reservations = reservationRepository.findBysid(student_id);
         return ResponseEntity.ok(reservations);
     }
 
-    @GetMapping("/room/{room}")
-    public ResponseEntity<List<Reservation>> getReservationsByRoom(@PathVariable("room") String room) {
-        List<Reservation> reservations = reservationRepository.findByroom(room);
-        return ResponseEntity.ok(reservations);
+//    @GetMapping("/room/{room}")
+//    public ResponseEntity<List<Reservation>> getReservationsByRoom(@PathVariable("room") String room) {
+//        List<Reservation> reservations = reservationRepository.findByroom(room);
+//        return ResponseEntity.ok(reservations);
+//    }
+
+    @GetMapping("/rooms")
+    public ResponseEntity<List<String>> getRooms() {
+        List<String> rooms = reservationRepository.findRooms();
+        return ResponseEntity.ok(rooms);
     }
 
     @GetMapping("/bookings")
@@ -40,5 +46,7 @@ public class ReservationController {
                                @RequestParam("time") String time, @RequestParam("purpose") String purpose) {
         reservationRepository.addReservation(student_id, room, time, purpose);
     }
+
+
 
 }

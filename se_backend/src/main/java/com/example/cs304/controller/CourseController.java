@@ -6,6 +6,7 @@ import com.example.cs304.entity.Professor;
 import com.example.cs304.repository.CourseRepository;
 import com.example.cs304.repository.ProfessorRepository;
 import com.example.cs304.service.CourseService;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +19,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController
-@RequestMapping("/course")
+@RequestMapping("/Course")
 public class CourseController {
 
 
@@ -33,20 +34,20 @@ public class CourseController {
     }
 
 
-    @PostMapping
-    public ResponseEntity<Course> addCourse(@RequestBody Course course, @RequestBody Set<Integer> professorIds) {//待完善
-        Set<Professor> professors = professorIds.stream()
-                .map(id -> professorRepository.findById(id).orElseThrow(() -> new RuntimeException("Professor not found")))
-                .collect(Collectors.toSet());
-        course.setProfessors(professors);
-        for (Professor professor : professors) {
-            professor.getCourses().add(course);
-        }
-        Course savedCourse = courseRepository.save(course);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-                .buildAndExpand(savedCourse.getId()).toUri();
-        return ResponseEntity.created(location).body(savedCourse);
-    }
+//    @PostMapping("/addCourse")
+//    public ResponseEntity<Course> addCourse(@RequestBody Course course, @RequestBody Set<Integer> professorIds) {
+//        Set<Professor> professors = professorIds.stream()
+//                .map(id -> professorRepository.findById(id).orElseThrow(() -> new RuntimeException("Professor not found")))
+//                .collect(Collectors.toSet());
+//        course.setProfessors(professors);
+//        for (Professor professor : professors) {
+//            professor.getCourses().add(course);
+//        }
+//        Course savedCourse = courseRepository.save(course);
+//        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+//                .buildAndExpand(savedCourse.getId()).toUri();
+//        return ResponseEntity.created(location).body(savedCourse);
+//    }
 
     @DeleteMapping("/{id}")
     public void deleteCourse(@PathVariable Integer id) {
@@ -54,11 +55,7 @@ public class CourseController {
     }
 
 
-    @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> getCoursesTest() {
-        List<Map<String, Object>> courses = courseRepository.findAllCoursesProfessors();
-        return ResponseEntity.ok(courses);
-    }
+//    @GetMapping("/getCourse/All")
 
     @PostMapping("/addCourse")
     public ResponseEntity<Void> selectCourse(@RequestParam String course_id, @RequestParam String student_id, @RequestParam int score) {
@@ -73,7 +70,7 @@ public class CourseController {
         }
     }
 
-    @PostMapping("/deleteSelectedCourse")
+    @DeleteMapping("/deleteSelectedCourse")
     public ResponseEntity<Void> dropCourse(@RequestParam String course_id, @RequestParam String student_id) {
         try {
             courseService.dropCourse(course_id, student_id);
@@ -86,9 +83,42 @@ public class CourseController {
         }
     }
 
-//    @RequestMapping("/getAllCourses")
-//    public String getAllCourses() {
-//        return courseService.getAllCourses().toString();
-//    }
+    @GetMapping("/selectedStudents")
+    public ResponseEntity<List<Map<String, Object>>> findStudentsInCourse(@RequestParam String CID) {
+        try {
+            List<Map<String, Object>> students = courseRepository.findStudentsInCourse(CID);
+            return ResponseEntity.ok().body(students);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
+    @GetMapping("/getCourse/BiXiu")
+    public ResponseEntity<List<Map<String, Object>>> findObligatoryCourses() {
+        try {
+            List<Map<String, Object>> courses = courseRepository.findObligatoryCourses();
+            return ResponseEntity.ok(courses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/getCourse/XuanXiu")
+    public ResponseEntity<List<Map<String, Object>>> findElectiveCourses() {
+        try {
+            List<Map<String, Object>> courses = courseRepository.findElectiveCourses();
+            return ResponseEntity.ok(courses);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GetMapping("/taken/{SID}")
+    public ResponseEntity<List<Map<String, Object>>> findTakenCourses(@PathVariable("SID") String SID) {
+        List<Map<String, Object>> courses = courseRepository.findTakenCourses(SID);
+        return ResponseEntity.ok(courses);
+    }
 }
