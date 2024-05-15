@@ -37,3 +37,15 @@ export function submitReservation(data) {
     data,
   });
 }
+
+// 地点管理
+/**
+ * @description 获取所有地点信息
+ * @returns {*}
+ */
+export function fetchLocations() {
+  return request({
+    method: "get",
+    url: "/reservation/locations",
+  });
+}
