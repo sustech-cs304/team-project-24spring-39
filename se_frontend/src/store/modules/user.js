@@ -9,6 +9,100 @@ export default {
     // 登录状态
     isLogin: localStorage.getItem("ISLOGIN") || false,
 
+    // 菜单列表
+    menuList: [
+      {
+        id: 0,
+        pid: 0,
+        title: "首页",
+        icon: "House",
+        url: "/",
+        children: null,
+      },
+      {
+        id: 1,
+        pid: 0,
+        title: "选课",
+        icon: "House",
+        url: "/selection",
+        children: [
+          {
+            id: 6,
+            pid: 1,
+            title: "我要选课",
+            icon: "House",
+            url: "/selection",
+            children: null,
+          },
+          {
+            id: 7,
+            pid: 1,
+            title: "选课2",
+            icon: "House",
+            url: "/selection2",
+            children: null,
+          },
+        ],
+      },
+      {
+        id: 2,
+        pid: 0,
+        title: "评教",
+        icon: "House",
+        url: "/evaluation",
+        children: null,
+      },
+      {
+        id: 3,
+        pid: 0,
+        title: "课程论坛",
+        icon: "House",
+        url: "/forum",
+        children: null,
+      },
+      {
+        id: 4,
+        pid: 0,
+        title: "自习室预约",
+        icon: "House",
+        url: "/reservation",
+        children: [
+          {
+            id: 8,
+            pid: 4,
+            title: "预约",
+            icon: "House",
+            url: "/reservation",
+            children: null,
+          },
+          {
+            id: 9,
+            pid: 4,
+            title: "地点管理",
+            icon: "House",
+            url: "/reservation-locations",
+            children: null,
+          },
+          {
+            id: 10,
+            pid: 4,
+            title: "记录管理",
+            icon: "House",
+            url: "/reservation-records",
+            children: null,
+          },
+        ],
+      },
+      {
+        id: 5,
+        pid: 0,
+        title: "设置",
+        icon: "Setting",
+        url: "/setting",
+        children: null,
+      },
+    ],
+
     // 用户的菜单列表数据
     userMenuList: [
       {
