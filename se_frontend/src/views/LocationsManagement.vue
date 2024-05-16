@@ -235,11 +235,9 @@ const saveLocation = () => {
       controls-position="right"
     />
     <el-button type="primary" plain @click="handleSearch">查询</el-button>
-    <div class="add-location">
-      <el-button type="primary" plain @click="() => openDialog()"
-        >添加地点</el-button
-      >
-    </div>
+    <el-button type="primary" plain @click="() => openDialog()"
+      >添加地点</el-button
+    >
   </div>
 
   <div class="table">
@@ -270,7 +268,7 @@ const saveLocation = () => {
 
   <el-dialog
     v-model="dialogVisible"
-    :title="isEditing.value ? '编辑地点' : '添加地点'"
+    :title="isEditing.valueOf() ? '编辑地点' : '添加地点'"
     :before-close="handleClose"
   >
     <el-form :model="currentEditting" label-width="120px">

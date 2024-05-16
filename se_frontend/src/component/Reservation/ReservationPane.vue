@@ -2,7 +2,7 @@
 import { ref, reactive, computed, watch } from "vue";
 
 import {
-  fetchBookingsByPlace,
+  fetchBookings,
   searchStudentBySid,
   submitReservation,
 } from "@/api/reservation";
@@ -29,14 +29,10 @@ watch(
   async (newPlaceId) => {
     if (newPlaceId) {
       try {
-        const res = await fetchBookingsByPlace(newPlaceId);
+        const res = await fetchBookings({ placeIds: [newPlaceId] });
         bookings.value = res.data.reserveList;
       } catch (error) {
-        ElMessage({
-          showClose: true,
-          message: error.message || "获取预约信息失败",
-          type: "error",
-        });
+        ElMessage.error("查询失败，请稍后重试");
       }
     }
   },
