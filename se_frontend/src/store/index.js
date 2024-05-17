@@ -4,7 +4,7 @@ import { createStore } from "vuex";
 import userStore from "./modules/user";
 // 布局相关的store
 import layoutStore from "@/store/modules/layout";
-import courseStore from "@/store/modules/course";
+// import courseStore from "@/store/modules/course";
 
 export default createStore({
   state: {},
@@ -14,6 +14,5 @@ export default createStore({
   modules: {
     userStore,
     layoutStore,
-    courseStore,
   },
 });
