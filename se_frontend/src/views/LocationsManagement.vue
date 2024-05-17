@@ -334,7 +334,7 @@ const saveLocation = () => {
 .container {
   display: flex;
   flex-direction: column;
-  height: 100%;
+  height: 617.6px; // 固定container为除去layout.vue中header的高度
 }
 
 .header {
