@@ -227,7 +227,7 @@ watch(
 
 <template>
   <div class="container">
-    <div class="left-part">
+    <div class="left-container">
       <el-input
         v-model="filterText"
         style="width: 240px"
@@ -246,7 +246,7 @@ watch(
         node-key="name"
       />
     </div>
-    <div class="right-part">
+    <div class="right-container">
       <div class="right-header">
         <el-date-picker
           v-model="selectedDay"
@@ -264,6 +264,7 @@ watch(
         <el-table
           :data="displayData"
           style="margin-bottom: 20px"
+          stripe
           row-key="id"
           border
         >
@@ -379,17 +380,19 @@ watch(
   gap: 16px;
 }
 
-.left-part {
+.left-container {
   flex: 20%;
+  background-color: white;
 }
 
-.right-part {
+.right-container {
   flex: 80%;
-}
+  background-color: white;
 
-.table-wrapper {
-  max-height: 600px;
-  overflow-y: auto;
-  overflow-x: auto;
+  .table-wrapper {
+    max-height: 600px;
+    overflow-y: auto;
+    overflow-x: auto;
+  }
 }
 </style>

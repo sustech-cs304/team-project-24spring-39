@@ -196,74 +196,89 @@ const saveLocation = () => {
 </script>
 
 <template>
-  <div class="header">
-    <el-input
-      v-model="searchRoom"
-      placeholder="Please input"
-      class="location-search"
-    >
-      <template #prepend>
-        <el-select
-          v-model="searchLibrary"
-          placeholder="Select"
-          style="width: 115px"
-        >
-          <el-option
-            v-for="library in tableData"
-            :key="library.id"
-            :label="library.name"
-            :value="library.id"
-          />
-        </el-select>
-      </template>
-    </el-input>
-
-    <el-input-number
-      v-model="searchMin"
-      :min="1"
-      :max="10"
-      label="Number"
-      placeholder="Min Capacity"
-      controls-position="right"
-    />
-    <el-input-number
-      v-model="searchMax"
-      :min="1"
-      :max="10"
-      label="Number"
-      placeholder="Max Capacity"
-      controls-position="right"
-    />
-    <el-button type="primary" plain @click="handleSearch">查询</el-button>
-    <el-button type="primary" plain @click="() => openDialog()"
-      >添加地点</el-button
-    >
-  </div>
-
-  <div class="table">
-    <el-table
-      :data="displayData"
-      style="width: 100%; margin-bottom: 20px"
-      row-key="id"
-      border
-      default-expand-all
-    >
-      <el-table-column fixed prop="name" label="地点名称" sortable />
-      <el-table-column prop="createTime" label="创建时间" sortable />
-      <el-table-column prop="capacity" label="容量" sortable />
-      <el-table-column prop="remark" label="备注" />
-      <el-table-column fixed="right" label="操作">
-        <template #default="scope">
-          <el-button
-            type="primary"
-            :icon="Edit"
-            circle
-            @click="() => openDialog(scope.row)"
-          />
-          <el-button type="danger" :icon="Delete" circle />
+  <div class="container">
+    <div class="header">
+      <el-input
+        v-model="searchRoom"
+        placeholder="Please input"
+        class="location-search"
+      >
+        <template #prepend>
+          <el-select
+            v-model="searchLibrary"
+            placeholder="Select"
+            style="width: 115px"
+          >
+            <el-option
+              v-for="library in tableData"
+              :key="library.id"
+              :label="library.name"
+              :value="library.id"
+            />
+          </el-select>
         </template>
-      </el-table-column>
-    </el-table>
+      </el-input>
+
+      <el-input-number
+        v-model="searchMin"
+        :min="1"
+        :max="10"
+        label="Number"
+        placeholder="Min Capacity"
+        controls-position="right"
+      />
+      <el-input-number
+        v-model="searchMax"
+        :min="1"
+        :max="10"
+        label="Number"
+        placeholder="Max Capacity"
+        controls-position="right"
+      />
+      <!-- 自动扩展的空白元素 -->
+      <div class="spacer"></div>
+      <el-button type="primary" plain @click="handleSearch">查询</el-button>
+      <el-button type="primary" plain @click="() => openDialog()"
+        >添加地点</el-button
+      >
+    </div>
+
+    <div class="table">
+      <el-table
+        :data="displayData"
+        style="width: 100%"
+        stripe
+        row-key="id"
+        border
+        default-expand-all
+      >
+        <el-table-column fixed prop="name" label="地点名称" sortable />
+        <el-table-column prop="createTime" label="创建时间" sortable />
+        <el-table-column prop="capacity" label="容量" sortable />
+        <el-table-column prop="remark" label="备注" />
+        <el-table-column fixed="right" label="操作">
+          <template #default="scope">
+            <el-button
+              type="primary"
+              :icon="Edit"
+              circle
+              @click="() => openDialog(scope.row)"
+            />
+            <el-button type="danger" :icon="Delete" circle />
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
+
+    <div class="footer">
+      <el-pagination
+        v-model:current-page="currentPage"
+        v-model:page-size="pageSize"
+        :page-sizes="[10, 25, 50, 100]"
+        layout="total, sizes, prev, pager, next, jumper"
+        :total="400"
+      />
+    </div>
   </div>
 
   <el-dialog
@@ -316,19 +331,41 @@ const saveLocation = () => {
 </template>
 
 <style scoped lang="scss">
+.container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
 .header {
   display: flex;
   align-items: center; /* 垂直居中对齐 */
-  gap: 10px; /* 控制各个元素之间的间距 */
+  gap: 16px; /* 控制各个元素之间的间距 */
+  padding: 16px;
+  background-color: white;
+  //height: 60px;
 
   .location-search {
     width: 300px;
   }
+  .spacer {
+    flex-grow: 1;
+  }
 }
 
 .table {
-  margin-top: 15px;
-  //max-height: 500px; /* 最大高度为 500px */
+  margin-top: 12px;
+  //height: 477px; /* 最大高度为 500px */
+  flex-grow: 1;
   overflow: auto; /* 超出部分显示滚动条 */
+  background-color: white;
+}
+
+.footer {
+  display: flex;
+  justify-content: flex-end;
+  padding: 16px;
+  background-color: white;
+  //height: 60px; /* 固定高度 */
 }
 </style>
