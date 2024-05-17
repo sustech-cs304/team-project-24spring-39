@@ -45,7 +45,7 @@ import Main from "./components/Main.vue";
   .el-header {
     display: flex;
     align-items: center;
-    margin-bottom: 0px;
+    margin-bottom: 0;
     padding: 0;
   }
 
