@@ -246,6 +246,7 @@ watch(
         node-key="name"
       />
     </div>
+
     <div class="right-container">
       <div class="right-header">
         <el-date-picker
@@ -254,6 +255,8 @@ watch(
           placeholder="Pick a day"
           size="default"
         />
+        <!-- 自动扩展的空白元素 -->
+        <div class="spacer"></div>
         <el-button type="primary" plain @click="handleSearch">查询</el-button>
         <el-button type="primary" plain @click="() => openDialog()"
           >添加记录</el-button
@@ -289,6 +292,16 @@ watch(
             </template>
           </el-table-column>
         </el-table>
+      </div>
+
+      <div class="footer">
+        <el-pagination
+          v-model:current-page="currentPage"
+          v-model:page-size="pageSize"
+          :page-sizes="[10, 25, 50, 100]"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="400"
+        />
       </div>
     </div>
   </div>
@@ -378,21 +391,46 @@ watch(
 .container {
   display: flex;
   gap: 16px;
+  height: 617.6px; // 固定container为除去layout.vue中header的高度
 }
 
 .left-container {
   flex: 20%;
   background-color: white;
+  padding: 16px;
 }
 
 .right-container {
   flex: 80%;
-  background-color: white;
+  display: flex;
+  flex-direction: column;
+
+  .right-header {
+    display: flex;
+    align-items: center; /* 垂直居中对齐 */
+    gap: 16px; /* 控制各个元素之间的间距 */
+    padding: 16px;
+    background-color: white;
+
+    .spacer {
+      flex-grow: 1;
+    }
+  }
 
   .table-wrapper {
-    max-height: 600px;
-    overflow-y: auto;
-    overflow-x: auto;
+    margin-top: 16px;
+    background-color: white;
+    flex-grow: 1;
+    //max-height: 600px;
+    //overflow-y: auto;
+    //overflow-x: auto;
+  }
+
+  .footer {
+    display: flex;
+    justify-content: flex-end;
+    padding: 6px;
+    background-color: white;
   }
 }
 </style>

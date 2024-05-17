@@ -244,6 +244,7 @@ const saveLocation = () => {
     </div>
 
     <div class="table">
+      <!--      <el-scrollbar class="custom-scrollbar">-->
       <el-table
         :data="displayData"
         style="width: 100%"
@@ -268,6 +269,7 @@ const saveLocation = () => {
           </template>
         </el-table-column>
       </el-table>
+      <!--      </el-scrollbar>-->
     </div>
 
     <div class="footer">
@@ -343,7 +345,6 @@ const saveLocation = () => {
   gap: 16px; /* 控制各个元素之间的间距 */
   padding: 16px;
   background-color: white;
-  //height: 60px;
 
   .location-search {
     width: 300px;
@@ -358,14 +359,34 @@ const saveLocation = () => {
   //height: 477px; /* 最大高度为 500px */
   flex-grow: 1;
   overflow: auto; /* 超出部分显示滚动条 */
+  //overflow: hidden; /* 隐藏默认滚动条 */
   background-color: white;
+
+  //.custom-scrollbar {
+  //  height: 100%;
+  //}
+  //
+  //.el-scrollbar__wrap {
+  //  max-height: 100%; /* 使滚动条高度占满父容器 */
+  //  overflow: hidden !important; /* 确保隐藏默认滚动条 */
+  //}
+  //
+  //.el-scrollbar__thumb {
+  //  background: deepskyblue;
+  //}
+  //
+  ///* 自定义滚动条样式 */
+  //.el-scrollbar__bar {
+  //  z-index: 1;
+  //  width: 8px;
+  //  background-color: transparent;
+  //}
 }
 
 .footer {
   display: flex;
   justify-content: flex-end;
-  padding: 16px;
+  padding: 6px;
   background-color: white;
-  //height: 60px; /* 固定高度 */
 }
 </style>
