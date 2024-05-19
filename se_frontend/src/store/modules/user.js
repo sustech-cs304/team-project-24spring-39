@@ -9,6 +9,8 @@ export default {
     // 登录状态
     isLogin: localStorage.getItem("ISLOGIN") || false,
 
+    token: localStorage.getItem("token") || "1",
+
     // 菜单列表
     menuList: [
       {

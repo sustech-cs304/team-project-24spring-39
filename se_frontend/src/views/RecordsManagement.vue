@@ -266,21 +266,33 @@ watch(
       <div class="table-wrapper">
         <el-table
           :data="displayData"
-          style="margin-bottom: 20px"
+          style="margin-bottom: 20px; width: 100%"
           stripe
           row-key="id"
           border
         >
           <el-table-column fixed prop="id" label="预约编号" sortable />
-          <el-table-column fixed prop="createTime" label="创建时间" sortable />
-          <el-table-column fixed prop="library" label="图书馆" sortable />
-          <el-table-column fixed prop="room" label="讨论间名称" sortable />
-          <el-table-column prop="date" label="预约日期" sortable />
+          <el-table-column
+            fixed
+            prop="createTime"
+            label="创建时间"
+            width="180"
+            sortable
+          />
+          <el-table-column
+            fixed
+            prop="library"
+            label="图书馆"
+            width="120"
+            sortable
+          />
+          <el-table-column fixed prop="room" label="讨论间" sortable />
+          <el-table-column prop="date" label="预约日期" width="120" sortable />
           <el-table-column prop="startTime" label="起始时间" sortable />
           <el-table-column prop="endTime" label="结束时间" sortable />
-          <el-table-column prop="persons" label="预约人" />
+          <el-table-column prop="persons" label="预约人" width="180" />
           <el-table-column prop="remark" label="备注" />
-          <el-table-column fixed="right" label="操作">
+          <el-table-column fixed="right" label="操作" width="120">
             <template #default="scope">
               <el-button
                 type="primary"
@@ -392,16 +404,19 @@ watch(
   display: flex;
   gap: 16px;
   height: 617.6px; // 固定container为除去layout.vue中header的高度
+  width: 676px;
 }
 
 .left-container {
-  flex: 20%;
+  width: 240px;
   background-color: white;
   padding: 16px;
 }
 
 .right-container {
-  flex: 80%;
+  //width: 0;
+  flex-grow: 1;
+  //width: 700px;
   display: flex;
   flex-direction: column;
 
@@ -418,7 +433,7 @@ watch(
   }
 
   .table-wrapper {
-    margin-top: 16px;
+    margin-top: 12px;
     background-color: white;
     flex-grow: 1;
     //max-height: 600px;

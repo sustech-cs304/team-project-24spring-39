@@ -1,4 +1,8 @@
 import { createRouter, createWebHistory } from "vue-router";
+import store from "@/store";
+import useNProgress from "@/hooks/useNProgress";
+
+const NProgress = useNProgress();
 
 //布局组件
 const Layout = () => import("../layout/Layout.vue");
@@ -70,11 +74,37 @@ const routes = [
       },
     ],
   },
+  // 匹配404路由
+  {
+    path: "/:pathMatch(.*)*",
+    name: "NotFoundPage",
+    component: () =>
+      import(/* webpackChunkName: "NotFoundPage" */ "../views/NotFound.vue"),
+  },
 ];
 
 const router = createRouter({
   history: createWebHistory(process.env.BASE_URL),
   routes,
+});
+
+router.beforeEach((to, from, next) => {
+  NProgress.start();
+  if (to.path === "/login") {
+    next();
+  } else {
+    // const token = localStorage.getItem("token");
+    const token = store.state.userStore.token;
+    if (!token) {
+      next("/login");
+    } else {
+      next();
+    }
+  }
+});
+
+router.afterEach(() => {
+  NProgress.done();
 });
 
 export default router;
