@@ -1,8 +1,13 @@
 import { fetchCoursesInside, submitRatingInside, login } from "@/api/user";
 import router from "@/router/index";
 import { ElMessageBox } from "element-plus";
+import adminRoutes from "@/router/role/admin";
+import userRoutes from "@/router/role/user";
+
 export default {
   state: {
+    // 是否是管理员
+    isAdmin: true,
     // 用户信息
     userInfo:
       JSON.parse(localStorage.getItem(process.env.VUE_APP_USER_INFO)) || [],
@@ -10,6 +15,9 @@ export default {
     isLogin: localStorage.getItem("ISLOGIN") || false,
 
     token: localStorage.getItem("token") || "1",
+
+    // 是否动态添加路由
+    isDynamicAddedRoute: false,
 
     // 菜单列表
     menuList: [
@@ -213,6 +221,9 @@ export default {
       state.isLogin = flag;
       localStorage.setItem("ISLOGIN", flag);
     },
+    setDynamicAddedRoute(state, flag) {
+      state.isDynamicAddedRoute = flag;
+    },
     setMenuList(state, menuList) {
       state.menuList = menuList;
       localStorage.setItem("MENU_LIST", JSON.stringify(menuList));
@@ -242,8 +253,10 @@ export default {
         // 3. 设置菜单列表
         let menuList = [];
         if (res.data.sid) {
+          state.isAdmin = false;
           menuList = state.userMenuList;
         } else if (res.data.account) {
+          state.isAdmin = true;
           menuList = state.adminMenuList;
         }
         commit("setMenuList", menuList); // 更新菜单列表
@@ -253,6 +266,20 @@ export default {
       } catch (error) {
         console.log("登录失败：", error);
       }
+    },
+
+    loadAsyncRoute({ state, commit }) {
+      // 根据登录身份动态添加路由
+      if (state.isAdmin) {
+        adminRoutes.forEach((route) => {
+          router.addRoute("layout", route);
+        });
+      } else {
+        userRoutes.forEach((route) => {
+          router.addRoute("layout", route);
+        });
+      }
+      commit("setDynamicAddedRoute", true);
     },
 
     async fetchCourses({ commit }, studentNumber) {
