@@ -1,4 +1,5 @@
-create database if not exists cs304proj;
+create database if not exists cs304proj
+character set utf8mb4 collate utf8mb4_unicode_ci;
 -- department
 use cs304proj;
 create table if not exists department

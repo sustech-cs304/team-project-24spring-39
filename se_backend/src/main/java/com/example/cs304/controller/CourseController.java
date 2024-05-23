@@ -54,9 +54,14 @@ public class CourseController {
     }
 
 
-    @GetMapping
-    public ResponseEntity<List<Map<String, Object>>> getCoursesTest() {
+    @GetMapping("/get_course")
+    public ResponseEntity<List<Map<String, Object>>> getCourse() {
         List<Map<String, Object>> courses = courseRepository.findAllCoursesProfessors();
+        return ResponseEntity.ok(courses);
+    }
+    @GetMapping("/get_course_test")
+    public ResponseEntity<List<Course>> getCourseTest() {
+        List<Course> courses = courseRepository.findAll();
         return ResponseEntity.ok(courses);
     }
 

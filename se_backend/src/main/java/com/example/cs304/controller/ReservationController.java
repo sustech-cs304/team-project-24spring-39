@@ -2,6 +2,7 @@ package com.example.cs304.controller;
 
 import com.example.cs304.entity.Reservation;
 import com.example.cs304.repository.ReservationRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +42,7 @@ public class ReservationController {
         return ResponseEntity.ok(reservations);
     }
 
+    @Transactional
     @PostMapping("/submit")
     public void addReservation(@RequestParam("student_id") String student_id, @RequestParam("room") String room,
                                @RequestParam("time") String time, @RequestParam("purpose") String purpose) {

@@ -5,6 +5,7 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.List;
 import java.util.Map;
 
 @Entity
@@ -54,6 +55,19 @@ public class Course {
     @JdbcTypeCode(SqlTypes.JSON)
     private Map<String, Object> time;
 
+    @ManyToMany
+    @JoinTable(
+    name = "course_professor",
+    joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "CID"),
+    inverseJoinColumns = @JoinColumn(name = "professor_id", referencedColumnName = "PID"))
+    private List<Professor> professors;
+    public List<Professor> getProfessors() {
+        return professors;
+}
+
+public void setProfessors(List<Professor> professors) {
+    this.professors = professors;
+}
     public Integer getId() {
         return id;
     }
