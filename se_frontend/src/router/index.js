@@ -46,6 +46,21 @@ const routes = [
         component: () => import("../views/courseEvaluate.vue"),
       },
       {
+        path: "/forum",
+        name: "forum",
+        meta: {
+          title: "课程论坛",
+          breadcrumb: ["课程论坛"],
+        },
+        component: () => import("../views/forum.vue"),
+      },
+      {
+        path: "/post/:id",
+        name: "postShow",
+        component: () => import("../views/postShow.vue"),
+        props: true,
+      },
+      {
         path: "/reservation",
         name: "reservation",
         meta: {
