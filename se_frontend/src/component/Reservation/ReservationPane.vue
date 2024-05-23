@@ -14,7 +14,34 @@ const store = useStore();
 onMounted(async () => {
   await store.dispatch("reservationStore/loadLocations");
   locations.value = store.state.reservationStore.locations;
+
+  if (props.placeId) {
+    console.log("props.placeId: ", props.placeId);
+    await fetchData(props.placeId);
+  }
 });
+
+const fetchData = async (placeId) => {
+  const selectedLocation = locations.value.find(
+    (location) => location.id === placeId
+  );
+  if (!selectedLocation) {
+    console.error(`Location with id ${placeId} not found`);
+    return;
+  }
+  console.log("selectedLocation: ", selectedLocation);
+
+  childrenRooms.value = selectedLocation.children;
+  for (const room of childrenRooms.value) {
+    try {
+      const res = await fetchBookings({ placeIds: [room.id] });
+      bookings[room.id] = res.data.reserveList;
+      // console.log("bookings: ", bookings); // Debugging line
+    } catch (error) {
+      console.error("查询失败，请稍后重试");
+    }
+  }
+};
 
 const locations = ref([]);
 
@@ -26,30 +53,28 @@ const disabledDate = (time) => {
   );
 };
 
+// 定义 props 并设置默认值
 // eslint-disable-next-line no-undef
 const props = defineProps({
   placeId: {
     type: Number,
-    required: true,
+    default: 1, // 默认值
   },
 });
+
+const childrenRooms = ref([]);
 
 watch(
   () => props.placeId,
   async (newPlaceId) => {
     if (newPlaceId) {
-      try {
-        const res = await fetchBookings({ placeIds: [newPlaceId] });
-        bookings.value = res.data.reserveList;
-      } catch (error) {
-        ElMessage.error("查询失败，请稍后重试");
-      }
+      await fetchData(newPlaceId);
     }
-  },
-  { immediate: true }
+  }
 );
 
-const bookings = ref([]);
+// const bookings = ref([]);
+const bookings = reactive({});
 
 const hours = computed(() => {
   const startHour = 6;
@@ -182,28 +207,15 @@ const submitForm = () => {
           endTime: form.endTime,
           persons: form.addedPersons.map((person) => person.slice(0, 8)),
         });
-        ElMessage({
-          // 响应码相关已在拦截器中处理
-          showClose: true,
-          message: "预约成功",
-          type: "success",
-        });
+        ElMessage.success("提交成功");
         dialogVisible.value = false;
         resetForm();
       } catch (error) {
         // 错误处理
-        ElMessage({
-          showClose: true,
-          message: error.message || "提交失败",
-          type: "error",
-        });
+        ElMessage.error("提交失败，请稍后重试");
       }
     } else {
-      ElMessage({
-        showClose: true,
-        message: "表单验证失败，请检查输入",
-        type: "warning",
-      });
+      ElMessage.warning("表单验证失败，请检查输入");
     }
   });
 };
@@ -238,21 +250,23 @@ const resetForm = (showMessage = false) => {
       <div>操作</div>
       <div v-for="hour in hours" :key="hour">{{ hour }}</div>
     </div>
-    <div class="booking-row" v-for="booking in bookings" :key="booking.room">
+    <div class="booking-row" v-for="room in childrenRooms" :key="room.id">
       <div
         :style="{
           'grid-column-start': 1,
           'grid-column-end': 2,
         }"
       >
-        {{ booking.room }}
+        {{ room.name }}
       </div>
       <div>
-        <el-button type="primary" plain @click="openDialog(booking)"
-          >预约
+        <el-button type="primary" plain @click="openDialog(room)">
+          预约
         </el-button>
       </div>
       <div
+        v-for="booking in bookings[room.id]"
+        :key="booking.id"
         class="booking-slot"
         :style="{
           'grid-column-start': getGridStart(booking.timeslot),
