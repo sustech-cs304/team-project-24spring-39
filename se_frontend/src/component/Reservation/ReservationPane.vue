@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, onMounted } from "vue";
 
 import {
   fetchBookings,
@@ -7,6 +7,16 @@ import {
   submitReservation,
 } from "@/api/reservation";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { useStore } from "vuex";
+
+const store = useStore();
+
+onMounted(async () => {
+  await store.dispatch("reservationStore/loadLocations");
+  locations.value = store.state.reservationStore.locations;
+});
+
+const locations = ref([]);
 
 const selectedDay = ref("");
 

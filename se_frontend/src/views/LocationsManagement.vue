@@ -1,85 +1,93 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { Delete, Edit } from "@element-plus/icons-vue";
-// import { ref, onMounted } from "vue";
-// import { ElMessage } from "element-plus";
-// import { fetchLocations } from "@/api/reservation";
+import { useStore } from "vuex";
+
+const store = useStore();
 
 const searchRoom = ref("");
 const searchLibrary = ref("");
 const searchMin = ref(null);
 const searchMax = ref(null);
 
-const tableData = ref([
-  {
-    id: 1,
-    name: "一丹图书馆",
-    createTime: "2021-09-01",
-    capacity: 5,
-    children: [
-      {
-        id: 11,
-        name: "一楼",
-        createTime: "2021-09-01",
-        capacity: 5,
-      },
-      {
-        id: 12,
-        name: "二楼",
-        createTime: "2021-09-01",
-        capacity: 5,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "琳恩图书馆",
-    createTime: "2021-09-02",
-    capacity: 5,
-    children: [
-      {
-        id: 21,
-        name: "一楼",
-        createTime: "2021-09-02",
-        capacity: 5,
-      },
-      {
-        id: 22,
-        name: "二楼",
-        createTime: "2021-09-02",
-        capacity: 5,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "涵泳图书馆",
-    createTime: "2021-09-03",
-    capacity: 5,
-    children: [
-      {
-        id: 31,
-        name: "一楼",
-        createTime: "2021-09-03",
-        capacity: 6,
-      },
-      {
-        id: 32,
-        name: "二楼",
-        createTime: "2021-09-03",
-        capacity: 9,
-      },
-      {
-        id: 33,
-        name: "三楼",
-        createTime: "2021-09-03",
-        capacity: 1,
-      },
-    ],
-  },
-]);
+// const tableData = ref([
+//   {
+//     id: 1,
+//     name: "一丹图书馆",
+//     createTime: "2021-09-01",
+//     capacity: 5,
+//     children: [
+//       {
+//         id: 11,
+//         name: "一楼",
+//         createTime: "2021-09-01",
+//         capacity: 5,
+//       },
+//       {
+//         id: 12,
+//         name: "二楼",
+//         createTime: "2021-09-01",
+//         capacity: 5,
+//       },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     name: "琳恩图书馆",
+//     createTime: "2021-09-02",
+//     capacity: 5,
+//     children: [
+//       {
+//         id: 21,
+//         name: "一楼",
+//         createTime: "2021-09-02",
+//         capacity: 5,
+//       },
+//       {
+//         id: 22,
+//         name: "二楼",
+//         createTime: "2021-09-02",
+//         capacity: 5,
+//       },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     name: "涵泳图书馆",
+//     createTime: "2021-09-03",
+//     capacity: 5,
+//     children: [
+//       {
+//         id: 31,
+//         name: "一楼",
+//         createTime: "2021-09-03",
+//         capacity: 6,
+//       },
+//       {
+//         id: 32,
+//         name: "二楼",
+//         createTime: "2021-09-03",
+//         capacity: 9,
+//       },
+//       {
+//         id: 33,
+//         name: "三楼",
+//         createTime: "2021-09-03",
+//         capacity: 1,
+//       },
+//     ],
+//   },
+// ]);
+const tableData = ref([]);
 
 const displayData = ref([...tableData.value]);
+
+// 使用onMounted在组件挂载时获取数据
+onMounted(async () => {
+  await store.dispatch("reservationStore/loadLocations");
+  tableData.value = store.state.reservationStore.locations;
+  displayData.value = [...tableData.value];
+});
 
 // todo: 使用gpt生成
 const handleSearch = () => {

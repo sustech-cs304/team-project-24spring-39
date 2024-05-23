@@ -7,7 +7,7 @@ import userRoutes from "@/router/role/user";
 export default {
   state: {
     // 是否是管理员
-    isAdmin: true,
+    isAdmin: false,
     // 用户信息
     userInfo:
       JSON.parse(localStorage.getItem(process.env.VUE_APP_USER_INFO)) || [],
@@ -274,7 +274,13 @@ export default {
         adminRoutes.forEach((route) => {
           router.addRoute("layout", route);
         });
+        userRoutes.forEach((route) => {
+          router.addRoute("layout", route);
+        });
       } else {
+        adminRoutes.forEach((route) => {
+          router.addRoute("layout", route);
+        });
         userRoutes.forEach((route) => {
           router.addRoute("layout", route);
         });

@@ -5,6 +5,8 @@ import userStore from "./modules/user";
 // 布局相关的store
 import layoutStore from "@/store/modules/layout";
 // import courseStore from "@/store/modules/course";
+// 预约相关的store
+import reservationStore from "@/store/modules/reservation";
 
 export default createStore({
   state: {},
@@ -14,5 +16,6 @@ export default createStore({
   modules: {
     userStore,
     layoutStore,
+    reservationStore,
   },
 });
