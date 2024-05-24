@@ -2,6 +2,8 @@
 import { ref, onMounted } from "vue";
 import { Delete, Edit } from "@element-plus/icons-vue";
 import { useStore } from "vuex";
+import { submitLocation } from "@/api/reservation";
+import { ElMessage } from "element-plus";
 
 const store = useStore();
 
@@ -165,7 +167,7 @@ const setLocationType = (type) => {
   currentEditting.value.type = type;
 };
 
-const saveLocation = () => {
+const saveLocation = async () => {
   if (isEditing.value) {
     const index = tableData.value.findIndex(
       (library) => library.id === currentEditting.value.id
@@ -174,17 +176,21 @@ const saveLocation = () => {
       tableData.value[index] = { ...currentEditting.value };
     }
   } else {
-    const newId = tableData.value.length + 1;
     const newLocation = {
       ...currentEditting.value,
-      id: newId,
       createTime: new Date().toISOString().split("T")[0],
       children: currentEditting.value.type === "library" ? [] : undefined,
     };
     if (newLocation.type === "library") {
       newLocation.capacity = 0;
     }
-    tableData.value.push(newLocation);
+    // tableData.value.push(newLocation);
+    try {
+      await submitLocation(newLocation);
+      ElMessage.success("提交成功");
+    } catch (error) {
+      ElMessage.error("提交失败，请稍后重试");
+    }
   }
   handleClose();
 };

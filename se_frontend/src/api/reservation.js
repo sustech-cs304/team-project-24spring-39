@@ -51,3 +51,11 @@ export function fetchLocations() {
     url: "/reservation/locations",
   });
 }
+
+export function submitLocation(data) {
+  return request({
+    method: "post",
+    url: "/reservation/submit-location",
+    data,
+  });
+}

@@ -2,6 +2,8 @@
 import ExpandToggle from "./component/ExpandToggle.vue";
 import Breadcrumb from "./component/Breadcrumb.vue";
 import Tabs from "./component/Tabs.vue";
+import FullScreen from "./component/FullScreen.vue";
+import DarkMode from "./component/DarkMode.vue";
 </script>
 
 <template>
@@ -14,7 +16,10 @@ import Tabs from "./component/Tabs.vue";
       <Breadcrumb style="margin-left: 10px" />
     </div>
     <!-- 右侧 -->
-    <div class="header_right"></div>
+    <div class="header_right">
+      <FullScreen />
+      <DarkMode />
+    </div>
     <!-- tag标签 -->
     <div class="header_tag">
       <Tabs />

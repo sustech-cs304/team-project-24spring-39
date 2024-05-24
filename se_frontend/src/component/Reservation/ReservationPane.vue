@@ -1,5 +1,6 @@
 <script setup>
 import { ref, reactive, computed, watch, onMounted } from "vue";
+import { format } from "date-fns";
 
 import {
   fetchBookings,
@@ -32,9 +33,13 @@ const fetchData = async (placeId) => {
   console.log("selectedLocation: ", selectedLocation);
 
   childrenRooms.value = selectedLocation.children;
+  const currentDate = format(new Date(), "yyyy-MM-dd"); // 获取当前日期并格式化
   for (const room of childrenRooms.value) {
     try {
-      const res = await fetchBookings({ placeIds: [room.id] });
+      const res = await fetchBookings({
+        date: selectedDay.value || currentDate,
+        placeIds: [room.id],
+      });
       bookings[room.id] = res.data.reserveList;
       // console.log("bookings: ", bookings); // Debugging line
     } catch (error) {
@@ -49,7 +54,8 @@ const selectedDay = ref("");
 
 const disabledDate = (time) => {
   return (
-    time.getTime() < Date.now() || time.getTime() > Date.now() + 3 * 8.64e7 // 3 days
+    time.getTime() < Date.now() - 8.64e7 ||
+    time.getTime() > Date.now() + 2 * 8.64e7 // 3 days
   );
 };
 
@@ -243,6 +249,9 @@ const resetForm = (showMessage = false) => {
       size="default"
       :disabledDate="disabledDate"
     />
+    <!-- 自动扩展的空白元素 -->
+    <div class="spacer"></div>
+    <el-button type="primary" plain @click="fetchBookings">查询</el-button>
   </div>
   <div class="scrollable-panel">
     <div class="time-header">
@@ -336,6 +345,18 @@ const resetForm = (showMessage = false) => {
 </template>
 
 <style lang="scss" scoped>
+.filter-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  background-color: #f5f5f5;
+  border-bottom: 1px solid #ccc;
+
+  .spacer {
+    flex: 1;
+  }
+}
+
 .scrollable-panel {
   width: 1000px;
   max-height: 500px;

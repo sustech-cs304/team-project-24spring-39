@@ -2,7 +2,7 @@
 import { ref, watch, computed } from "vue";
 import { ElMessage, ElTree } from "element-plus";
 import { Delete, Edit } from "@element-plus/icons-vue";
-import { fetchBookings } from "@/api/reservation";
+import { fetchBookings, submitLocation } from "@/api/reservation";
 
 const selectedDay = ref("");
 
@@ -196,7 +196,7 @@ const handleClose = () => {
   dialogVisible.value = false;
 };
 
-const saveRecord = () => {
+const saveRecord = async () => {
   if (isEditing.value) {
     const index = reserveData.value.findIndex(
       (record) => record.id === currentEditing.value.id
@@ -205,12 +205,16 @@ const saveRecord = () => {
       reserveData.value[index] = { ...currentEditing.value };
     }
   } else {
-    const newId = reserveData.value.length + 1;
     const newRecord = {
       ...currentEditing.value,
-      id: newId,
     };
-    reserveData.value.push(newRecord);
+    // reserveData.value.push(newRecord);
+    try {
+      await submitLocation(newRecord);
+      ElMessage.success("提交成功");
+    } catch (error) {
+      ElMessage.error("提交失败，请稍后重试");
+    }
   }
   handleClose();
 };
@@ -243,7 +247,7 @@ watch(
         default-expand-all
         :filter-node-method="filterNode"
         show-checkbox
-        node-key="name"
+        node-key="id"
       />
     </div>
 
