@@ -12,6 +12,8 @@ import "element-plus/theme-chalk/dark/css-vars.css";
 import MakeitCaptcha from "makeit-captcha";
 import "makeit-captcha/dist/captcha.min.css";
 import "element-plus/dist/index.css";
+// 引入i18n
+import i18n from "@/locales";
 
 const app = createApp(App);
 
@@ -20,4 +22,4 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
 
-app.use(store).use(router).use(MakeitCaptcha).mount("#app");
+app.use(store).use(router).use(MakeitCaptcha).use(i18n).mount("#app");

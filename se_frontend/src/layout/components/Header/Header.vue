@@ -4,6 +4,7 @@ import Breadcrumb from "./component/Breadcrumb.vue";
 import Tabs from "./component/Tabs.vue";
 import FullScreen from "./component/FullScreen.vue";
 import DarkMode from "./component/DarkMode.vue";
+import Language from "@/layout/components/Header/component/Language.vue";
 </script>
 
 <template>
@@ -19,6 +20,7 @@ import DarkMode from "./component/DarkMode.vue";
     <div class="header_right">
       <FullScreen />
       <DarkMode />
+      <Language />
     </div>
     <!-- tag标签 -->
     <div class="header_tag">
