@@ -8,6 +8,7 @@ import layoutStore from "@/store/modules/layout";
 // 预约相关的store
 import reservationStore from "@/store/modules/reservation";
 
+import evalStore from "@/store/modules/eval_store";
 export default createStore({
   state: {},
   getters: {},
@@ -16,6 +17,7 @@ export default createStore({
   modules: {
     userStore,
     layoutStore,
+    evalStore,
     reservationStore,
   },
 });
