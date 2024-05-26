@@ -80,6 +80,7 @@ const searchMax = ref(null);
 //     ],
 //   },
 // ]);
+
 const tableData = ref([]);
 
 const displayData = ref([...tableData.value]);
@@ -89,6 +90,10 @@ onMounted(async () => {
   await store.dispatch("reservationStore/loadLocations");
   tableData.value = store.state.reservationStore.locations;
   displayData.value = [...tableData.value];
+  // 打印 displayData.value 数组中每一项的 children 字段
+  displayData.value.forEach((item) => {
+    console.log(item.children);
+  });
 });
 
 // todo: 使用gpt生成
@@ -268,7 +273,7 @@ const saveLocation = async () => {
         default-expand-all
       >
         <el-table-column fixed prop="name" label="地点名称" sortable />
-        <el-table-column prop="createTime" label="创建时间" sortable />
+        <el-table-column prop="status" label="状态" sortable />
         <el-table-column prop="capacity" label="容量" sortable />
         <el-table-column prop="remark" label="备注" />
         <el-table-column fixed="right" label="操作">

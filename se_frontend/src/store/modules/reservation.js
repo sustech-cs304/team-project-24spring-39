@@ -15,7 +15,13 @@ export default {
     async loadLocations({ commit }) {
       try {
         const res = await fetchLocations();
-        commit("setLocations", res.data.locationList);
+        // 预处理数据，将 rooms 字段重命名为 children
+        const processedLocations = res.data.map((location) => ({
+          ...location,
+          children: location.rooms,
+          rooms: undefined, // 删除原来的 rooms 字段
+        }));
+        commit("setLocations", processedLocations);
       } catch (error) {
         ElMessage.error("查询失败，请稍后重试");
       }
