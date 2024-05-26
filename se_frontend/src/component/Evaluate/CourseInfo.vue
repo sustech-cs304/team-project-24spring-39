@@ -17,17 +17,15 @@ import { ref } from "vue";
 const store = useStore();
 
 const selectedCourseName = computed(
-  () => store.state.userStore.selectedCourse.name
+  () => store.state.evalStore.selectedCourse.name
 );
 
 const selectedCourseIntro = computed(
-  () => store.state.userStore.selectedCourse.intro
+  () => store.state.evalStore.selectedCourse.intro
 );
 
-// 假设您想要应用 "Dark Shadow" 样式
 const shadowType = ref("dark");
 
-// 使用提供的方法来获取 CSS 变量名
 const getCssVarName = (type) => {
   return `--el-box-shadow${type ? "-" : ""}${type}`;
 };

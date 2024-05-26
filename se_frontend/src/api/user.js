@@ -20,19 +20,3 @@ export function getMenuList() {
     url: "/userInfo{1}",
   });
 }
-
-export function fetchCoursesInside(studentNumber) {
-  const url = "/students/" + String(studentNumber);
-  return request({
-    method: "get",
-    url: url,
-  });
-}
-
-export function submitRatingInside(payLoad) {
-  return request({
-    method: "post",
-    url: "/evaluation",
-    payLoad,
-  });
-}

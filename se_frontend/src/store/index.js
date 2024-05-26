@@ -5,7 +5,7 @@ import userStore from "./modules/user";
 // 布局相关的store
 import layoutStore from "@/store/modules/layout";
 // import courseStore from "@/store/modules/course";
-
+import evalStore from "@/store/modules/eval_store";
 export default createStore({
   state: {},
   getters: {},
@@ -14,5 +14,6 @@ export default createStore({
   modules: {
     userStore,
     layoutStore,
+    evalStore,
   },
 });

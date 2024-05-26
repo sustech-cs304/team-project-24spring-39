@@ -17,7 +17,7 @@
 import { computed } from "vue";
 import { useStore } from "vuex";
 const store = useStore();
-const courses = computed(() => store.state.userStore.courses);
+const courses = computed(() => store.state.evalStore.courses);
 
 function selectCourse(course) {
   store.commit("setSelectedCourse", course);
