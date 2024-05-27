@@ -1,8 +1,8 @@
 package com.example.cs304.service;
 
+import com.example.cs304.dto.UserDTO;
 import com.example.cs304.entity.Admin;
 import com.example.cs304.entity.Student;
-import com.example.cs304.entity.User;
 import com.example.cs304.repository.AdminRepository;
 import com.example.cs304.repository.StudentRepository;
 import lombok.AllArgsConstructor;
@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class MyUserDetailsService implements UserDetailsService {
 
-//    private UserRepository userRepository;
+
     private StudentRepository studentRepository;
     private AdminRepository adminRepository;
 
@@ -41,28 +41,31 @@ public class MyUserDetailsService implements UserDetailsService {
 //                authorities
 //        );
 
-        User user = new User();
+        UserDTO user = new UserDTO();
+        Set<GrantedAuthority> aut;
+        System.out.println(username);
         if (studentRepository.findBySid(username) != null) {
             Student student = studentRepository.findBySid(username);
             user.setUsername(student.getSid());
             user.setPassword(student.getPassword());
-            Set<GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("STUDENT"));
+            aut = Collections.singleton(new SimpleGrantedAuthority("STUDENT"));
         } else if (adminRepository.findByAccount(username) != null) {
             Admin admin = adminRepository.findByAccount(username);
             user.setUsername(admin.getAccount());
             user.setPassword(admin.getPassword());
-            Set<GrantedAuthority> authorities = Collections.singleton(new SimpleGrantedAuthority("ADMIN"));
+            aut = Collections.singleton(new SimpleGrantedAuthority("ADMIN"));
         } else {
             throw new UsernameNotFoundException("User not found with username: " + username);
         }
+
         return new org.springframework.security.core.userdetails.User(
                 user.getUsername(),
                 user.getPassword(),
-                true,
-                true,
-                true,
-                true,
-                user.getAuthorities()
+//                true,
+//                true,
+//                true,
+//                true,
+                aut
         );
     }
 }
