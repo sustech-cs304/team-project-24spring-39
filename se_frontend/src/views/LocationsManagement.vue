@@ -352,6 +352,7 @@ const saveLocation = async () => {
 </template>
 
 <style scoped lang="scss">
+@import "@/style/mixin.scss";
 .container {
   display: flex;
   flex-direction: column;
@@ -363,7 +364,8 @@ const saveLocation = async () => {
   align-items: center; /* 垂直居中对齐 */
   gap: 16px; /* 控制各个元素之间的间距 */
   padding: 16px;
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
 
   .location-search {
     width: 300px;
@@ -379,7 +381,8 @@ const saveLocation = async () => {
   flex-grow: 1;
   overflow: auto; /* 超出部分显示滚动条 */
   //overflow: hidden; /* 隐藏默认滚动条 */
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
 
   //.custom-scrollbar {
   //  height: 100%;
@@ -406,6 +409,7 @@ const saveLocation = async () => {
   display: flex;
   justify-content: flex-end;
   padding: 6px;
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
 }
 </style>

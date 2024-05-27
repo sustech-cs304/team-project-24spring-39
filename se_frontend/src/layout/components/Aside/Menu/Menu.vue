@@ -37,6 +37,7 @@ async function handleSelect(index) {
     console.log("enter handel select976");
     await store.dispatch("fetchCourses", "00000001");
   }
+  console.log("menuList: ", menuList);
 }
 </script>
 

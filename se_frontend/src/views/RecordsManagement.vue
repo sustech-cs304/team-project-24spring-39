@@ -404,6 +404,7 @@ watch(
 </template>
 
 <style scoped lang="scss">
+@import "@/style/mixin.scss";
 .container {
   display: flex;
   gap: 16px;
@@ -413,7 +414,8 @@ watch(
 
 .left-container {
   width: 240px;
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
   padding: 16px;
 }
 
@@ -429,7 +431,8 @@ watch(
     align-items: center; /* 垂直居中对齐 */
     gap: 16px; /* 控制各个元素之间的间距 */
     padding: 16px;
-    background-color: white;
+    //background-color: white;
+    @include block_bg_color();
 
     .spacer {
       flex-grow: 1;
@@ -438,7 +441,8 @@ watch(
 
   .table-wrapper {
     margin-top: 12px;
-    background-color: white;
+    //background-color: white;
+    @include block_bg_color();
     flex-grow: 1;
     //max-height: 600px;
     //overflow-y: auto;
@@ -449,7 +453,8 @@ watch(
     display: flex;
     justify-content: flex-end;
     padding: 6px;
-    background-color: white;
+    //background-color: white;
+    @include block_bg_color();
   }
 }
 </style>

@@ -15,26 +15,39 @@
 
 // 文字颜色
 @mixin text_color {
-  color: $light-bg-color;
+  color: $text-light-color;
 
   [class="light"] & {
-    color: $dark-bg-color;
+    color: $text-light-color;
   }
 
   [class="dark"] & {
-    color: $light-bg-color;
+    color: $text-dark-color;
   }
 }
 
 // hover的背景色
 @mixin hover_bg_color {
-  background: $hover-default-color;
+  background: $hover-light-color;
 
   [class="light"] & {
-    background: $hover-default-color;
+    background: $hover-light-color;
   }
 
   [class="dark"] & {
     background: $hover-dark-color;
+  }
+}
+
+// 部分块的背景色
+@mixin block_bg_color {
+  background: $block-bg-light-color;
+
+  [class="light"] & {
+    background: $block-bg-light-color;
+  }
+
+  [class="dark"] & {
+    background: $block-bg-dark-color;
   }
 }

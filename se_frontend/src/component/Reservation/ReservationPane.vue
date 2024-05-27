@@ -172,7 +172,7 @@ const form = reactive({
   startTime: "",
   endTime: "",
   searchState: "",
-  addedPersons: [],
+  addedPersons: [12112203, 12112201],
 });
 
 // 表单校验规则
@@ -211,7 +211,9 @@ const submitForm = () => {
           room: currentBooking.value.room,
           startTime: form.startTime,
           endTime: form.endTime,
-          persons: form.addedPersons.map((person) => person.slice(0, 8)),
+          persons: form.addedPersons.map((person) =>
+            person.toString().slice(0, 8)
+          ),
         });
         ElMessage.success("提交成功");
         dialogVisible.value = false;
@@ -219,6 +221,7 @@ const submitForm = () => {
       } catch (error) {
         // 错误处理
         ElMessage.error("提交失败，请稍后重试");
+        console.log(error);
       }
     } else {
       ElMessage.warning("表单验证失败，请检查输入");
@@ -345,12 +348,14 @@ const resetForm = (showMessage = false) => {
 </template>
 
 <style lang="scss" scoped>
+@import "@/style/mixin.scss";
 .filter-bar {
   display: flex;
   align-items: center;
   padding: 10px;
-  background-color: #f5f5f5;
+  //background-color: #f5f5f5;
   border-bottom: 1px solid #ccc;
+  @include block_bg_color();
 
   .spacer {
     flex: 1;
@@ -377,7 +382,9 @@ const resetForm = (showMessage = false) => {
     border: 1px solid #ccc;
     padding: 0.5rem;
     text-align: center;
-    background-color: #f5f5f5;
+    //background-color: #f5f5f5;
+    @include block_bg_color();
+    @include text_color();
   }
 
   .booking-row div {
