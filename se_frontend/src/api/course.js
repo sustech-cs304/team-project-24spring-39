@@ -13,3 +13,9 @@ export function ReturnSelectedCourse() {
     url: `/Course/showSelectedCourse`,
   });
 }
+export function fetchDataByCourseId(id) {
+  return request({
+    method: "get",
+    url: `/Course/showSelectedStudents/${id}`,
+  });
+}

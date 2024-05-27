@@ -50,6 +50,11 @@ const routes = [
         },
         component: () => import("../views/Reservation.vue"),
       },
+      {
+        path: "/selectionManage",
+        name: "selectionManage",
+        component: () => import("../views/courseManagement.vue"),
+      },
     ],
   },
 ];
