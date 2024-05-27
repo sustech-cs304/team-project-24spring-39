@@ -1,4 +1,5 @@
 <template>
+  <!--  用于导入404页面动画-->
   <div ref="animation" :style="{ width, height }"></div>
 </template>
 
