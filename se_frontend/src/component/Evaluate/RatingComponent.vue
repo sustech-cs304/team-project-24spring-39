@@ -38,7 +38,13 @@
       </el-form-item>
     </el-form>
 
-    <el-button type="success" round @click="submitData">提交</el-button>
+    <el-button
+      type="success"
+      round
+      @click="submitData"
+      :disabled="store.state.evalStore.selectedCourse.id == -1"
+      >提交</el-button
+    >
   </div>
 </template>
 
@@ -71,6 +77,7 @@ const form = reactive({
   desc: "",
 });
 const submitData = async () => {
+  console.log(store.state.evalStore.selectedCourse.id);
   const payload = {
     courseID: selectedCourseId,
     difficulty: radio1.value,
@@ -81,12 +88,16 @@ const submitData = async () => {
     comment: textarea.value,
   };
   try {
-    console.log(payload);
+    // console.log(payload);
     await submitRatingInside(payload);
     ElMessageBox.alert("提交成功", "成功", {
       confirmButtonText: "确定",
       type: "success",
     });
+    // console.log(store.state.evalStore.courses[0]);
+    store.commit("deleteCourse", store.state.evalStore.selectedCourse.id);
+    // console.log(store.state.evalStore.courses[0]);
+    // store.commit("setSelectedCourse", store.state.evalStore.courses[0]);
   } catch (error) {
     console.error("Error:", error);
     ElMessageBox.alert("提交失败", "错误", {
