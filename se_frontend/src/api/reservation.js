@@ -10,7 +10,7 @@ import request from "@/utils/request";
 export function fetchBookings(params) {
   return request({
     method: "get",
-    url: "/reservation/bookings", // 根据你的实际API端点修改
+    url: "/reservation/bookings/2", // 根据你的实际API端点修改
     params: params, // 将所有查询参数传递给后端API
   });
 }

@@ -51,7 +51,7 @@ import Main from "./components/Main.vue";
   }
 
   .el-main {
-    width: 100%;
+    //width: 100%;
     //background-color: #f0f2f5;
     @include bg_color();
     @include text_color();
