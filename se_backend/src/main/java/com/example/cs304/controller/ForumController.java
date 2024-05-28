@@ -1,13 +1,7 @@
 package com.example.cs304.controller;
 
-import com.example.cs304.entity.File;
-import com.example.cs304.entity.Post;
-import com.example.cs304.entity.Reply;
-import com.example.cs304.entity.Student;
-import com.example.cs304.repository.FileRepository;
-import com.example.cs304.repository.PostRepository;
-import com.example.cs304.repository.ReplyRepository;
-import com.example.cs304.repository.StudentRepository;
+import com.example.cs304.entity.*;
+import com.example.cs304.repository.*;
 import com.example.cs304.response.Response;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
@@ -27,14 +21,20 @@ public class ForumController {
     private final StudentRepository studentRepository;
     private final FileRepository fileRepository;
     private final ReplyRepository replyRepository;
+    private final MajorRepository majorRepository;
 
-    public ForumController(PostRepository postRepository, StudentRepository studentRepository, FileRepository fileRepository, ReplyRepository replyRepository) {
+    public ForumController(PostRepository postRepository, StudentRepository studentRepository, FileRepository fileRepository, ReplyRepository replyRepository, MajorRepository majorRepository) {
         this.postRepository = postRepository;
         this.studentRepository = studentRepository;
         this.fileRepository = fileRepository;
         this.replyRepository = replyRepository;
+        this.majorRepository = majorRepository;
     }
-    @GetMapping("/getPostByCondition")
+    @GetMapping("/get_major")
+    public List<Major> getMajors(){
+        return majorRepository.findAll();
+    }
+    @GetMapping("/get_post_by_condition")
     public List<Post> getPosts(@RequestParam(required = false) String authorId, @RequestParam(required = false) String majorTag, @RequestParam(required = false) String courseTag) {
         return postRepository.findByCondition(authorId, majorTag, courseTag);
     }
@@ -47,7 +47,6 @@ public class ForumController {
         String majorTag = (String) requestBody.get("majorTag");
         String courseTag = (String) requestBody.get("courseTag");
         MultipartFile multipartFile = (MultipartFile) requestBody.get("file");
-
         Post post = new Post();
         post.setTitle(title);
         post.setPostingTime(Instant.parse(time));
@@ -76,7 +75,7 @@ public class ForumController {
         return postRepository.save(post);
     }
     //删除帖子
-    @DeleteMapping("/deletePost/{postID}")
+    @DeleteMapping("/delete_post/{postID}")
     public Response<?> deletePost(@PathVariable("postID") int id) {
         try {
             postRepository.deleteById(id);
