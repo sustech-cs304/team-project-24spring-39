@@ -35,9 +35,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         // 从 request 获取 JWT token
         String token = getTokenFromRequest(request);
 
+        logger.info("token: " + token);
+        System.out.println("token: " + token);
         // 校验 token
         if(StringUtils.hasText(token) && jwtTokenProvider.validateToken(token)){
 
+            logger.info("token is valid");
+            System.out.println("token is valid");
             // 从 token 获取 username
             String username = jwtTokenProvider.getUsername(token);
 

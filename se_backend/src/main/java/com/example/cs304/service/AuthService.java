@@ -14,17 +14,11 @@ import org.springframework.security.authentication.BadCredentialsException;
 @Service
 public class AuthService{
     private AuthenticationManager authenticationManager;
-    private PasswordEncoder passwordEncoder;
     private JwtTokenProvider jwtTokenProvider;
-    private StudentRepository studentRepository;
-    private AdminRepository adminRepository;
 
     public AuthService(AuthenticationManager authenticationManager, PasswordEncoder passwordEncoder, JwtTokenProvider jwtTokenProvider, StudentRepository studentRepository, AdminRepository adminRepository) {
         this.authenticationManager = authenticationManager;
-        this.passwordEncoder = passwordEncoder;
         this.jwtTokenProvider = jwtTokenProvider;
-        this.studentRepository = studentRepository;
-        this.adminRepository = adminRepository;
     }
 
 

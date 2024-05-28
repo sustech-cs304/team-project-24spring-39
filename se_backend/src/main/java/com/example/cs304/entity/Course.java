@@ -1,5 +1,8 @@
 package com.example.cs304.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -10,6 +13,7 @@ import java.util.Map;
 
 @Entity
 @Table(name = "course")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Course {
     @Id
     @Column(name = "id", nullable = false)
@@ -61,13 +65,16 @@ public class Course {
     joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "CID"),
     inverseJoinColumns = @JoinColumn(name = "professor_id", referencedColumnName = "PID"))
     private List<Professor> professors;
+
+
     public List<Professor> getProfessors() {
         return professors;
 }
 
-public void setProfessors(List<Professor> professors) {
-    this.professors = professors;
-}
+
+    public void setProfessors(List<Professor> professors) {
+        this.professors = professors;
+    }
     public Integer getId() {
         return id;
     }
