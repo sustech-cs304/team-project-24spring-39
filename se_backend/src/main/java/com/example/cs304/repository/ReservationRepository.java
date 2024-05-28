@@ -42,7 +42,11 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
 
     @Modifying
     @Query(value = "insert into reservation (room_id, date, start_time, end_time) values (:room_id, :date, :start_time, :end_time);", nativeQuery = true)
-    Reservation addReservation(int room_id, LocalDate date, LocalTime start_time, LocalTime end_time);
+    void addReservation(int room_id, LocalDate date, LocalTime start_time, LocalTime end_time);
+
+    @Query(value = "select LAST_INSERT_ID();", nativeQuery = true)
+    int getLastInsertId();
+
 
 
 }

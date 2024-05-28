@@ -3,6 +3,8 @@ package com.example.cs304.controller;
 import com.example.cs304.entity.*;
 import com.example.cs304.repository.*;
 import com.example.cs304.response.Response;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -21,6 +23,8 @@ import java.util.Map;
 @RestController
 @RequestMapping("/reservation")
 public class ReservationController {
+    @PersistenceContext
+    private EntityManager entityManager;
     private final ReservationRepository reservationRepository;
     private final RoomRepository roomRepository;
     private final StudentRepository studentRepository;
@@ -110,8 +114,8 @@ public class ReservationController {
                                @RequestParam("start_time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime start_time,
                                @RequestParam("end_time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime end_time
                                ) {
-        Reservation reservation = reservationRepository.addReservation(room_id, date, start_time, end_time);
-        int reservation_id = reservation.getId();
+        reservationRepository.addReservation(room_id, date, start_time, end_time);
+        int reservation_id = reservationRepository.getLastInsertId();
         for (String student_id : student) {
             SRrepository.insertStudentReservation(student_id, reservation_id);
         }
