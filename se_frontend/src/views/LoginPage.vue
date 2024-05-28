@@ -1,18 +1,19 @@
 <template>
   <div class="login-container">
-    <div class="container">
+    <div :class="['container', { 'show-register': showRegister }]">
+      <img
+        src="../assets/imgs/login_banner2.jpg"
+        alt=""
+        @click="toggleForm"
+        class="banner-img"
+      />
       <div
-        :class="['left_box', { 'show-register': showRegister }]"
+        class="left_box"
         v-motion
         :initial="{ opacity: 0, x: -100 }"
         :enter="{ opacity: 1, x: 0 }"
         :delay="200"
       >
-        <img
-          src="../assets/imgs/login_banner2.jpg"
-          alt=""
-          @click="toggleForm"
-        />
         <div v-if="showRegister" class="register-form">
           <h3 class="title">注册账号</h3>
           <div class="form-container">
@@ -340,6 +341,7 @@ async function handleRegister() {
   align-items: center;
 
   .container {
+    position: relative; /* 使子元素的绝对定位相对于 .container */
     /* @include bg_color(); */
     background-color: var(--el-bg-color);
     width: 670px;
@@ -349,22 +351,28 @@ async function handleRegister() {
     overflow: hidden;
     box-shadow: 0 5px 20px 2px rgba(255, 255, 255, 0.1);
 
+    .banner-img {
+      height: 100%;
+      width: 50%;
+      position: absolute;
+      //top: 0;
+      //left: 0;
+      cursor: pointer;
+      transition: transform 0.5s ease;
+      z-index: 2;
+      transform: translateX(0);
+    }
+
+    &.show-register .banner-img {
+      transform: translateX(100%);
+    }
+
     .left_box {
       width: 50%;
+      padding: 20px;
+      box-sizing: border-box; // 使padding包含在宽度和高度之内
       position: relative;
-
-      img {
-        height: 100%;
-        width: 100%;
-        cursor: pointer;
-        position: absolute;
-        transition: transform 0.5s ease;
-        transform: translateX(0);
-      }
-
-      &.show-register img {
-        transform: translateX(335px);
-      }
+      z-index: 1;
 
       .register-form {
         position: absolute;
@@ -373,8 +381,6 @@ async function handleRegister() {
         width: 100%;
         height: 100%;
         background-color: white;
-        padding: 20px;
-        box-sizing: border-box;
         display: flex;
         flex-direction: column;
         align-items: center;
@@ -413,8 +419,9 @@ async function handleRegister() {
     .right_box {
       width: 50%;
       padding: 20px;
-      position: relative;
       box-sizing: border-box; // 使padding包含在宽度和高度之内
+      position: relative;
+      z-index: 1;
 
       .title {
         font-size: 26px;
