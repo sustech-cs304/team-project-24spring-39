@@ -3,18 +3,13 @@ package com.example.cs304.entity;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
-import java.time.Instant;
-
 @Entity
-@Table(name = "room")
-public class Room {
+@Table(name = "building")
+public class Building {
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     private Integer id;
-
-    @Lob
-    @Column(name = "place", nullable = false)
-    private String place;
 
     @Column(name = "name", nullable = false, length = 50)
     private String name;
@@ -22,19 +17,9 @@ public class Room {
     @Column(name = "capacity", nullable = false)
     private Integer capacity;
 
-    @ColumnDefault("空闲")
-    @Lob
+    @ColumnDefault("开放")
     @Column(name = "status", nullable = false)
     private String status;
-
-    public String getStatus() {
-        return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
-    }
-
 
     public Integer getId() {
         return id;
@@ -42,14 +27,6 @@ public class Room {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getPlace() {
-        return place;
-    }
-
-    public void setPlace(String place) {
-        this.place = place;
     }
 
     public String getName() {
@@ -66,6 +43,14 @@ public class Room {
 
     public void setCapacity(Integer capacity) {
         this.capacity = capacity;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
     }
 
 }

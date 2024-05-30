@@ -10,6 +10,15 @@ import java.util.Map;
 public interface StudentRepository extends JpaRepository<Student, Integer> {
     Student findBySid(String SID);
 
+    @Query(value="select SID, name from student where SID=?;",nativeQuery = true)
+    List<Map<String,Object>> findnameBysid(String SID);
+
+    @Query(value="select * from student where SID in\n" +
+            "(\n" +
+            "    select student_id from student_reservation where reservation_id = ?1\n" +
+            ");",nativeQuery = true)
+    List<Student> findReservationStudent(int ReservationID);
+
     @Query(value="select c.CID, c.name, c.description\n" +
             "from course c\n" +
             "LEFT JOIN course_student cs ON c.CID = cs.course_id\n" +

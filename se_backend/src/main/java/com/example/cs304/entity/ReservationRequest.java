@@ -1,40 +1,20 @@
 package com.example.cs304.entity;
 
-import jakarta.persistence.*;
-import org.hibernate.annotations.ColumnDefault;
-
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
-@Entity
-@Table(name = "reservation")
-public class Reservation {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
-    private Integer id;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "room_id", nullable = false)
+public class ReservationRequest {
+    private int id;
     private Room room;
-
-    @Column(name = "date", nullable = false)
+    private List<Student> students;
     private LocalDate date;
-
-    @Column(name = "start_time", nullable = false)
     private LocalTime startTime;
-
-    @Column(name = "end_time", nullable = false)
     private LocalTime endTime;
-
-    @ColumnDefault("预约")
-    @Column(name = "status", nullable = false)
-    private String status;
-
-    @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "create_time", nullable = false)
     private Instant createTime;
+    private String status;
 
     public Instant getCreateTime() {
         return createTime;
@@ -91,5 +71,14 @@ public class Reservation {
     public void setStatus(String status) {
         this.status = status;
     }
+
+    public List<Student> getStudents() {
+        return students;
+    }
+
+    public void setStudents(List<Student> students) {
+        this.students = students;
+    }
+
 
 }
