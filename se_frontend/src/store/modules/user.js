@@ -250,7 +250,16 @@ export default {
         console.log("登录失败：", error);
       }
     },
-
+    // 处理退出登录
+    logout(state) {
+      state.isLogin = false;
+      localStorage.removeItem("VUE_ADMIN_ISLOGIN");
+      state.userInfo = [];
+      state.token = "";
+      localStorage.removeItem(process.env.VUE_APP_TOKEN_NAME);
+      state.menuList = [];
+      localStorage.removeItem(process.env.VUE_APP_MENU_LIST);
+    },
     loadAsyncRoute({ state, commit }) {
       // 根据登录身份动态添加路由
       if (state.isAdmin) {
