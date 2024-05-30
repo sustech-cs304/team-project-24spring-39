@@ -232,7 +232,7 @@ const loginFormRef = ref(null);
 const loginForm = reactive({
   username: "10210001",
   password: "123456",
-  // captchaSuccess: false,
+  captchaSuccess: false,
 });
 // 登录按钮的加载loading
 const logBtnLoading = ref(false);
@@ -369,8 +369,8 @@ async function handleRegister() {
 
     .left_box {
       width: 50%;
-      padding: 20px;
-      box-sizing: border-box; // 使padding包含在宽度和高度之内
+      //padding: 20px;
+      //box-sizing: border-box; // 使padding包含在宽度和高度之内
       position: relative;
       z-index: 1;
 
@@ -379,6 +379,8 @@ async function handleRegister() {
         top: 0;
         left: 0;
         width: 100%;
+        padding: 20px;
+        box-sizing: border-box; // 使padding包含在宽度和高度之内
         height: 100%;
         background-color: white;
         display: flex;

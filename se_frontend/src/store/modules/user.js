@@ -1,4 +1,4 @@
-import { login } from "@/api/user";
+import { register, login } from "@/api/user";
 import router from "@/router/index";
 import adminRoutes from "@/router/role/admin";
 import userRoutes from "@/router/role/user";
@@ -209,6 +209,17 @@ export default {
     },
   },
   actions: {
+    // 处理注册的业务逻辑
+    async handleRegister(data) {
+      // 发送注册的网络请求
+      try {
+        const res = await register(data);
+        console.log("注册成功：", res);
+      } catch (error) {
+        console.log("注册失败：", error);
+      }
+    },
+
     // 处理登录的业务逻辑
     async handleLogin({ state, commit }, data) {
       // 发送登录的网络请求
