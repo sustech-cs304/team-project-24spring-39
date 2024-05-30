@@ -283,14 +283,8 @@ watch(
             width="180"
             sortable
           />
-          <el-table-column
-            fixed
-            prop="library"
-            label="图书馆"
-            width="120"
-            sortable
-          />
-          <el-table-column fixed prop="room" label="讨论间" sortable />
+          <el-table-column prop="library" label="图书馆" width="120" sortable />
+          <el-table-column prop="room" label="讨论间" sortable />
           <el-table-column prop="date" label="预约日期" width="120" sortable />
           <el-table-column prop="startTime" label="起始时间" sortable />
           <el-table-column prop="endTime" label="结束时间" sortable />
@@ -405,11 +399,14 @@ watch(
 
 <style scoped lang="scss">
 @import "@/style/mixin.scss";
+//* {
+//  box-sizing: border-box;
+//}
+
 .container {
   display: flex;
   gap: 16px;
   height: 617.6px; // 固定container为除去layout.vue中header的高度
-  width: 676px;
 }
 
 .left-container {
@@ -420,9 +417,8 @@ watch(
 }
 
 .right-container {
-  //width: 0;
-  flex-grow: 1;
-  //width: 700px;
+  flex-grow: 0; // 移除flex-grow
+  width: calc(100% - 288px); // 288px 是left-container的总宽度 + gap的宽度
   display: flex;
   flex-direction: column;
 
