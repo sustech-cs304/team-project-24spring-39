@@ -33,10 +33,11 @@ export function searchStudentBySid(studentId) {
  * @returns {*}
  */
 export function submitReservation(data) {
+  // 构造查询字符串
+  const queryParams = new URLSearchParams(data).toString();
   return request({
     method: "post",
-    url: "/reservation/submit",
-    data,
+    url: `/reservation/submit?${queryParams}`,
   });
 }
 
@@ -53,9 +54,9 @@ export function fetchLocations() {
 }
 
 export function submitLocation(data) {
+  const queryParams = new URLSearchParams(data).toString();
   return request({
     method: "post",
-    url: "/reservation/submit-location",
-    data,
+    url: `/reservation/submit-location?${queryParams}`,
   });
 }

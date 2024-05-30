@@ -174,7 +174,7 @@ const form = reactive({
   startTime: "",
   endTime: "",
   searchState: "",
-  addedPersons: [12112203, 12112201],
+  addedPersons: [12345678, 23456789],
 });
 
 // 表单校验规则
@@ -209,10 +209,13 @@ const submitForm = () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       try {
+        console.log("currentBooking.value: ", currentBooking.value);
+        const currentDate = format(new Date(), "yyyy-MM-dd"); // 获取当前日期并格式化
         await submitReservation({
-          room: currentBooking.value.room,
-          startTime: form.startTime,
-          endTime: form.endTime,
+          room_id: currentBooking.value.id,
+          date: selectedDay.value || currentDate,
+          start_time: form.startTime,
+          end_time: form.endTime,
           persons: form.addedPersons.map((person) =>
             person.toString().slice(0, 8)
           ),
@@ -296,7 +299,7 @@ const resetForm = (showMessage = false) => {
 
   <el-dialog
     v-model="dialogVisible"
-    :title="currentBooking.room || '预约'"
+    :title="currentBooking.place + '-' + currentBooking.name || '预约'"
     :before-close="handleClose"
   >
     <el-form ref="formRef" :model="form" :rules="rules">
