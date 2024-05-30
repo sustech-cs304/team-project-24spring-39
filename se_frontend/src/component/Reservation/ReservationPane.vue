@@ -256,36 +256,38 @@ const resetForm = (showMessage = false) => {
     <div class="spacer"></div>
     <el-button type="primary" plain @click="fetchBookings">查询</el-button>
   </div>
-  <div class="scrollable-panel">
-    <div class="time-header">
-      <div>场地</div>
-      <div>操作</div>
-      <div v-for="hour in hours" :key="hour">{{ hour }}</div>
-    </div>
-    <div class="booking-row" v-for="room in childrenRooms" :key="room.id">
-      <div
-        :style="{
-          'grid-column-start': 1,
-          'grid-column-end': 2,
-        }"
-      >
-        {{ room.name }}
+  <div class="body-container">
+    <div class="scrollable-panel">
+      <div class="time-header">
+        <div>场地</div>
+        <div>操作</div>
+        <div v-for="hour in hours" :key="hour">{{ hour }}</div>
       </div>
-      <div>
-        <el-button type="primary" plain @click="openDialog(room)">
-          预约
-        </el-button>
-      </div>
-      <div
-        v-for="booking in bookings[room.id]"
-        :key="booking.id"
-        class="booking-slot"
-        :style="{
-          'grid-column-start': getGridStart(booking.timeslot),
-          'grid-column-end': getGridEnd(booking.timeslot),
-        }"
-      >
-        {{ booking.status }}
+      <div class="booking-row" v-for="room in childrenRooms" :key="room.id">
+        <div
+          :style="{
+            'grid-column-start': 1,
+            'grid-column-end': 2,
+          }"
+        >
+          {{ room.name }}
+        </div>
+        <div>
+          <el-button type="primary" plain @click="openDialog(room)">
+            预约
+          </el-button>
+        </div>
+        <div
+          v-for="booking in bookings[room.id]"
+          :key="booking.id"
+          class="booking-slot"
+          :style="{
+            'grid-column-start': getGridStart(booking.timeslot),
+            'grid-column-end': getGridEnd(booking.timeslot),
+          }"
+        >
+          {{ booking.status }}
+        </div>
       </div>
     </div>
   </div>
@@ -362,14 +364,18 @@ const resetForm = (showMessage = false) => {
   }
 }
 
-.scrollable-panel {
-  width: 1000px;
-  max-height: 500px;
+.body-container {
+  width: 100%;
+  height: calc(100% - 52.8px); // 52.8px 是 filter-bar 的高度
+  background-color: white;
   overflow: auto;
+  margin-top: 10px; // 为了让筛选框和预约展示表格有一定的间距
+}
+
+.scrollable-panel {
   border-collapse: collapse; // 合并边框，目前好像没用
   display: grid;
-  grid-template-columns: auto auto repeat(13, 1fr);
-  margin-top: 10px; // 为了让筛选框和预约展示表格有一定的间距
+  grid-template-columns: 150px 100px repeat(13, 100px);
   font-size: 14px;
 
   // 设置字体颜色为半透明黑色
