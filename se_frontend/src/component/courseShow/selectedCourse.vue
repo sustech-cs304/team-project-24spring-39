@@ -31,10 +31,12 @@
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
+import { ref, computed, watch } from "vue";
 import { ReturnSelectedCourse } from "@/api/course";
+import { useStore } from "vuex";
 
 const MAX_POINTS = 100;
+const tableData = ref([]);
 const remainingPoints = computed(() => {
   let totalUsedPoints = tableData.value.reduce(
     (acc, course) => acc + course.points,
@@ -50,8 +52,11 @@ const totalCredits = computed(() => {
   );
   return totalCredit;
 });
+const store = useStore();
+watch(remainingPoints, (newValue) => {
+  store.commit("setRemainingPoints", newValue);
+});
 
-const tableData = ref([]);
 const tableColumns = [
   { prop: "courseType", label: "课程类型", width: "150" },
   { prop: "courseName", label: "课程名称", width: "120" },

@@ -20,19 +20,24 @@
           :width="column.width"
         />
         <el-table-column fixed="right" label="Operations">
-          <el-form :inline="true" :model="AddCourse" width="130px">
-            <el-form-item>
-              <el-input
-                v-model="AddCourse.credit"
-                placeholder="投入分数"
-                width="100px"
-                clearable
-              />
-              <el-button type="primary" @click="HandleAdd" width="30px"
-                >Add
-              </el-button>
-            </el-form-item>
-          </el-form>
+          <template #default="scope">
+            <el-form :inline="true" :model="scope.row" width="130px">
+              <el-form-item>
+                <el-input
+                  v-model="scope.row.credit"
+                  placeholder="投入分数"
+                  width="100px"
+                  clearable
+                />
+                <el-button
+                  type="primary"
+                  @click="HandleAdd(scope.row)"
+                  width="30px"
+                  >Add
+                </el-button>
+              </el-form-item>
+            </el-form>
+          </template>
         </el-table-column>
       </el-table>
       <div class="demo-pagination-block">
@@ -54,9 +59,11 @@
 </template>
 
 <script setup>
-import { ref, onMounted, reactive } from "vue";
-import { fetchDataByType } from "@/api/course";
+import { ElMessage } from "element-plus";
+import { ref, onMounted, computed } from "vue";
+import { fetchDataByType, submitSelectedCourse } from "@/api/course";
 import { defineProps, watch } from "vue";
+import { useStore } from "vuex";
 
 const props = defineProps({
   type: String,
@@ -122,12 +129,30 @@ const fetchData = async (type) => {
 
 watch(() => props.type, fetchData, { immediate: true });
 
-const AddCourse = reactive({
-  credit: " ",
-});
+const store = useStore();
 
-function HandleAdd() {
-  console.log("add!");
+async function HandleAdd(row) {
+  const remainingPoints = computed(() => store.getters.getRemainingPoints);
+  console.log("remainingPoints:", remainingPoints.value);
+  if (remainingPoints.value < row.credit) {
+    console.log("Not enough points!");
+    ElMessage.error("Not enough points!");
+    return;
+  }
+  try {
+    // 构建要提交的数据
+    const data = {
+      courseID: row.courseID,
+      points: row.credit,
+    };
+    // 调用 API 函数
+    const response = await submitSelectedCourse(data);
+    console.log("Submitted successfully", response);
+    ElMessage.success("Course added successfully!");
+  } catch (error) {
+    console.error("Failed to submit course", error);
+    ElMessage.error("Failed to add course!");
+  }
 }
 
 // 分页
