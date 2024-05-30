@@ -33,7 +33,7 @@ export function searchStudentBySid(studentId) {
  * @returns {*}
  */
 export function submitReservation(data) {
-  // 构造查询字符串
+  // 构造query参数
   const queryParams = new URLSearchParams(data).toString();
   return request({
     method: "post",

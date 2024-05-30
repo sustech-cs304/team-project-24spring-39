@@ -1,7 +1,10 @@
 <script setup>
-import { ref, computed } from "vue";
+import { ref, reactive, computed } from "vue";
 import { useStore } from "vuex";
 import HorizonTimeLine from "@/component/Home/HorizonTimeLine.vue";
+import { format } from "date-fns";
+import { ElMessage, ElMessageBox } from "element-plus";
+import { submitTodo } from "@/api/user";
 
 const store = useStore();
 
@@ -133,6 +136,100 @@ const tables = ref({
     },
   ],
 });
+
+const dialogVisible = ref(false);
+const openDialog = () => {
+  dialogVisible.value = true;
+};
+const formRef = ref(null);
+const rules = reactive({
+  content: [
+    { required: true, message: "Content is required", trigger: "blur" },
+  ],
+  deadline: [
+    { required: true, message: "Deadline is required", trigger: "blur" },
+  ],
+});
+const todoForm = ref({
+  content: "",
+  deadline: "",
+});
+const shortcuts = [
+  {
+    text: "Tomorrow",
+    value: () => {
+      const date = new Date();
+      date.setDate(date.getDate() + 1);
+      return date;
+    },
+  },
+  {
+    text: "3 days later",
+    value: () => {
+      const date = new Date();
+      date.setDate(date.getDate() + 3);
+      return date;
+    },
+  },
+];
+const disabledDate = (time) => {
+  return time.getTime() < Date.now() - 8.64e7;
+};
+const handleClose = (done) => {
+  const isFormEmpty = Object.values(todoForm).every(
+    (value) =>
+      value === "" ||
+      value === null ||
+      value === undefined ||
+      (Array.isArray(value) && value.length === 0)
+  );
+  if (isFormEmpty) {
+    done();
+  } else {
+    ElMessageBox.confirm("可能还有未保存的数据，确定关闭吗？")
+      .then(() => {
+        // 用户点击确定按钮触发的分支
+        done(); // el-dialog的回调函数，用于关闭对话框
+        resetForm();
+      })
+      .catch(() => {
+        // 用户点击取消按钮触发的分支
+      });
+  }
+};
+// 重置表单
+const resetForm = (showMessage = false) => {
+  formRef.value.resetFields();
+  if (showMessage) {
+    ElMessage({
+      showClose: true,
+      message: "表单已重置",
+      type: "info",
+      grouping: true,
+    });
+  }
+};
+const saveTodo = () => {
+  formRef.value.validate(async (valid) => {
+    if (valid) {
+      try {
+        await submitTodo({
+          content: todoForm.value.content,
+          deadline: format(todoForm.value.deadline, "yyyy-MM-dd HH:mm:ss"),
+        });
+        ElMessage.success("提交成功");
+        dialogVisible.value = false;
+        resetForm();
+      } catch (error) {
+        // 错误处理
+        ElMessage.error("提交失败，请稍后重试");
+        console.log(error);
+      }
+    } else {
+      ElMessage.warning("表单验证失败，请检查输入");
+    }
+  });
+};
 </script>
 
 <template>
@@ -185,6 +282,7 @@ const tables = ref({
   </el-row>
   <!--  消息提醒-->
   <el-row class="message-reminding">
+    <el-button type="primary" plain @click="openDialog">Add Todo</el-button>
     <el-tabs v-model="activeTab" tab-position="left" class="tabs">
       <el-tab-pane label="选课" name="selection"></el-tab-pane>
       <el-tab-pane label="评教" name="evaluation"></el-tab-pane>
@@ -198,6 +296,31 @@ const tables = ref({
       <!-- Add more columns as needed -->
     </el-table>
   </el-row>
+
+  <el-dialog
+    v-model="dialogVisible"
+    title="添加自定义待办"
+    :before-close="handleClose"
+  >
+    <el-form ref="formRef" :model="todoForm" :rules="rules" label-width="120px">
+      <el-form-item label="内容" prop="content">
+        <el-input v-model="todoForm.content" />
+      </el-form-item>
+      <el-form-item label="提醒时间" prop="deadline">
+        <el-date-picker
+          v-model="todoForm.deadline"
+          type="datetime"
+          placeholder="Select date and time"
+          :shortcuts="shortcuts"
+          :disabledDate="disabledDate"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="resetForm(true)">Reset</el-button>
+        <el-button type="primary" @click="saveTodo">添加</el-button>
+      </el-form-item>
+    </el-form>
+  </el-dialog>
 </template>
 
 <style scoped lang="scss">

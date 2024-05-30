@@ -19,12 +19,10 @@ export function login(data) {
   });
 }
 
-/**
- * @description: 获取菜单列表
- */
-export function getMenuList() {
+export function submitTodo(data) {
   return request({
-    method: "get",
-    url: "/userInfo{1}",
+    method: "post",
+    url: "/todo/submit",
+    data,
   });
 }

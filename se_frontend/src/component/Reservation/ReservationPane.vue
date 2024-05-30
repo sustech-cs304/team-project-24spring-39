@@ -209,7 +209,6 @@ const submitForm = () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       try {
-        console.log("currentBooking.value: ", currentBooking.value);
         const currentDate = format(new Date(), "yyyy-MM-dd"); // 获取当前日期并格式化
         await submitReservation({
           room_id: currentBooking.value.id,
@@ -234,7 +233,7 @@ const submitForm = () => {
   });
 };
 
-// 函数：重置表单
+// 重置表单
 const resetForm = (showMessage = false) => {
   formRef.value.resetFields();
   if (showMessage) {
