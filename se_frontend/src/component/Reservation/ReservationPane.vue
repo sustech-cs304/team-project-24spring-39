@@ -86,28 +86,30 @@ const hours = computed(() => {
   const startHour = 6;
   const endHour = 18;
   const times = [];
-  for (let hour = startHour; hour <= endHour; hour++) {
-    times.push(`${hour}:00`);
+  for (let minute = startHour * 60; minute <= endHour * 60; minute += 30) {
+    const hour = Math.floor(minute / 60);
+    const mins = minute % 60;
+    times.push(`${hour}:${mins.toString().padStart(2, "0")}`);
   }
   return times;
 });
 
 // 计算开始的网格线位置
 const getGridStart = (timeslot) => {
-  const [start] = timeslot
-    .split(" - ")
-    .map((time) => time.trim().split(":")[0]);
-  // 假设你的网格是从6点开始的，则6点对应网格线1
-  return parseInt(start) - 6 + 3;
+  const [start] = timeslot.split(" - ").map((time) => time.trim().split(":"));
+  // 将小时和分钟转换成网格位置，每小时两格，从6点开始，每30分钟一个格子
+  const startHour = parseInt(start[0]);
+  const startMinute = parseInt(start[1]);
+  return (startHour - 6) * 2 + (startMinute === 30 ? 1 : 0) + 3; // 加3因为网格线从3开始
 };
 
 // 计算结束的网格线位置
 const getGridEnd = (timeslot) => {
-  const [, end] = timeslot
-    .split(" - ")
-    .map((time) => time.trim().split(":")[0]);
-  // 结束时间对应的网格线需要比实际时间多1，因为它是跨越到的下一个网格线
-  return parseInt(end) - 6 + 4;
+  const [, end] = timeslot.split(" - ").map((time) => time.trim().split(":"));
+  // 同样的计算逻辑，但是结束时间对应的网格线是下一个网格线
+  const endHour = parseInt(end[0]);
+  const endMinute = parseInt(end[1]);
+  return (endHour - 6) * 2 + (endMinute === 30 ? 1 : 0) + 4; // 结束时间对应的网格线需要比实际时间多1
 };
 
 const dialogVisible = ref(false);
@@ -375,7 +377,7 @@ const resetForm = (showMessage = false) => {
 .scrollable-panel {
   border-collapse: collapse; // 合并边框，目前好像没用
   display: grid;
-  grid-template-columns: 150px 100px repeat(13, 100px);
+  grid-template-columns: 150px 100px repeat(25, 60px);
   font-size: 14px;
 
   // 设置字体颜色为半透明黑色
