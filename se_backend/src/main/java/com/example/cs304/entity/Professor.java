@@ -2,79 +2,54 @@ package com.example.cs304.entity;
 
 import jakarta.persistence.*;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
-
 @Entity
-@SuppressWarnings("all")
+@Table(name = "professor")
 public class Professor {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @Column(name = "PID", nullable = false, length = 8)
+    private String pid;
 
-	@Column(name = "PID")
-	private Integer pid;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
-	@Column(name = "name")
-	private String name;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "department", nullable = false, referencedColumnName = "name")
 
-	@Column(name = "department_id")
-	private Integer departmentId;
+    private Department department;
 
-	public Professor() {}
+    public Integer getId() {
+        return id;
+    }
 
-	public Professor(Integer id, Integer pid, String name, Integer departmentId) {
-		this.id = id;
-		this.pid = pid;
-		this.name = name;
-		this.departmentId = departmentId;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@Override
-	public String toString() {
-		return "Professor{" +
-				"id='" + id + '\'' +
-				", pid='" + pid + '\'' +
-				", name='" + name + '\'' +
-				", departmentId='" + departmentId + '\'' +
-				'}';
-	}
+    public String getPid() {
+        return pid;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public void setPid(String pid) {
+        this.pid = pid;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Integer getPid() {
-		return this.pid;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public void setPid(Integer pid) {
-		this.pid = pid;
-	}
+    public Department getDepartment() {
+        return department;
+    }
 
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public Integer getDepartmentId() {
-		return this.departmentId;
-	}
-
-	public void setDepartmentId(Integer departmentId) {
-		this.departmentId = departmentId;
-	}
+    public void setDepartment(Department department) {
+        this.department = department;
+    }
 
 }

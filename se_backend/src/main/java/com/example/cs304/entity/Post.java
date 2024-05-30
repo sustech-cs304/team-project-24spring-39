@@ -1,107 +1,104 @@
 package com.example.cs304.entity;
 
-import java.util.Date;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import java.time.Instant;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "post")
 public class Post {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "author_id", nullable = false, referencedColumnName = "SID")
+    private Student author;
 
-	@Column(name = "author_id")
-	private Integer authorId;
+    @Column(name = "title", nullable = false, length = 50)
+    private String title;
 
-	@Column(name = "title")
-	private String title;
+    @Column(name = "content", nullable = false, length = 1000)
+    private String content;
 
-	@Column(name = "content")
-	private String content;
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "posting_time", nullable = false)
+    private Instant postingTime;
 
-	@Column(name = "posting_time")
-	private Date postingTime;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id")
+    private File file;
 
-	@Column(name = "file_id")
-	private Integer fileId;
+    @Column(name = "major_category", length = 50)
+    private String majorCategory;
 
-	public Post() {}
+    @Column(name = "course_category", length = 50)
+    private String courseCategory;
 
-	public Post(Integer id, Integer authorId, String title, String content, Date postingTime, Integer fileId) {
-		this.id = id;
-		this.authorId = authorId;
-		this.title = title;
-		this.content = content;
-		this.postingTime = postingTime;
-		this.fileId = fileId;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	@Override
-	public String toString() {
-		return "Post{" +
-				"id='" + id + '\'' +
-				", authorId='" + authorId + '\'' +
-				", title='" + title + '\'' +
-				", content='" + content + '\'' +
-				", postingTime='" + postingTime + '\'' +
-				", fileId='" + fileId + '\'' +
-				'}';
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Student getAuthor() {
+        return author;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public void setAuthor(Student author) {
+        this.author = author;
+    }
 
-	public Integer getAuthorId() {
-		return this.authorId;
-	}
+    public String getTitle() {
+        return title;
+    }
 
-	public void setAuthorId(Integer authorId) {
-		this.authorId = authorId;
-	}
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-	public String getTitle() {
-		return this.title;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public void setTitle(String title) {
-		this.title = title;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public String getContent() {
-		return this.content;
-	}
+    public Instant getPostingTime() {
+        return postingTime;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public void setPostingTime(Instant postingTime) {
+        this.postingTime = postingTime;
+    }
 
-	public Date getPostingTime() {
-		return this.postingTime;
-	}
+    public File getFile() {
+        return file;
+    }
 
-	public void setPostingTime(Date postingTime) {
-		this.postingTime = postingTime;
-	}
+    public void setFile(File file) {
+        this.file = file;
+    }
 
-	public Integer getFileId() {
-		return this.fileId;
-	}
+    public String getMajorCategory() {
+        return majorCategory;
+    }
 
-	public void setFileId(Integer fileId) {
-		this.fileId = fileId;
-	}
+    public void setMajorCategory(String majorCategory) {
+        this.majorCategory = majorCategory;
+    }
+
+    public String getCourseCategory() {
+        return courseCategory;
+    }
+
+    public void setCourseCategory(String courseCategory) {
+        this.courseCategory = courseCategory;
+    }
 
 }
