@@ -51,10 +51,6 @@ public class Course {
     @Column(name = "description", length = 1000)
     private String description;
 
-    @Column(name = "time", nullable = false)
-    @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> time;
-
     @ManyToMany
     @JoinTable(
     name = "course_professor",
@@ -164,12 +160,5 @@ public void setProfessors(List<Professor> professors) {
         this.description = description;
     }
 
-    public Map<String, Object> getTime() {
-        return time;
-    }
-
-    public void setTime(Map<String, Object> time) {
-        this.time = time;
-    }
 
 }

@@ -1,7 +1,7 @@
-create database if not exists cs304proj
-character set utf8mb4 collate utf8mb4_unicode_ci;
--- department
+create database if not exists cs304proj;
 use cs304proj;
+
+-- department
 create table if not exists department
 (
     id int auto_increment primary key,
@@ -66,7 +66,6 @@ create table if not exists course
     selected int not null default 0,
     location varchar(50) not null,
     description varchar(1000),
-    time json not null,
     foreign key (department) references department(name),
     constraint check_CID check (CID REGEXP '[A-Z]{2}[0-9]{3}$')
 );
@@ -78,6 +77,7 @@ create table if not exists course_student
     student_id varchar(8) not null,
     score int not null default 0,
     valid boolean not null default false,
+    judged boolean not null default false,
     foreign key (course_id) references course(CID),
     foreign key (student_id) references student(SID),
     unique (course_id, student_id)
@@ -109,23 +109,60 @@ create table if not exists rate
     unique (course_id, student_id)
 );
 
-create table if not exists room
+create table if not exists building
 (
     id int auto_increment primary key,
     name varchar(50) not null unique,
-    capacity int not null
+    capacity int not null,
+    status enum('开放', '关闭') not null default '开放'
+);
+
+create table if not exists room
+(
+    id int auto_increment primary key,
+    place varchar(50) not null,
+    name varchar(50) not null unique,
+    capacity int not null,
+    status enum('空闲', '占用') not null default '空闲',
+    foreign key (place) references building(name)
+);
+
+create table if not exists student_reservation
+(
+    id int auto_increment primary key,
+    student_id varchar(8) not null,
+    room_id int not null,
+    date date not null,
+    start_time time not null,
+    end_time time not null,
+    create_time timestamp not null default now(),
+    status enum('预约','非开放预约时段') not null default '预约',
+    foreign key (student_id) references student(SID),
+    foreign key (room_id) references room(id),
+    unique (room_id, date, start_time, end_time)
 );
 
 create table if not exists reservation
 (
     id int auto_increment primary key,
+    room_id int not null,
+    date date not null,
+    start_time time not null,
+    end_time time not null,
+    create_time timestamp not null default now(),
+    status enum('预约','非开放预约时段') not null default '预约',
+    foreign key (room_id) references room(id),
+    unique (room_id, date, start_time, end_time)
+);
+
+create table if not exists student_reservation
+(
+    id int auto_increment primary key,
     student_id varchar(8) not null,
-    room varchar(50) not null,
-    time json not null,
-    purpose varchar(50) not null,
+    reservation_id int not null,
     foreign key (student_id) references student(SID),
-    foreign key (room) references room(name),
-    unique (student_id, room)
+    foreign key (reservation_id) references reservation(id),
+    unique (student_id, reservation_id)
 );
 
 create table if not exists file
@@ -198,4 +235,23 @@ create table if not exists message
     content varchar(1000) not null,
     time timestamp not null default now(),
     foreign key (receiver_id) references student(SID)
+);
+
+create table if not exists timeslot
+(
+    id int auto_increment primary key,
+    day varchar(10) not null,
+    start_time time not null,
+    end_time time not null,
+    week enum ('odd', 'even', 'both') not null
+);
+
+create table if not exists course_timeslot
+(
+    id int auto_increment primary key,
+    course_id varchar(5) not null,
+    timeslot_id int not null,
+    foreign key (course_id) references course(CID),
+    foreign key (timeslot_id) references timeslot(id),
+    unique (course_id, timeslot_id)
 );

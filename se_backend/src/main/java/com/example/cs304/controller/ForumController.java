@@ -110,4 +110,16 @@ public class ForumController {
 
         return new Response<>(200, "Comment created successfully", replyRepository.save(reply));
     }
+
+    @PostMapping("/upload_file")
+    public Response<?> uploadFile(@RequestParam("file") MultipartFile file, @RequestParam("uploaderID") String uploaderID) throws IOException {
+        File fileEntity = new File();
+        fileEntity.setName(file.getOriginalFilename());
+        fileEntity.setFiletype(file.getContentType());
+        fileEntity.setFilepath("path/to/your/storage/location"); // replace with your actual storage location
+        fileEntity.setUploader(studentRepository.findBySid(uploaderID));
+        fileEntity.setUploadTime(Instant.now());
+        fileEntity = fileRepository.save(fileEntity);
+        return new Response<>(200, "File uploaded successfully", fileEntity);
+    }
 }

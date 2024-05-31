@@ -108,7 +108,7 @@ public class ReservationController {
 //    void addReservation(String student_id, int room_id, String date, String start_time, String end_time, String purpose);
     @Transactional
     @PostMapping("/submit")
-    public void addReservation(@RequestParam("student") List<String> student,
+    public Response addReservation(@RequestParam("persons") List<String> student,
                                @RequestParam("room_id") int room_id,
                                @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                @RequestParam("start_time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime start_time,
@@ -119,6 +119,7 @@ public class ReservationController {
         for (String student_id : student) {
             SRrepository.insertStudentReservation(student_id, reservation_id);
         }
+        return Response.success(null);
     }
 
 
