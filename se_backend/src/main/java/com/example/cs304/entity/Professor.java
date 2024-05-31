@@ -17,6 +17,7 @@ public class Professor {
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "department", nullable = false, referencedColumnName = "name")
+
     private Department department;
 
     public Integer getId() {

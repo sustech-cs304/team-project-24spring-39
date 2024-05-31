@@ -22,20 +22,31 @@ public class ForumController {
     private final FileRepository fileRepository;
     private final ReplyRepository replyRepository;
     private final MajorRepository majorRepository;
+    private final DepartmentRepository departmentRepository;
 
-    public ForumController(PostRepository postRepository, StudentRepository studentRepository, FileRepository fileRepository, ReplyRepository replyRepository, MajorRepository majorRepository) {
+    public ForumController(PostRepository postRepository, StudentRepository studentRepository, FileRepository fileRepository, ReplyRepository replyRepository, MajorRepository majorRepository, DepartmentRepository departmentRepository) {
         this.postRepository = postRepository;
         this.studentRepository = studentRepository;
         this.fileRepository = fileRepository;
         this.replyRepository = replyRepository;
         this.majorRepository = majorRepository;
+        this.departmentRepository = departmentRepository;
     }
-    @GetMapping("/get_major")
-    public List<Major> getMajors(){
-        return majorRepository.findAll();
+//    @GetMapping("/get_major")
+//    public List<Major> getMajors(){
+//        return majorRepository.findAll();
+//    }
+    @GetMapping("/get_department")
+    public List<Department> getDepartments(){
+        return departmentRepository.findAll();
     }
+//    @GetMapping("/get_course_department")
+//    public List<Course> getCoursesByDepartment(@RequestParam(required = false) String departmentId) {
+
+//    }
     @GetMapping("/get_post_by_condition")
     public List<Post> getPosts(@RequestParam(required = false) String authorId, @RequestParam(required = false) String majorTag, @RequestParam(required = false) String courseTag) {
+        System.out.println("authorId: " + authorId);
         return postRepository.findByCondition(authorId, majorTag, courseTag);
     }
     @PostMapping("/posting")//暂时用一下，后续要改

@@ -2,6 +2,8 @@ package com.example.cs304.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "major")
 public class Major {
