@@ -79,9 +79,10 @@ const activeTab = ref(titles[0].name); // 默认选中第一个标签页
 const tableData = ref([]);
 
 const tableColumns = [
+  { prop: "courseid", label: "课程编号", width: "150" },
   { prop: "courseType", label: "课程类型", width: "150" },
   { prop: "courseName", label: "课程名称", width: "120" },
-  { prop: "courseID", label: "课程代码", width: "120" },
+  { prop: "courseCID", label: "课程代码", width: "120" },
   { prop: "courseCredit", label: "学分", width: "120" },
   { prop: "coursePeriod", label: "学时", width: "120" },
   { prop: "courseDepartment", label: "课程部门", width: "120" },
@@ -109,13 +110,14 @@ const fetchData = async (type) => {
       const response = await fetchDataByType(type);
       console.log("response:", response.data);
       cachedData.value[type] = response.data.map((item) => ({
+        courseid: item.id,
         courseType: item.type,
         courseName: item.name,
-        courseID: item.CID,
+        courseCID: item.cid,
         courseCredit: item.credit,
         coursePeriod: item.hours,
-        courseDepartment: item.department,
-        courseInformation: `${item.professor_name}; ${item.location}; ${item.time}`,
+        courseDepartment: item.department.name,
+        courseInformation: `${item.location}; ${item.time}`,
         capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
       }));
       totalItems.value = cachedData.value[type].length;
