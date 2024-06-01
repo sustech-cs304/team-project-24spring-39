@@ -221,6 +221,14 @@ export default {
         JSON.stringify(userInfo)
       );
     },
+    // 更新用户头像
+    updateUserAvatar(state, avatarUrl) {
+      state.userInfo.avatar = avatarUrl;
+      localStorage.setItem(
+        process.env.VUE_APP_USER_INFO,
+        JSON.stringify(state.userInfo)
+      );
+    },
     // 设置登录状态
     setLoginState(state, flag) {
       state.isLogin = flag;
