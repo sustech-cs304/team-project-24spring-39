@@ -29,14 +29,15 @@ const defaultActive = computed(() => {
 });
 
 // 菜单列表数据
-const menuList = computed(() => store.state.userStore.menuList);
+const menuList = store.state.userStore.menuList;
 // const sid = computed(() => store.state.userStore.userInfo.sid);
 async function handleSelect(index) {
-  console.log(index);
+  // console.log(index);
   if (index == "/evaluation") {
     console.log("enter handel select976");
     await store.dispatch("fetchCourses", "00000001");
   }
+  // console.log("menuList: ", menuList);
 }
 </script>
 

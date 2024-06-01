@@ -1,67 +1,71 @@
 package com.example.cs304.entity;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import java.time.Instant;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "room")
 public class Room {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @Lob
+    @Column(name = "place", nullable = false)
+    private String place;
 
-	@Column(name = "name")
-	private String name;
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
-	@Column(name = "capacity")
-	private Integer capacity;
+    @Column(name = "capacity", nullable = false)
+    private Integer capacity;
 
-	public Room() {}
+    @ColumnDefault("空闲")
+    @Lob
+    @Column(name = "status", nullable = false)
+    private String status;
 
-	public Room(Integer id, String name, Integer capacity) {
-		this.id = id;
-		this.name = name;
-		this.capacity = capacity;
-	}
+    public String getStatus() {
+        return status;
+    }
 
-	@Override
-	public String toString() {
-		return "Room{" +
-				"id='" + id + '\'' +
-				", name='" + name + '\'' +
-				", capacity='" + capacity + '\'' +
-				'}';
-	}
+    public void setStatus(String status) {
+        this.status = status;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Integer getId() {
+        return id;
+    }
 
-	public String getName() {
-		return this.name;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public String getPlace() {
+        return place;
+    }
 
-	public Integer getCapacity() {
-		return this.capacity;
-	}
+    public void setPlace(String place) {
+        this.place = place;
+    }
 
-	public void setCapacity(Integer capacity) {
-		this.capacity = capacity;
-	}
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Integer getCapacity() {
+        return capacity;
+    }
+
+    public void setCapacity(Integer capacity) {
+        this.capacity = capacity;
+    }
 
 }

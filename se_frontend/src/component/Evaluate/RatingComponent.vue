@@ -47,6 +47,8 @@ import { ref } from "vue";
 import { reactive } from "vue";
 import { computed } from "vue";
 import { useStore } from "vuex";
+import { submitRatingInside } from "@/api/eval_api";
+import { ElMessageBox } from "element-plus";
 const radio1 = ref(3);
 const radio2 = ref(3);
 const radio3 = ref(3);
@@ -55,7 +57,7 @@ const value = ref();
 const textarea = ref("");
 const store = useStore();
 const selectedCourseId = computed(
-  () => store.state.userStore.selectedCourse.id
+  () => store.state.evalStore.selectedCourse.id
 );
 // do not use same name with ref
 const form = reactive({
@@ -69,18 +71,29 @@ const form = reactive({
   desc: "",
 });
 const submitData = async () => {
-  // 这里是您要发送的数据
   const payload = {
     courseID: selectedCourseId,
-    radio1: radio1.value,
-    radio2: radio2.value,
-    radio3: radio3.value,
-    radio4: radio4.value,
-    value: value.value,
-    textarea: textarea.value,
+    difficulty: radio1.value,
+    grading_policy: radio2.value,
+    workload: radio3.value,
+    learning_gains: radio4.value,
+    overall: value.value,
+    comment: textarea.value,
   };
-
-  await store.dispatch("submitRating", payload);
+  try {
+    console.log(payload);
+    await submitRatingInside(payload);
+    ElMessageBox.alert("提交成功", "成功", {
+      confirmButtonText: "确定",
+      type: "success",
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    ElMessageBox.alert("提交失败", "错误", {
+      confirmButtonText: "确定",
+      type: "error",
+    });
+  }
 };
 </script>
 

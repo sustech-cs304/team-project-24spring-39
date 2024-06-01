@@ -1,54 +1,32 @@
 package com.example.cs304.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import java.util.List;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "department")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Department {
+    @Setter
+    @Getter
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @Setter
+    @Getter
+    @Column(name = "name", nullable = false, length = 50)
+    private String name;
 
-	@Column(name = "name")
-	private String name;
-
-	public Department() {}
-
-	public Department(Integer id, String name) {
-		this.id = id;
-		this.name = name;
-	}
-
-	@Override
-	public String toString() {
-		return "Department{" +
-				"id='" + id + '\'' +
-				", name='" + name + '\'' +
-				'}';
-	}
-
-	public Integer getId() {
-		return this.id;
-	}
-
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
+    @Setter
+    @Getter
+    @OneToMany(mappedBy = "department")
+    private List<Course> courses;
 
 }

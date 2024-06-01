@@ -14,6 +14,8 @@ import "makeit-captcha/dist/captcha.min.css";
 import "element-plus/dist/index.css";
 // 引入i18n
 import i18n from "@/locales";
+// 引入 MotionPlugin 插件来做动画
+import { MotionPlugin } from "@vueuse/motion";
 
 const app = createApp(App);
 
@@ -22,4 +24,10 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
   app.component(key, component);
 }
 
-app.use(store).use(router).use(MakeitCaptcha).use(i18n).mount("#app");
+app
+  .use(store)
+  .use(router)
+  .use(MakeitCaptcha)
+  .use(i18n)
+  .use(MotionPlugin)
+  .mount("#app");

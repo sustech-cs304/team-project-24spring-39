@@ -24,6 +24,7 @@ import Main from "./components/Main.vue";
 </script>
 
 <style lang="scss">
+@import "@/style/mixin.scss";
 .layout {
   height: 100vh;
   display: flex;
@@ -50,8 +51,10 @@ import Main from "./components/Main.vue";
   }
 
   .el-main {
-    width: 100%;
-    background-color: #f0f2f5;
+    //width: 100%;
+    //background-color: #f0f2f5;
+    @include bg_color();
+    @include text_color();
     padding: 0;
     margin-top: 28px;
     align-items: baseline;

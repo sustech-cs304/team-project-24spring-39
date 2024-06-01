@@ -80,6 +80,7 @@ const searchMax = ref(null);
 //     ],
 //   },
 // ]);
+
 const tableData = ref([]);
 
 const displayData = ref([...tableData.value]);
@@ -89,6 +90,10 @@ onMounted(async () => {
   await store.dispatch("reservationStore/loadLocations");
   tableData.value = store.state.reservationStore.locations;
   displayData.value = [...tableData.value];
+  // 打印 displayData.value 数组中每一项的 children 字段
+  displayData.value.forEach((item) => {
+    console.log(item.children);
+  });
 });
 
 // todo: 使用gpt生成
@@ -268,7 +273,7 @@ const saveLocation = async () => {
         default-expand-all
       >
         <el-table-column fixed prop="name" label="地点名称" sortable />
-        <el-table-column prop="createTime" label="创建时间" sortable />
+        <el-table-column prop="status" label="状态" sortable />
         <el-table-column prop="capacity" label="容量" sortable />
         <el-table-column prop="remark" label="备注" />
         <el-table-column fixed="right" label="操作">
@@ -347,6 +352,7 @@ const saveLocation = async () => {
 </template>
 
 <style scoped lang="scss">
+@import "@/style/mixin.scss";
 .container {
   display: flex;
   flex-direction: column;
@@ -358,7 +364,8 @@ const saveLocation = async () => {
   align-items: center; /* 垂直居中对齐 */
   gap: 16px; /* 控制各个元素之间的间距 */
   padding: 16px;
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
 
   .location-search {
     width: 300px;
@@ -374,7 +381,8 @@ const saveLocation = async () => {
   flex-grow: 1;
   overflow: auto; /* 超出部分显示滚动条 */
   //overflow: hidden; /* 隐藏默认滚动条 */
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
 
   //.custom-scrollbar {
   //  height: 100%;
@@ -401,6 +409,7 @@ const saveLocation = async () => {
   display: flex;
   justify-content: flex-end;
   padding: 6px;
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
 }
 </style>
