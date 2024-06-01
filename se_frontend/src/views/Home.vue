@@ -211,9 +211,10 @@ const resetForm = (showMessage = false) => {
   }
 };
 const handleClick = async (tab) => {
+  // console.log(tab.props.name);
   try {
-    const response = await fetchTodoList(tab);
-    tables.value[tab] = response.data;
+    const response = await fetchTodoList(tab.props.name);
+    tables.value[activeTab.value] = response.data;
   } catch (error) {
     ElMessage.error("获取数据失败，请稍后重试");
   }
@@ -293,7 +294,6 @@ const saveTodo = () => {
   </el-row>
   <!--  消息提醒-->
   <el-row class="message-reminding">
-    <el-button type="primary" plain @click="openDialog">Add Todo</el-button>
     <el-tabs
       v-model="activeTab"
       tab-position="left"
@@ -312,6 +312,7 @@ const saveTodo = () => {
       <el-table-column prop="createTime" label="createTime" />
       <!-- Add more columns as needed -->
     </el-table>
+    <el-button type="primary" plain @click="openDialog">Add Todo</el-button>
   </el-row>
 
   <el-dialog
@@ -387,8 +388,9 @@ const saveTodo = () => {
   }
 
   .table {
-    flex: 1; /* 让表格占满剩余的空间 */
+    //flex: 1; /* 让表格占满剩余的空间 */
     height: 240px;
+    width: 1050px;
   }
 }
 </style>
