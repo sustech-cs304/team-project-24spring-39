@@ -1,15 +1,17 @@
 import request from "@/utils/request";
 
 /**
- * @description 根据地点查询预约情况
- * @param placeId
- * @returns {*}
+ * @description 根据条件查询预约情况
+ * @param {Object} params - 查询参数
+ * @param {string} [params.date] - 查询的日期
+ * @param {string[]} [params.placeIds] - 查询的地点ID
+ * @returns {Promise} 请求的Promise
  */
-export function fetchBookingsByPlace(placeId) {
+export function fetchBookings(params) {
   return request({
     method: "get",
     url: "/reservation/bookings", // 根据你的实际API端点修改
-    params: { placeId }, // 假设后端API使用'placeId'作为查询地点的参数
+    params: params, // 将所有查询参数传递给后端API
   });
 }
 
@@ -34,6 +36,26 @@ export function submitReservation(data) {
   return request({
     method: "post",
     url: "/reservation/submit",
+    data,
+  });
+}
+
+// 地点管理
+/**
+ * @description 获取所有地点信息
+ * @returns {*}
+ */
+export function fetchLocations() {
+  return request({
+    method: "get",
+    url: "/reservation/locations",
+  });
+}
+
+export function submitLocation(data) {
+  return request({
+    method: "post",
+    url: "/reservation/submit-location",
     data,
   });
 }

@@ -20,6 +20,7 @@ const placeId = ref(null);
 <style scoped lang="scss">
 .container {
   display: flex;
+  gap: 16px; // 在两个子元素之间添加 16px 的间隔
 }
 
 .place-options {
