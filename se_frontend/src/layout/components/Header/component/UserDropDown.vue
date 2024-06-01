@@ -1,15 +1,12 @@
 <script setup>
 import { useStore } from "vuex";
-import { useRouter } from "vue-router";
 import { ArrowDown } from "@element-plus/icons-vue";
 
 const store = useStore();
-const roter = useRouter();
 
 function handleCommand(val) {
   if (val === "logout") {
-    store.commit("logout");
-    roter.push("/login");
+    store.dispatch("logout");
   }
 }
 </script>

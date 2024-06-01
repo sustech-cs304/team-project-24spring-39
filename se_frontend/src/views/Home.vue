@@ -4,7 +4,8 @@ import { useStore } from "vuex";
 import HorizonTimeLine from "@/component/Home/HorizonTimeLine.vue";
 import { format } from "date-fns";
 import { ElMessage, ElMessageBox } from "element-plus";
-import { submitTodo } from "@/api/user";
+
+import { fetchTodoList, submitTodo } from "@/api/home";
 
 const store = useStore();
 
@@ -209,13 +210,22 @@ const resetForm = (showMessage = false) => {
     });
   }
 };
+const handleClick = async (tab) => {
+  try {
+    const response = await fetchTodoList(tab);
+    tables.value[tab] = response.data;
+  } catch (error) {
+    ElMessage.error("获取数据失败，请稍后重试");
+  }
+};
 const saveTodo = () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       try {
         await submitTodo({
           content: todoForm.value.content,
-          deadline: format(todoForm.value.deadline, "yyyy-MM-dd HH:mm:ss"),
+          endTime: format(todoForm.value.deadline, "yyyy-MM-dd HH:mm:ss"),
+          SID: "12345678",
         });
         ElMessage.success("提交成功");
         dialogVisible.value = false;
@@ -241,7 +251,8 @@ const saveTodo = () => {
           <el-avatar :size="75" :src="circleUrl" />
           <div class="user-info">
             <p>{{ userInfo.name }}</p>
-            <p>{{ userInfo.sid }}</p>
+            <p>{{ userInfo.SID }}</p>
+            <p>{{ userInfo.major }}</p>
           </div>
         </div>
       </el-card>
@@ -283,7 +294,12 @@ const saveTodo = () => {
   <!--  消息提醒-->
   <el-row class="message-reminding">
     <el-button type="primary" plain @click="openDialog">Add Todo</el-button>
-    <el-tabs v-model="activeTab" tab-position="left" class="tabs">
+    <el-tabs
+      v-model="activeTab"
+      tab-position="left"
+      class="tabs"
+      @tab-click="handleClick"
+    >
       <el-tab-pane label="选课" name="selection"></el-tab-pane>
       <el-tab-pane label="评教" name="evaluation"></el-tab-pane>
       <el-tab-pane label="课程论坛" name="forum"></el-tab-pane>
@@ -291,8 +307,9 @@ const saveTodo = () => {
       <el-tab-pane label="自定义" name="self">Self Made</el-tab-pane>
     </el-tabs>
     <el-table class="table" :data="tables[activeTab]">
-      <el-table-column prop="date" label="Date" />
-      <el-table-column prop="name" label="Name" />
+      <el-table-column prop="endTime" label="endTime" />
+      <el-table-column prop="content" label="content" />
+      <el-table-column prop="createTime" label="createTime" />
       <!-- Add more columns as needed -->
     </el-table>
   </el-row>
@@ -329,13 +346,20 @@ const saveTodo = () => {
 
   .card {
     align-items: center;
-    padding: 20px;
+    //padding: 20px;
+    height: 171.2px;
+    box-sizing: border-box;
+
+    display: flex;
+    justify-content: center;
 
     // el-card使用flex没用，因为里面还有一个el-card__body,所以我们自己嵌套一层div，在这个div上使用flex
     .card-body {
       display: flex;
       align-items: center;
-      justify-content: space-around;
+      justify-content: center;
+      gap: 40px;
+      width: 250px;
     }
   }
 

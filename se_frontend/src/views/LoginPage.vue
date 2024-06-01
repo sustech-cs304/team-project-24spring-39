@@ -15,7 +15,17 @@
         :delay="200"
       >
         <div v-if="showRegister" class="register-form">
-          <h3 class="title">注册账号</h3>
+          <h3
+            class="title"
+            v-motion
+            :initial="{ opacity: 0, y: 100 }"
+            :enter="{ opacity: 1, y: 0, scale: 1 }"
+            :variants="{ custom: { scale: 2 } }"
+            :hovered="{ scale: 1.2 }"
+            :delay="200"
+          >
+            注册账号
+          </h3>
           <div class="form-container">
             <el-form
               ref="registerFormRef"
@@ -230,9 +240,9 @@ const { ElMessage } = useMessage();
 ///////////////////////////////////////////////////////////// 登录表单
 const loginFormRef = ref(null);
 const loginForm = reactive({
-  username: "10210001",
-  password: "123456",
-  captchaSuccess: false,
+  username: "12345678",
+  password: "password1",
+  captchaSuccess: true,
 });
 // 登录按钮的加载loading
 const logBtnLoading = ref(false);
@@ -241,7 +251,7 @@ const loginRules = reactive({
   username: [{ required: true, message: "userError", trigger: "blur" }],
   password: [
     { required: true, message: "PWError", trigger: "blur" },
-    { min: 3, max: 8, message: "length:3-8", trigger: "blur" },
+    { min: 3, message: "length > 3", trigger: "blur" },
   ],
 });
 // 滑动验证码校验成功
@@ -251,25 +261,24 @@ function captchaSuccess() {
 // 处理登录
 async function handleLogin() {
   if (!loginForm.captchaSuccess) {
-    ElMessage({
-      showClose: true,
-      message: "captchaError",
-      type: "error",
-    });
+    ElMessage.error("请先完成滑动验证");
     return;
   }
-  await loginFormRef.value.validate(async (valid, fields) => {
+  await loginFormRef.value.validate(async (valid) => {
     if (valid) {
       try {
+        logBtnLoading.value = true;
         // const res = await login(loginForm)
         // 用通过vuex发送网络请求
         const res = await store.dispatch("handleLogin", toRaw(loginForm));
         console.log("res: " + res);
       } catch (error) {
-        console.log(error);
+        ElMessage.error("登录失败, 请稍后重试");
+      } finally {
+        logBtnLoading.value = false;
       }
     } else {
-      console.log("error submit!", fields);
+      ElMessage.warning("用户名或密码错误");
     }
   });
 }
@@ -292,7 +301,7 @@ const registerRules = reactive({
   username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
   password: [
     { required: true, message: "请输入密码", trigger: "blur" },
-    { min: 3, max: 8, message: "密码长度应为3-8位", trigger: "blur" },
+    { min: 3, message: "密码长度应大于3位", trigger: "blur" },
   ],
   confirmPassword: [
     { required: true, message: "请确认密码", trigger: "blur" },

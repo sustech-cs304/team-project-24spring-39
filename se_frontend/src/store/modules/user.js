@@ -4,6 +4,7 @@ import adminRoutes from "@/router/role/admin";
 import userRoutes from "@/router/role/user";
 
 export default {
+  namespace: true,
   state: {
     // 是否是管理员
     isAdmin: false,
@@ -13,13 +14,13 @@ export default {
     // 登录状态
     isLogin: localStorage.getItem("ISLOGIN") || false,
 
-    token: localStorage.getItem("token") || "1",
+    token: localStorage.getItem("TOKEN") || "",
 
     // 是否动态添加路由
     isDynamicAddedRoute: false,
 
     // 菜单列表
-    menuList: [
+    menuList: localStorage.getItem("MENU_LIST") || [
       {
         id: 0,
         pid: 0,
@@ -200,6 +201,11 @@ export default {
       state.isLogin = flag;
       localStorage.setItem("ISLOGIN", flag);
     },
+    // 设置token
+    setToken(state, token) {
+      state.token = token;
+      localStorage.setItem("TOKEN", token);
+    },
     setDynamicAddedRoute(state, flag) {
       state.isDynamicAddedRoute = flag;
     },
@@ -225,14 +231,12 @@ export default {
       // 发送登录的网络请求
       try {
         const res = await login(data);
-        console.log("登录成功：", res);
-
         // 1. 设置登录状态
         commit("setLoginState", true);
         // 2. 设置用户信息
         commit("setUserInfo", res.data);
         // 2. 设置token
-        // commit("setTooken", res.data.token);
+        commit("setToken", res.data.token);
         // 3. 设置菜单列表
         let menuList = [];
         if (res.data.sid) {
@@ -247,19 +251,23 @@ export default {
         // 4. 跳转到首页
         await router.push("/");
       } catch (error) {
-        console.log("登录失败：", error);
+        console.log("handleLogin error: ", error);
+        return Promise.reject(error);
       }
     },
     // 处理退出登录
-    logout(state) {
-      state.isLogin = false;
-      localStorage.removeItem("VUE_ADMIN_ISLOGIN");
-      state.userInfo = [];
-      state.token = "";
+    logout({ commit }) {
+      commit("setLoginState", false);
+      commit("setUserInfo", []);
+      commit("setToken", "");
+      commit("setMenuList", []);
+      localStorage.removeItem(process.env.VUE_APP_USER_INFO);
+      localStorage.removeItem("ISLOGIN");
       localStorage.removeItem(process.env.VUE_APP_TOKEN_NAME);
-      state.menuList = [];
-      localStorage.removeItem(process.env.VUE_APP_MENU_LIST);
+      localStorage.removeItem("MENU_LIST");
+      router.push("/login"); // 跳转到登录页面
     },
+
     loadAsyncRoute({ state, commit }) {
       // 根据登录身份动态添加路由
       if (state.isAdmin) {

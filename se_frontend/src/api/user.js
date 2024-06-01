@@ -18,11 +18,3 @@ export function login(data) {
     data,
   });
 }
-
-export function submitTodo(data) {
-  return request({
-    method: "post",
-    url: "/todo/submit",
-    data,
-  });
-}
