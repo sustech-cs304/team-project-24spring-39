@@ -42,7 +42,7 @@ create table if not exists student
     class varchar(50) not null,
     major varchar(50) not null,
     score int not null default 100,
-    avatar BLOB,
+    avatar varchar(1000),
     foreign key (major) references major(name),
     constraint check_SID check (SID REGEXP '^[0-9]{8}$')
 );
@@ -229,6 +229,8 @@ create table if not exists message
     id int auto_increment primary key,
     receiver_id varchar(8) not null,
     content varchar(1000) not null,
-    time timestamp not null default now(),
+    type enum('selection','evaluation','reservation','forum','self') not null,
+    creat_time datetime not null default now(),
+    end_time datetime not null,
     foreign key (receiver_id) references student(SID)
 );

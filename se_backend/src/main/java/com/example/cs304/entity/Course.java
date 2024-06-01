@@ -8,8 +8,10 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Entity
 @Table(name = "course")
@@ -65,6 +67,39 @@ public class Course {
     joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "CID"),
     inverseJoinColumns = @JoinColumn(name = "professor_id", referencedColumnName = "PID"))
     private List<Professor> professors;
+
+    @OneToMany(mappedBy = "course")
+    private Set<CourseProfessor> courseProfessors = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "course")
+    private Set<CourseStudent> courseStudents = new LinkedHashSet<>();
+
+    @OneToMany(mappedBy = "course")
+    private Set<Rate> rates = new LinkedHashSet<>();
+
+    public Set<Rate> getRates() {
+        return rates;
+    }
+
+    public void setRates(Set<Rate> rates) {
+        this.rates = rates;
+    }
+
+    public Set<CourseStudent> getCourseStudents() {
+        return courseStudents;
+    }
+
+    public void setCourseStudents(Set<CourseStudent> courseStudents) {
+        this.courseStudents = courseStudents;
+    }
+
+    public Set<CourseProfessor> getCourseProfessors() {
+        return courseProfessors;
+    }
+
+    public void setCourseProfessors(Set<CourseProfessor> courseProfessors) {
+        this.courseProfessors = courseProfessors;
+    }
 
 
     public List<Professor> getProfessors() {

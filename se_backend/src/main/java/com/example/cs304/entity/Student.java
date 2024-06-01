@@ -1,9 +1,16 @@
 package com.example.cs304.entity;
 
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Entity
+@Getter
+@Setter
 @Table(name = "student")
 public class Student {
     @Id
@@ -32,70 +39,16 @@ public class Student {
     private Integer score;
 
     @Column(name = "avatar")
-    private byte[] avatar;
+    private String avatar;
 
-    public Integer getId() {
-        return id;
+    public Map<String, Object> convertStudentToMap() {
+        Map<String, Object> map = new HashMap<>();
+        map.put("name", getName());
+        map.put("SID", getSid());
+        map.put("class", getClassField());
+        map.put("major", getMajor().getName());
+        map.put("score", getScore());
+        map.put("avatar", getAvatar());
+        return map;
     }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getSid() {
-        return sid;
-    }
-
-    public void setSid(String sid) {
-        this.sid = sid;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getClassField() {
-        return classField;
-    }
-
-    public void setClassField(String classField) {
-        this.classField = classField;
-    }
-
-    public Major getMajor() {
-        return major;
-    }
-
-    public void setMajor(Major major) {
-        this.major = major;
-    }
-
-    public Integer getScore() {
-        return score;
-    }
-
-    public void setScore(Integer score) {
-        this.score = score;
-    }
-
-    public byte[] getAvatar() {
-        return avatar;
-    }
-
-    public void setAvatar(byte[] avatar) {
-        this.avatar = avatar;
-    }
-
 }
