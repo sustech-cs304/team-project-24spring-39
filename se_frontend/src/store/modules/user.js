@@ -20,7 +20,7 @@ export default {
     isDynamicAddedRoute: false,
 
     // 菜单列表
-    menuList: localStorage.getItem("MENU_LIST") || [
+    menuList: JSON.parse(localStorage.getItem("MENU_LIST")) || [
       {
         id: 0,
         pid: 0,
@@ -170,7 +170,32 @@ export default {
         title: "自习室预约",
         icon: "House",
         url: "/reservation",
-        children: null,
+        children: [
+          {
+            id: 8,
+            pid: 4,
+            title: "预约",
+            icon: "House",
+            url: "/reservation",
+            children: null,
+          },
+          {
+            id: 9,
+            pid: 4,
+            title: "地点管理",
+            icon: "House",
+            url: "/reservation-locations",
+            children: null,
+          },
+          {
+            id: 10,
+            pid: 4,
+            title: "记录管理",
+            icon: "House",
+            url: "/reservation-records",
+            children: null,
+          },
+        ],
       },
       {
         id: 5,
@@ -239,13 +264,14 @@ export default {
         commit("setToken", res.data.token);
         // 3. 设置菜单列表
         let menuList = [];
-        if (res.data.sid) {
+        if (res.data.SID) {
           state.isAdmin = false;
           menuList = state.userMenuList;
-        } else if (res.data.account) {
+        } else {
           state.isAdmin = true;
           menuList = state.adminMenuList;
         }
+        console.log("menuList: ", menuList);
         commit("setMenuList", menuList); // 更新菜单列表
 
         // 4. 跳转到首页

@@ -1,11 +1,11 @@
 import request from "@/utils/request";
 
 export function fetchTodoList(type) {
-  console.log(type);
+  console.log("type: " + type);
   return request({
     method: "get",
     url: "/message/get_message",
-    // params: { type: type },
+    params: { type: type },
   });
 }
 
