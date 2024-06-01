@@ -5,16 +5,18 @@
     <el-divider></el-divider>
     <small>作者: {{ post.author }} | 发布于: {{ post.date }}</small>
     <div class="button-container">
-      <router-link :to="{ name: 'postShow', params: { id: post.id } }">
-        <el-button type="primary">查看详情</el-button>
-      </router-link>
+      <el-button type="primary" @click="goToPost(post.id)">查看详情</el-button>
     </div>
   </el-card>
 </template>
 
 <script setup>
 import { defineProps } from "vue";
+import { useRouter } from "vue-router";
+import { useStore } from "vuex";
 
+const store = useStore();
+const router = useRouter();
 // eslint-disable-next-line no-unused-vars
 const props = defineProps({
   post: {
@@ -22,6 +24,11 @@ const props = defineProps({
     required: true,
   },
 });
+
+const goToPost = (postId) => {
+  store.commit("setSelectedPost", postId);
+  router.push({ name: "postShow", params: { id: postId } });
+};
 </script>
 
 <style scoped>

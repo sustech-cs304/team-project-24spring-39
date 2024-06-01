@@ -94,10 +94,7 @@ const submitData = async () => {
       confirmButtonText: "确定",
       type: "success",
     });
-    // console.log(store.state.evalStore.courses[0]);
     store.commit("deleteCourse", store.state.evalStore.selectedCourse.id);
-    // console.log(store.state.evalStore.courses[0]);
-    // store.commit("setSelectedCourse", store.state.evalStore.courses[0]);
   } catch (error) {
     console.error("Error:", error);
     ElMessageBox.alert("提交失败", "错误", {

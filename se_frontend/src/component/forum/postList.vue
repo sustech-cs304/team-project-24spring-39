@@ -3,47 +3,35 @@
     <el-scrollbar height="90%">
       <Post v-for="post in posts" :key="post.id" :post="post" />
     </el-scrollbar>
-    <el-pagination background layout="prev, pager, next" :total="1000" />
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="post_num"
+      :current-page="currentPage"
+      @current-change="handlePageChange"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Post from "./postElement.vue";
+import { useStore } from "vuex";
 import "element-plus/theme-chalk/el-card.css";
 import "element-plus/theme-chalk/el-divider.css";
-
-const posts = ref([
-  {
-    id: 1,
-    title: "帖子标题1",
-    content: "这是第一个帖子内容。",
-    author: "用户1",
-    date: "2024-05-22",
-  },
-  {
-    id: 2,
-    title: "帖子标题2",
-    content: "这是第二个帖子内容。",
-    author: "用户2",
-    date: "2024-05-21",
-  },
-  {
-    id: 3,
-    title: "帖子标题2",
-    content: "这是第二个帖子内容。",
-    author: "用户2",
-    date: "2024-05-21",
-  },
-  {
-    id: 4,
-    title: "帖子标题2",
-    content: "这是第二个帖子内容。",
-    author: "用户2",
-    date: "2024-05-21",
-  },
-  // 更多帖子...
-]);
+const store = useStore();
+const posts = computed(() => store.state.forumStore.all_posts);
+const post_num = computed(() => store.state.forumStore.post_num);
+const currentPage = ref(1);
+const handlePageChange = async (page) => {
+  currentPage.value = page;
+  store.commit(
+    "set_start_end",
+    (currentPage.value - 1) * 8,
+    (currentPage.value - 1) * 8
+  );
+  await store.dispatch("applyFilter", store.state.forumStore.filter_info);
+};
 </script>
 
 <style scoped>

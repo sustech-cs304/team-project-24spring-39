@@ -27,13 +27,9 @@ export default {
       state.courses = newCourses;
     },
     setSelectedCourse(state, course) {
-      state.selectedCourse = course; // 设置选中的课程
-      // console.log(course);
-      // console.log(state.selectedCourse);
+      state.selectedCourse = course;
     },
     deleteCourse(state, course_id) {
-      // console.log(state.courses);
-      // console.log(course_id);
       state.courses = state.courses.filter((item) => item.id !== course_id);
       if (state.courses.length !== 0) {
         state.selectedCourse = state.courses[0];

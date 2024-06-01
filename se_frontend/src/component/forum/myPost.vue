@@ -21,7 +21,7 @@
           @click.stop="confirmDelete(post.id)"
         ></el-button>
       </div>
-      <p class="card-content">{{ post.description }}</p>
+      <p class="card-content">{{ post.content }}</p>
     </el-card>
   </el-scrollbar>
 
@@ -36,10 +36,10 @@
       <el-form-item label="附件">
         <el-upload
           action="https://jsonplaceholder.typicode.com/posts/"
-          list-type="text"
           :on-success="handleUploadSuccess"
           :file-list="form.attachments"
           :on-remove="handleRemove"
+          :auto-upload="false"
           multiple
         >
           <el-button type="primary">点击上传</el-button>
@@ -59,30 +59,16 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
+import { useStore } from "vuex";
 import { ElMessageBox } from "element-plus";
-const posts = ref([
-  {
-    id: 1,
-    title: "Post Title 1",
-    description: "This is a brief description of post 1",
-  },
-  {
-    id: 2,
-    title: "Post Title 2",
-    description: "This is a brief description of post 2",
-  },
-  {
-    id: 3,
-    title: "Post Title 3",
-    description: "This is a brief description of post 3",
-  },
-  // 添加更多的帖子
-]);
+import { createPostInside } from "@/api/forum_api";
+const store = useStore();
+const posts = computed(() => store.state.forumStore.my_posts);
 const router = useRouter();
 const goToPost = (postId) => {
+  store.commit("setSelectedPost", postId);
   router.push({ name: "postShow", params: { id: postId } });
 };
 
@@ -96,31 +82,38 @@ const form = ref({
 const handleUploadSuccess = (response, file, fileList) => {
   console.log("Upload success:", response, file, fileList);
   form.value.attachments = fileList;
+  dialogVisible.value = false;
 };
 
 const handleRemove = (file, fileList) => {
   form.value.attachments = fileList;
 };
 
-const submitPost = () => {
-  console.log("提交帖子:", form.value);
-  // 在这里添加将表单数据上传到服务器的逻辑
-  // 例如：通过 axios 发送 POST 请求
-  // axios.post('/api/posts', form.value)
-  //   .then(response => {
-  //     console.log('Post created:', response.data);
-  //     dialogVisible.value = false;
-  //   })
-  //   .catch(error => {
-  //     console.error('Error creating post:', error);
-  //   });
-
+const submitPost = async () => {
+  const formData = new FormData();
+  formData.append("title", form.value.title);
+  formData.append("content", form.value.content);
+  form.value.attachments.forEach((file) => {
+    formData.append("files", file.raw); // 将每个附件文件添加到 FormData 中
+  });
+  try {
+    await createPostInside(formData);
+    console.log("Upload successful:");
+  } catch (error) {
+    console.error("Error:", error);
+    ElMessageBox.alert("发帖失败", "错误", {
+      confirmButtonText: "确定",
+      type: "error",
+    });
+    console.error("Upload failed:", error);
+  }
   dialogVisible.value = false;
   // 清空表单数据
   form.value.title = "";
   form.value.content = "";
   form.value.attachments = [];
 };
+
 const confirmDelete = async (postId) => {
   try {
     await ElMessageBox.confirm("此操作将永久删除该帖子, 是否继续?", "提示", {
@@ -128,19 +121,11 @@ const confirmDelete = async (postId) => {
       cancelButtonText: "取消",
       type: "warning",
     });
-    await deletePost(postId);
+    await store.dispatch("deletePost", postId);
   } catch (error) {
     if (error !== "cancel") {
       console.error("Failed to delete post:", error);
     }
-  }
-};
-const deletePost = async (postId) => {
-  try {
-    await axios.delete(`/api/posts/${postId}`);
-    posts.value = posts.value.filter((post) => post.id !== postId);
-  } catch (error) {
-    console.error("Failed to delete post:", error);
   }
 };
 </script>
@@ -172,6 +157,7 @@ const deletePost = async (postId) => {
 
 .card-header {
   display: flex;
+  width: 250px;
   /* justify-content: space-between; */
 }
 .card-title {
@@ -182,6 +168,7 @@ const deletePost = async (postId) => {
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left; /* 确保标题靠左对齐 */
+  width: 150px;
 }
 .card-content {
   text-align: left; /* 确保内容靠左对齐 */
