@@ -1,36 +1,48 @@
 <script setup>
 import { ref, onMounted } from "vue";
+import { useStore } from "vuex";
 
-const rooms = ref([
-  {
-    id: 1,
-    name: "会议室",
-    description: "MEETING ROOM",
-    icon: "icon-meeting",
-    color: "#F7BA2A",
-  },
-  {
-    id: 2,
-    name: "活动室",
-    description: "ACTIVITY ROOM",
-    icon: "icon-activity",
-    color: "#409EFF",
-  },
-  {
-    id: 3,
-    name: "自习室",
-    description: "STUDY ROOM",
-    icon: "icon-study",
-    color: "#67C23A",
-  },
-  {
-    id: 4,
-    name: "健身房",
-    description: "GYM",
-    icon: "icon-gym",
-    color: "#E6A23C",
-  },
-]);
+const store = useStore();
+const colors = [
+  "#F7BA2A",
+  "#409EFF",
+  "#67C23A",
+  "#E6A23C",
+  "#F56C6C",
+  "#909399",
+]; // 提供一些颜色
+const rooms = ref([]);
+
+// const rooms = ref([
+//   {
+//     id: 1,
+//     name: "会议室",
+//     description: "MEETING ROOM",
+//     icon: "icon-meeting",
+//     color: "#F7BA2A",
+//   },
+//   {
+//     id: 2,
+//     name: "活动室",
+//     description: "ACTIVITY ROOM",
+//     icon: "icon-activity",
+//     color: "#409EFF",
+//   },
+//   {
+//     id: 3,
+//     name: "自习室",
+//     description: "STUDY ROOM",
+//     icon: "icon-study",
+//     color: "#67C23A",
+//   },
+//   {
+//     id: 4,
+//     name: "健身房",
+//     description: "GYM",
+//     icon: "icon-gym",
+//     color: "#E6A23C",
+//   },
+// ]);
 
 // eslint-disable-next-line no-undef
 const emit = defineEmits(["selectRoom"]);
@@ -40,7 +52,14 @@ function selectRoom(roomId) {
 }
 
 // 在组件挂载后立即选择第一个房间
-onMounted(() => {
+onMounted(async () => {
+  await store.dispatch("reservationStore/loadLocations");
+  const locations = store.state.reservationStore.locations;
+  rooms.value = locations.map((location, index) => ({
+    ...location,
+    color: colors[index % colors.length], // 按顺序分配颜色
+  }));
+
   if (rooms.value.length > 0) {
     selectRoom(rooms.value[0].id);
   }

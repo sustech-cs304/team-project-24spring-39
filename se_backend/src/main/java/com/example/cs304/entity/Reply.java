@@ -1,107 +1,84 @@
 package com.example.cs304.entity;
 
-import java.util.Date;
 import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import java.time.Instant;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "reply")
 public class Reply {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    private Integer id;
 
-	@Column(name = "post_id")
-	private Integer postId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
 
-	@Column(name = "author_id")
-	private Integer authorId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "author_id", nullable = false, referencedColumnName = "SID")
+    private Student author;
 
-	@Column(name = "content")
-	private String content;
+    @Column(name = "content", nullable = false, length = 1000)
+    private String content;
 
-	@Column(name = "time")
-	private Date time;
+    @ColumnDefault("CURRENT_TIMESTAMP")
+    @Column(name = "time", nullable = false)
+    private Instant time = Instant.now();
 
-	@Column(name = "file_id")
-	private Integer fileId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "file_id")
+    private File file;
 
-	public Reply() {}
+    public Integer getId() {
+        return id;
+    }
 
-	public Reply(Integer id, Integer postId, Integer authorId, String content, Date time, Integer fileId) {
-		this.id = id;
-		this.postId = postId;
-		this.authorId = authorId;
-		this.content = content;
-		this.time = time;
-		this.fileId = fileId;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@Override
-	public String toString() {
-		return "Reply{" +
-				"id='" + id + '\'' +
-				", postId='" + postId + '\'' +
-				", authorId='" + authorId + '\'' +
-				", content='" + content + '\'' +
-				", time='" + time + '\'' +
-				", fileId='" + fileId + '\'' +
-				'}';
-	}
+    public Post getPost() {
+        return post;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public void setPost(Post post) {
+        this.post = post;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Student getAuthor() {
+        return author;
+    }
 
-	public Integer getPostId() {
-		return this.postId;
-	}
+    public void setAuthor(Student author) {
+        this.author = author;
+    }
 
-	public void setPostId(Integer postId) {
-		this.postId = postId;
-	}
+    public String getContent() {
+        return content;
+    }
 
-	public Integer getAuthorId() {
-		return this.authorId;
-	}
+    public void setContent(String content) {
+        this.content = content;
+    }
 
-	public void setAuthorId(Integer authorId) {
-		this.authorId = authorId;
-	}
+    public Instant getTime() {
+        return time;
+    }
 
-	public String getContent() {
-		return this.content;
-	}
+    public void setTime(Instant time) {
+        this.time = time;
+    }
 
-	public void setContent(String content) {
-		this.content = content;
-	}
+    public File getFile() {
+        return file;
+    }
 
-	public Date getTime() {
-		return this.time;
-	}
-
-	public void setTime(Date time) {
-		this.time = time;
-	}
-
-	public Integer getFileId() {
-		return this.fileId;
-	}
-
-	public void setFileId(Integer fileId) {
-		this.fileId = fileId;
-	}
+    public void setFile(File file) {
+        this.file = file;
+    }
 
 }

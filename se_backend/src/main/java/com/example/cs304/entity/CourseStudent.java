@@ -1,80 +1,69 @@
 package com.example.cs304.entity;
 
 import jakarta.persistence.*;
-
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
+import org.hibernate.annotations.ColumnDefault;
 
 @Entity
-@SuppressWarnings("all")
+@Table(name = "course_student")
 public class CourseStudent {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "course_id", nullable = false, referencedColumnName = "CID")
+    private Course course;
 
-	@Column(name = "course_id")
-	private Integer courseId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "student_id", nullable = false, referencedColumnName = "SID")
+    private Student student;
 
-	@Column(name = "student_id")
-	private Integer studentId;
+    @ColumnDefault("0")
+    @Column(name = "score", nullable = false)
+    private Integer score;
 
-	@Column(name = "score")
-	private Integer score;
+    @ColumnDefault("0")
+    @Column(name = "valid", nullable = false)
+    private Boolean valid = false;
 
-	public CourseStudent() {}
+    public Integer getId() {
+        return id;
+    }
 
-	public CourseStudent(Integer id, Integer courseId, Integer studentId, Integer score) {
-		this.id = id;
-		this.courseId = courseId;
-		this.studentId = studentId;
-		this.score = score;
-	}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	@Override
-	public String toString() {
-		return "CourseStudent{" +
-				"id='" + id + '\'' +
-				", courseId='" + courseId + '\'' +
-				", studentId='" + studentId + '\'' +
-				", score='" + score + '\'' +
-				'}';
-	}
+    public Course getCourse() {
+        return course;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public void setCourse(Course course) {
+        this.course = course;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+    public Student getStudent() {
+        return student;
+    }
 
-	public Integer getCourseId() {
-		return this.courseId;
-	}
+    public void setStudent(Student student) {
+        this.student = student;
+    }
 
-	public void setCourseId(Integer courseId) {
-		this.courseId = courseId;
-	}
+    public Integer getScore() {
+        return score;
+    }
 
-	public Integer getStudentId() {
-		return this.studentId;
-	}
+    public void setScore(Integer score) {
+        this.score = score;
+    }
 
-	public void setStudentId(Integer studentId) {
-		this.studentId = studentId;
-	}
+    public Boolean getValid() {
+        return valid;
+    }
 
-	public Integer getScore() {
-		return this.score;
-	}
-
-	public void setScore(Integer score) {
-		this.score = score;
-	}
+    public void setValid(Boolean valid) {
+        this.valid = valid;
+    }
 
 }

@@ -2,7 +2,7 @@
 import { ref, watch, computed } from "vue";
 import { ElMessage, ElTree } from "element-plus";
 import { Delete, Edit } from "@element-plus/icons-vue";
-import { fetchBookings } from "@/api/reservation";
+import { fetchBookings, submitLocation } from "@/api/reservation";
 
 const selectedDay = ref("");
 
@@ -196,7 +196,7 @@ const handleClose = () => {
   dialogVisible.value = false;
 };
 
-const saveRecord = () => {
+const saveRecord = async () => {
   if (isEditing.value) {
     const index = reserveData.value.findIndex(
       (record) => record.id === currentEditing.value.id
@@ -205,12 +205,16 @@ const saveRecord = () => {
       reserveData.value[index] = { ...currentEditing.value };
     }
   } else {
-    const newId = reserveData.value.length + 1;
     const newRecord = {
       ...currentEditing.value,
-      id: newId,
     };
-    reserveData.value.push(newRecord);
+    // reserveData.value.push(newRecord);
+    try {
+      await submitLocation(newRecord);
+      ElMessage.success("提交成功");
+    } catch (error) {
+      ElMessage.error("提交失败，请稍后重试");
+    }
   }
   handleClose();
 };
@@ -243,7 +247,7 @@ watch(
         default-expand-all
         :filter-node-method="filterNode"
         show-checkbox
-        node-key="name"
+        node-key="id"
       />
     </div>
 
@@ -279,14 +283,8 @@ watch(
             width="180"
             sortable
           />
-          <el-table-column
-            fixed
-            prop="library"
-            label="图书馆"
-            width="120"
-            sortable
-          />
-          <el-table-column fixed prop="room" label="讨论间" sortable />
+          <el-table-column prop="library" label="图书馆" width="120" sortable />
+          <el-table-column prop="room" label="讨论间" sortable />
           <el-table-column prop="date" label="预约日期" width="120" sortable />
           <el-table-column prop="startTime" label="起始时间" sortable />
           <el-table-column prop="endTime" label="结束时间" sortable />
@@ -400,23 +398,27 @@ watch(
 </template>
 
 <style scoped lang="scss">
+@import "@/style/mixin.scss";
+//* {
+//  box-sizing: border-box;
+//}
+
 .container {
   display: flex;
   gap: 16px;
   height: 617.6px; // 固定container为除去layout.vue中header的高度
-  width: 676px;
 }
 
 .left-container {
   width: 240px;
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
   padding: 16px;
 }
 
 .right-container {
-  //width: 0;
-  flex-grow: 1;
-  //width: 700px;
+  flex-grow: 0; // 移除flex-grow
+  width: calc(100% - 288px); // 288px 是left-container的总宽度 + gap的宽度
   display: flex;
   flex-direction: column;
 
@@ -425,7 +427,8 @@ watch(
     align-items: center; /* 垂直居中对齐 */
     gap: 16px; /* 控制各个元素之间的间距 */
     padding: 16px;
-    background-color: white;
+    //background-color: white;
+    @include block_bg_color();
 
     .spacer {
       flex-grow: 1;
@@ -434,7 +437,8 @@ watch(
 
   .table-wrapper {
     margin-top: 12px;
-    background-color: white;
+    //background-color: white;
+    @include block_bg_color();
     flex-grow: 1;
     //max-height: 600px;
     //overflow-y: auto;
@@ -445,7 +449,8 @@ watch(
     display: flex;
     justify-content: flex-end;
     padding: 6px;
-    background-color: white;
+    //background-color: white;
+    @include block_bg_color();
   }
 }
 </style>

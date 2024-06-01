@@ -10,7 +10,7 @@ import request from "@/utils/request";
 export function fetchBookings(params) {
   return request({
     method: "get",
-    url: "/reservation/bookings", // 根据你的实际API端点修改
+    url: "/reservation/bookings/2", // 根据你的实际API端点修改
     params: params, // 将所有查询参数传递给后端API
   });
 }
@@ -33,10 +33,11 @@ export function searchStudentBySid(studentId) {
  * @returns {*}
  */
 export function submitReservation(data) {
+  // 构造query参数
+  const queryParams = new URLSearchParams(data).toString();
   return request({
     method: "post",
-    url: "/reservation/submit",
-    data,
+    url: `/reservation/submit?${queryParams}`,
   });
 }
 
@@ -49,5 +50,13 @@ export function fetchLocations() {
   return request({
     method: "get",
     url: "/reservation/locations",
+  });
+}
+
+export function submitLocation(data) {
+  const queryParams = new URLSearchParams(data).toString();
+  return request({
+    method: "post",
+    url: `/reservation/submit-location?${queryParams}`,
   });
 }

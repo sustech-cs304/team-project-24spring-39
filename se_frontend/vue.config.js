@@ -5,6 +5,9 @@ const { ElementPlusResolver } = require("unplugin-vue-components/resolvers");
 
 module.exports = defineConfig({
   transpileDependencies: true,
+  // chainWebpack: (config) => {
+  //   config.resolve.alias.set("vue-i18n", "vue-i18n/dist/vue-i18n.cjs.js");
+  // },
   // 对Webpack进行配置
   configureWebpack: {
     plugins: [

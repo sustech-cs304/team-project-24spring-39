@@ -2,66 +2,43 @@ package com.example.cs304.entity;
 
 import jakarta.persistence.*;
 
-/**
- * @author phystar
- * @create 2024-03-22 01:37:35 
- * @description  
- */
-
 @Entity
-@SuppressWarnings("all")
+@Table(name = "course_professor")
 public class CourseProfessor {
+    @Id
+    @Column(name = "id", nullable = false)
+    private Integer id;
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "id")
-	private Integer id;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "course_id", nullable = false, referencedColumnName = "CID")
+    private Course course;
 
-	@Column(name = "course_id")
-	private Integer courseId;
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "professor_id", nullable = false, referencedColumnName = "PID")
+    private Professor professor;
 
-	@Column(name = "professor_id")
-	private Integer professorId;
+    public Integer getId() {
+        return id;
+    }
 
-	public CourseProfessor() {}
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
-	public CourseProfessor(Integer id, Integer courseId, Integer professorId) {
-		this.id = id;
-		this.courseId = courseId;
-		this.professorId = professorId;
-	}
+    public Course getCourse() {
+        return course;
+    }
 
-	@Override
-	public String toString() {
-		return "CourseProfessor{" +
-				"id='" + id + '\'' +
-				", courseId='" + courseId + '\'' +
-				", professorId='" + professorId + '\'' +
-				'}';
-	}
+    public void setCourse(Course course) {
+        this.course = course;
+    }
 
-	public Integer getId() {
-		return this.id;
-	}
+    public Professor getProfessor() {
+        return professor;
+    }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
-
-	public Integer getCourseId() {
-		return this.courseId;
-	}
-
-	public void setCourseId(Integer courseId) {
-		this.courseId = courseId;
-	}
-
-	public Integer getProfessorId() {
-		return this.professorId;
-	}
-
-	public void setProfessorId(Integer professorId) {
-		this.professorId = professorId;
-	}
+    public void setProfessor(Professor professor) {
+        this.professor = professor;
+    }
 
 }

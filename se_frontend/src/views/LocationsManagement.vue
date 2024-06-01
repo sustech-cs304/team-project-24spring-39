@@ -1,85 +1,100 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { Delete, Edit } from "@element-plus/icons-vue";
-// import { ref, onMounted } from "vue";
-// import { ElMessage } from "element-plus";
-// import { fetchLocations } from "@/api/reservation";
+import { useStore } from "vuex";
+import { submitLocation } from "@/api/reservation";
+import { ElMessage } from "element-plus";
+
+const store = useStore();
 
 const searchRoom = ref("");
 const searchLibrary = ref("");
 const searchMin = ref(null);
 const searchMax = ref(null);
 
-const tableData = ref([
-  {
-    id: 1,
-    name: "一丹图书馆",
-    createTime: "2021-09-01",
-    capacity: 5,
-    children: [
-      {
-        id: 11,
-        name: "一楼",
-        createTime: "2021-09-01",
-        capacity: 5,
-      },
-      {
-        id: 12,
-        name: "二楼",
-        createTime: "2021-09-01",
-        capacity: 5,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "琳恩图书馆",
-    createTime: "2021-09-02",
-    capacity: 5,
-    children: [
-      {
-        id: 21,
-        name: "一楼",
-        createTime: "2021-09-02",
-        capacity: 5,
-      },
-      {
-        id: 22,
-        name: "二楼",
-        createTime: "2021-09-02",
-        capacity: 5,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "涵泳图书馆",
-    createTime: "2021-09-03",
-    capacity: 5,
-    children: [
-      {
-        id: 31,
-        name: "一楼",
-        createTime: "2021-09-03",
-        capacity: 6,
-      },
-      {
-        id: 32,
-        name: "二楼",
-        createTime: "2021-09-03",
-        capacity: 9,
-      },
-      {
-        id: 33,
-        name: "三楼",
-        createTime: "2021-09-03",
-        capacity: 1,
-      },
-    ],
-  },
-]);
+// const tableData = ref([
+//   {
+//     id: 1,
+//     name: "一丹图书馆",
+//     createTime: "2021-09-01",
+//     capacity: 5,
+//     children: [
+//       {
+//         id: 11,
+//         name: "一楼",
+//         createTime: "2021-09-01",
+//         capacity: 5,
+//       },
+//       {
+//         id: 12,
+//         name: "二楼",
+//         createTime: "2021-09-01",
+//         capacity: 5,
+//       },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     name: "琳恩图书馆",
+//     createTime: "2021-09-02",
+//     capacity: 5,
+//     children: [
+//       {
+//         id: 21,
+//         name: "一楼",
+//         createTime: "2021-09-02",
+//         capacity: 5,
+//       },
+//       {
+//         id: 22,
+//         name: "二楼",
+//         createTime: "2021-09-02",
+//         capacity: 5,
+//       },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     name: "涵泳图书馆",
+//     createTime: "2021-09-03",
+//     capacity: 5,
+//     children: [
+//       {
+//         id: 31,
+//         name: "一楼",
+//         createTime: "2021-09-03",
+//         capacity: 6,
+//       },
+//       {
+//         id: 32,
+//         name: "二楼",
+//         createTime: "2021-09-03",
+//         capacity: 9,
+//       },
+//       {
+//         id: 33,
+//         name: "三楼",
+//         createTime: "2021-09-03",
+//         capacity: 1,
+//       },
+//     ],
+//   },
+// ]);
+
+const tableData = ref([]);
 
 const displayData = ref([...tableData.value]);
+
+// 使用onMounted在组件挂载时获取数据
+onMounted(async () => {
+  await store.dispatch("reservationStore/loadLocations");
+  tableData.value = store.state.reservationStore.locations;
+  displayData.value = [...tableData.value];
+  // 打印 displayData.value 数组中每一项的 children 字段
+  displayData.value.forEach((item) => {
+    console.log(item.children);
+  });
+});
 
 // todo: 使用gpt生成
 const handleSearch = () => {
@@ -157,7 +172,7 @@ const setLocationType = (type) => {
   currentEditting.value.type = type;
 };
 
-const saveLocation = () => {
+const saveLocation = async () => {
   if (isEditing.value) {
     const index = tableData.value.findIndex(
       (library) => library.id === currentEditting.value.id
@@ -166,17 +181,21 @@ const saveLocation = () => {
       tableData.value[index] = { ...currentEditting.value };
     }
   } else {
-    const newId = tableData.value.length + 1;
     const newLocation = {
       ...currentEditting.value,
-      id: newId,
       createTime: new Date().toISOString().split("T")[0],
       children: currentEditting.value.type === "library" ? [] : undefined,
     };
     if (newLocation.type === "library") {
       newLocation.capacity = 0;
     }
-    tableData.value.push(newLocation);
+    // tableData.value.push(newLocation);
+    try {
+      await submitLocation(newLocation);
+      ElMessage.success("提交成功");
+    } catch (error) {
+      ElMessage.error("提交失败，请稍后重试");
+    }
   }
   handleClose();
 };
@@ -254,7 +273,7 @@ const saveLocation = () => {
         default-expand-all
       >
         <el-table-column fixed prop="name" label="地点名称" sortable />
-        <el-table-column prop="createTime" label="创建时间" sortable />
+        <el-table-column prop="status" label="状态" sortable />
         <el-table-column prop="capacity" label="容量" sortable />
         <el-table-column prop="remark" label="备注" />
         <el-table-column fixed="right" label="操作">
@@ -333,6 +352,7 @@ const saveLocation = () => {
 </template>
 
 <style scoped lang="scss">
+@import "@/style/mixin.scss";
 .container {
   display: flex;
   flex-direction: column;
@@ -344,7 +364,8 @@ const saveLocation = () => {
   align-items: center; /* 垂直居中对齐 */
   gap: 16px; /* 控制各个元素之间的间距 */
   padding: 16px;
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
 
   .location-search {
     width: 300px;
@@ -360,7 +381,8 @@ const saveLocation = () => {
   flex-grow: 1;
   overflow: auto; /* 超出部分显示滚动条 */
   //overflow: hidden; /* 隐藏默认滚动条 */
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
 
   //.custom-scrollbar {
   //  height: 100%;
@@ -387,6 +409,7 @@ const saveLocation = () => {
   display: flex;
   justify-content: flex-end;
   padding: 6px;
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
 }
 </style>

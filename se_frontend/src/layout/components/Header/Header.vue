@@ -2,6 +2,10 @@
 import ExpandToggle from "./component/ExpandToggle.vue";
 import Breadcrumb from "./component/Breadcrumb.vue";
 import Tabs from "./component/Tabs.vue";
+import FullScreen from "./component/FullScreen.vue";
+import DarkMode from "./component/DarkMode.vue";
+import Language from "@/layout/components/Header/component/Language.vue";
+import UserDropDown from "@/layout/components/Header/component/UserDropDown.vue";
 </script>
 
 <template>
@@ -14,7 +18,12 @@ import Tabs from "./component/Tabs.vue";
       <Breadcrumb style="margin-left: 10px" />
     </div>
     <!-- 右侧 -->
-    <div class="header_right"></div>
+    <div class="header_right">
+      <FullScreen />
+      <DarkMode />
+      <Language />
+      <UserDropDown />
+    </div>
     <!-- tag标签 -->
     <div class="header_tag">
       <Tabs />

@@ -1,17 +1,26 @@
-import { login } from "@/api/user";
+import { register, login } from "@/api/user";
 import router from "@/router/index";
+import adminRoutes from "@/router/role/admin";
+import userRoutes from "@/router/role/user";
+
 export default {
+  namespace: true,
   state: {
+    // 是否是管理员
+    isAdmin: false,
     // 用户信息
     userInfo:
       JSON.parse(localStorage.getItem(process.env.VUE_APP_USER_INFO)) || [],
     // 登录状态
     isLogin: localStorage.getItem("ISLOGIN") || false,
 
-    token: localStorage.getItem("token") || "1",
+    token: localStorage.getItem("TOKEN") || "",
+
+    // 是否动态添加路由
+    isDynamicAddedRoute: false,
 
     // 菜单列表
-    menuList: [
+    menuList: localStorage.getItem("MENU_LIST") || [
       {
         id: 0,
         pid: 0,
@@ -192,30 +201,49 @@ export default {
       state.isLogin = flag;
       localStorage.setItem("ISLOGIN", flag);
     },
+    // 设置token
+    setToken(state, token) {
+      state.token = token;
+      localStorage.setItem("TOKEN", token);
+    },
+    setDynamicAddedRoute(state, flag) {
+      state.isDynamicAddedRoute = flag;
+    },
     setMenuList(state, menuList) {
       state.menuList = menuList;
       localStorage.setItem("MENU_LIST", JSON.stringify(menuList));
     },
   },
   actions: {
+    // 处理注册的业务逻辑
+    async handleRegister(data) {
+      // 发送注册的网络请求
+      try {
+        const res = await register(data);
+        console.log("注册成功：", res);
+      } catch (error) {
+        console.log("注册失败：", error);
+      }
+    },
+
     // 处理登录的业务逻辑
     async handleLogin({ state, commit }, data) {
       // 发送登录的网络请求
       try {
         const res = await login(data);
-        console.log("登录成功：", res);
-
         // 1. 设置登录状态
         commit("setLoginState", true);
         // 2. 设置用户信息
         commit("setUserInfo", res.data);
         // 2. 设置token
-        // commit("setTooken", res.data.token);
+        commit("setToken", res.data.token);
         // 3. 设置菜单列表
         let menuList = [];
         if (res.data.sid) {
+          state.isAdmin = false;
           menuList = state.userMenuList;
         } else if (res.data.account) {
+          state.isAdmin = true;
           menuList = state.adminMenuList;
         }
         commit("setMenuList", menuList); // 更新菜单列表
@@ -223,8 +251,41 @@ export default {
         // 4. 跳转到首页
         await router.push("/");
       } catch (error) {
-        console.log("登录失败：", error);
+        console.log("handleLogin error: ", error);
+        return Promise.reject(error);
       }
+    },
+    // 处理退出登录
+    logout({ commit }) {
+      commit("setLoginState", false);
+      commit("setUserInfo", []);
+      commit("setToken", "");
+      commit("setMenuList", []);
+      localStorage.removeItem(process.env.VUE_APP_USER_INFO);
+      localStorage.removeItem("ISLOGIN");
+      localStorage.removeItem(process.env.VUE_APP_TOKEN_NAME);
+      localStorage.removeItem("MENU_LIST");
+      router.push("/login"); // 跳转到登录页面
+    },
+
+    loadAsyncRoute({ state, commit }) {
+      // 根据登录身份动态添加路由
+      if (state.isAdmin) {
+        adminRoutes.forEach((route) => {
+          router.addRoute("layout", route);
+        });
+        userRoutes.forEach((route) => {
+          router.addRoute("layout", route);
+        });
+      } else {
+        adminRoutes.forEach((route) => {
+          router.addRoute("layout", route);
+        });
+        userRoutes.forEach((route) => {
+          router.addRoute("layout", route);
+        });
+      }
+      commit("setDynamicAddedRoute", true);
     },
   },
 };

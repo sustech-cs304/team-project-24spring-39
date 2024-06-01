@@ -21,6 +21,7 @@ const placeId = ref(null);
 .container {
   display: flex;
   gap: 16px; // 在两个子元素之间添加 16px 的间隔
+  height: 617.6px; // 固定container为除去layout.vue中header的高度
 }
 
 .place-options {
@@ -28,6 +29,9 @@ const placeId = ref(null);
 }
 
 .reservation-pane {
-  flex: 80%; // 占据 70% 的宽度
+  //flex: 80%; // 占据 70% 的宽度
+
+  flex-grow: 0; // 移除flex-grow
+  width: calc(100% - 288px); // 288px 是left-container的总宽度 + gap的宽度
 }
 </style>

@@ -1,5 +1,6 @@
 <script setup>
-import { ref, reactive, computed, watch } from "vue";
+import { ref, reactive, computed, watch, onMounted } from "vue";
+import { format } from "date-fns";
 
 import {
   fetchBookings,
@@ -7,66 +8,108 @@ import {
   submitReservation,
 } from "@/api/reservation";
 import { ElMessage, ElMessageBox } from "element-plus";
+import { useStore } from "vuex";
+
+const store = useStore();
+
+onMounted(async () => {
+  await store.dispatch("reservationStore/loadLocations");
+  locations.value = store.state.reservationStore.locations;
+
+  if (props.placeId) {
+    console.log("props.placeId: ", props.placeId);
+    await fetchData(props.placeId);
+  }
+});
+
+const fetchData = async (placeId) => {
+  const selectedLocation = locations.value.find(
+    (location) => location.id === placeId
+  );
+  if (!selectedLocation) {
+    console.error(`Location with id ${placeId} not found`);
+    return;
+  }
+  console.log("selectedLocation: ", selectedLocation);
+
+  childrenRooms.value = selectedLocation.children;
+  const currentDate = format(new Date(), "yyyy-MM-dd"); // 获取当前日期并格式化
+  for (const room of childrenRooms.value) {
+    try {
+      const res = await fetchBookings({
+        date: selectedDay.value || currentDate,
+        placeIds: [room.id],
+      });
+      bookings[room.id] = res.data.reserveList;
+      // console.log("bookings: ", bookings); // Debugging line
+    } catch (error) {
+      console.error("查询失败，请稍后重试");
+    }
+  }
+};
+
+const locations = ref([]);
 
 const selectedDay = ref("");
 
 const disabledDate = (time) => {
   return (
-    time.getTime() < Date.now() || time.getTime() > Date.now() + 3 * 8.64e7 // 3 days
+    time.getTime() < Date.now() - 8.64e7 ||
+    time.getTime() > Date.now() + 2 * 8.64e7 // 3 days
   );
 };
 
+// 定义 props 并设置默认值
 // eslint-disable-next-line no-undef
 const props = defineProps({
   placeId: {
     type: Number,
-    required: true,
+    default: 1, // 默认值
   },
 });
+
+const childrenRooms = ref([]);
 
 watch(
   () => props.placeId,
   async (newPlaceId) => {
     if (newPlaceId) {
-      try {
-        const res = await fetchBookings({ placeIds: [newPlaceId] });
-        bookings.value = res.data.reserveList;
-      } catch (error) {
-        ElMessage.error("查询失败，请稍后重试");
-      }
+      await fetchData(newPlaceId);
     }
-  },
-  { immediate: true }
+  }
 );
 
-const bookings = ref([]);
+// const bookings = ref([]);
+const bookings = reactive({});
 
 const hours = computed(() => {
   const startHour = 6;
   const endHour = 18;
   const times = [];
-  for (let hour = startHour; hour <= endHour; hour++) {
-    times.push(`${hour}:00`);
+  for (let minute = startHour * 60; minute <= endHour * 60; minute += 30) {
+    const hour = Math.floor(minute / 60);
+    const mins = minute % 60;
+    times.push(`${hour}:${mins.toString().padStart(2, "0")}`);
   }
   return times;
 });
 
 // 计算开始的网格线位置
 const getGridStart = (timeslot) => {
-  const [start] = timeslot
-    .split(" - ")
-    .map((time) => time.trim().split(":")[0]);
-  // 假设你的网格是从6点开始的，则6点对应网格线1
-  return parseInt(start) - 6 + 3;
+  const [start] = timeslot.split(" - ").map((time) => time.trim().split(":"));
+  // 将小时和分钟转换成网格位置，每小时两格，从6点开始，每30分钟一个格子
+  const startHour = parseInt(start[0]);
+  const startMinute = parseInt(start[1]);
+  return (startHour - 6) * 2 + (startMinute === 30 ? 1 : 0) + 3; // 加3因为网格线从3开始
 };
 
 // 计算结束的网格线位置
 const getGridEnd = (timeslot) => {
-  const [, end] = timeslot
-    .split(" - ")
-    .map((time) => time.trim().split(":")[0]);
-  // 结束时间对应的网格线需要比实际时间多1，因为它是跨越到的下一个网格线
-  return parseInt(end) - 6 + 4;
+  const [, end] = timeslot.split(" - ").map((time) => time.trim().split(":"));
+  // 同样的计算逻辑，但是结束时间对应的网格线是下一个网格线
+  const endHour = parseInt(end[0]);
+  const endMinute = parseInt(end[1]);
+  return (endHour - 6) * 2 + (endMinute === 30 ? 1 : 0) + 4; // 结束时间对应的网格线需要比实际时间多1
 };
 
 const dialogVisible = ref(false);
@@ -131,7 +174,7 @@ const form = reactive({
   startTime: "",
   endTime: "",
   searchState: "",
-  addedPersons: [],
+  addedPersons: [12345678, 23456789],
 });
 
 // 表单校验规则
@@ -166,39 +209,31 @@ const submitForm = () => {
   formRef.value.validate(async (valid) => {
     if (valid) {
       try {
+        const currentDate = format(new Date(), "yyyy-MM-dd"); // 获取当前日期并格式化
         await submitReservation({
-          room: currentBooking.value.room,
-          startTime: form.startTime,
-          endTime: form.endTime,
-          persons: form.addedPersons.map((person) => person.slice(0, 8)),
+          room_id: currentBooking.value.id,
+          date: selectedDay.value || currentDate,
+          start_time: form.startTime,
+          end_time: form.endTime,
+          persons: form.addedPersons.map((person) =>
+            person.toString().slice(0, 8)
+          ),
         });
-        ElMessage({
-          // 响应码相关已在拦截器中处理
-          showClose: true,
-          message: "预约成功",
-          type: "success",
-        });
+        ElMessage.success("提交成功");
         dialogVisible.value = false;
         resetForm();
       } catch (error) {
         // 错误处理
-        ElMessage({
-          showClose: true,
-          message: error.message || "提交失败",
-          type: "error",
-        });
+        ElMessage.error("提交失败，请稍后重试");
+        console.log(error);
       }
     } else {
-      ElMessage({
-        showClose: true,
-        message: "表单验证失败，请检查输入",
-        type: "warning",
-      });
+      ElMessage.warning("表单验证失败，请检查输入");
     }
   });
 };
 
-// 函数：重置表单
+// 重置表单
 const resetForm = (showMessage = false) => {
   formRef.value.resetFields();
   if (showMessage) {
@@ -221,42 +256,49 @@ const resetForm = (showMessage = false) => {
       size="default"
       :disabledDate="disabledDate"
     />
+    <!-- 自动扩展的空白元素 -->
+    <div class="spacer"></div>
+    <el-button type="primary" plain @click="fetchBookings">查询</el-button>
   </div>
-  <div class="scrollable-panel">
-    <div class="time-header">
-      <div>场地</div>
-      <div>操作</div>
-      <div v-for="hour in hours" :key="hour">{{ hour }}</div>
-    </div>
-    <div class="booking-row" v-for="booking in bookings" :key="booking.room">
-      <div
-        :style="{
-          'grid-column-start': 1,
-          'grid-column-end': 2,
-        }"
-      >
-        {{ booking.room }}
+  <div class="body-container">
+    <div class="scrollable-panel">
+      <div class="time-header">
+        <div>场地</div>
+        <div>操作</div>
+        <div v-for="hour in hours" :key="hour">{{ hour }}</div>
       </div>
-      <div>
-        <el-button type="primary" plain @click="openDialog(booking)"
-          >预约
-        </el-button>
-      </div>
-      <div
-        class="booking-slot"
-        :style="{
-          'grid-column-start': getGridStart(booking.timeslot),
-          'grid-column-end': getGridEnd(booking.timeslot),
-        }"
-      >
-        {{ booking.status }}
+      <div class="booking-row" v-for="room in childrenRooms" :key="room.id">
+        <div
+          :style="{
+            'grid-column-start': 1,
+            'grid-column-end': 2,
+          }"
+        >
+          {{ room.name }}
+        </div>
+        <div>
+          <el-button type="primary" plain @click="openDialog(room)">
+            预约
+          </el-button>
+        </div>
+        <div
+          v-for="booking in bookings[room.id]"
+          :key="booking.id"
+          class="booking-slot"
+          :style="{
+            'grid-column-start': getGridStart(booking.timeslot),
+            'grid-column-end': getGridEnd(booking.timeslot),
+          }"
+        >
+          {{ booking.status }}
+        </div>
       </div>
     </div>
   </div>
 
   <el-dialog
     v-model="dialogVisible"
-    :title="currentBooking.room || '预约'"
+    :title="currentBooking.place + '-' + currentBooking.name || '预约'"
     :before-close="handleClose"
   >
     <el-form ref="formRef" :model="form" :rules="rules">
@@ -312,14 +354,32 @@ const resetForm = (showMessage = false) => {
 </template>
 
 <style lang="scss" scoped>
-.scrollable-panel {
-  width: 1000px;
-  max-height: 500px;
+@import "@/style/mixin.scss";
+.filter-bar {
+  display: flex;
+  align-items: center;
+  padding: 10px;
+  //background-color: #f5f5f5;
+  border-bottom: 1px solid #ccc;
+  @include block_bg_color();
+
+  .spacer {
+    flex: 1;
+  }
+}
+
+.body-container {
+  width: 100%;
+  height: calc(100% - 52.8px); // 52.8px 是 filter-bar 的高度
+  background-color: white;
   overflow: auto;
+  margin-top: 10px; // 为了让筛选框和预约展示表格有一定的间距
+}
+
+.scrollable-panel {
   border-collapse: collapse; // 合并边框，目前好像没用
   display: grid;
-  grid-template-columns: auto auto repeat(13, 1fr);
-  margin-top: 10px; // 为了让筛选框和预约展示表格有一定的间距
+  grid-template-columns: 150px 100px repeat(25, 60px);
   font-size: 14px;
 
   // 设置字体颜色为半透明黑色
@@ -332,7 +392,9 @@ const resetForm = (showMessage = false) => {
     border: 1px solid #ccc;
     padding: 0.5rem;
     text-align: center;
-    background-color: #f5f5f5;
+    //background-color: #f5f5f5;
+    @include block_bg_color();
+    @include text_color();
   }
 
   .booking-row div {
