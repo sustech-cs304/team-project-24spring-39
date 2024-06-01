@@ -17,7 +17,7 @@ export function fetchMyPostsInside() {
 }
 
 export function fetchMajorCoursesInside() {
-  const url = "/forum/major_courses";
+  const url = "/forum/get_department";
   return request({
     method: "get",
     url: url,
@@ -56,5 +56,13 @@ export function applyFilterInside(payLoad) {
     method: "post",
     url: url,
     payLoad,
+  });
+}
+
+export function getPageNum() {
+  const url = "/forum/get_post_count";
+  return request({
+    method: "get",
+    url: url,
   });
 }

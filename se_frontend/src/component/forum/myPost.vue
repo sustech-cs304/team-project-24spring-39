@@ -36,7 +36,6 @@
       <el-form-item label="附件">
         <el-upload
           action="https://jsonplaceholder.typicode.com/posts/"
-          :on-success="handleUploadSuccess"
           :file-list="form.attachments"
           :on-remove="handleRemove"
           :auto-upload="false"
@@ -79,11 +78,11 @@ const form = ref({
   attachments: [],
 });
 
-const handleUploadSuccess = (response, file, fileList) => {
-  console.log("Upload success:", response, file, fileList);
-  form.value.attachments = fileList;
-  dialogVisible.value = false;
-};
+// const handleUploadSuccess = (response, file, fileList) => {
+//   console.log("Upload success:", response, file, fileList);
+//   form.value.attachments = fileList;
+//   dialogVisible.value = false;
+// };
 
 const handleRemove = (file, fileList) => {
   form.value.attachments = fileList;

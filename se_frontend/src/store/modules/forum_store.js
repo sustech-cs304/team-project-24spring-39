@@ -7,6 +7,7 @@ import {
   // createPostInside,
   deletePostInside,
   makeCommentInside,
+  getPageNum,
 } from "@/api/forum_api";
 import { ElMessageBox } from "element-plus";
 export default {
@@ -33,14 +34,14 @@ export default {
         id: 1,
         title: "帖子标题1",
         content: "这是第一个帖子内容。",
-        author: "用户1",
+        name: "用户1",
         date: "2024-05-22",
         attachments: [
           { name: "Attachment 1", url: "path/to/attachment1.pdf" },
           { name: "Attachment 2", url: "path/to/attachment2.docx" },
         ],
         comments: [
-          { id: 1, user: "User1", content: "This is the first comment." },
+          { id: 1, name: "User1", content: "This is the first comment." },
           { id: 2, user: "User2", content: "This is the second comment." },
           { id: 3, user: "User3", content: "This is the third comment." },
         ],
@@ -49,7 +50,7 @@ export default {
         id: 2,
         title: "帖子标题2",
         content: "这是第二个帖子内容。",
-        author: "用户2",
+        name: "用户2",
         date: "2024-05-21",
         attachments: [
           { name: "Attachment 1", url: "path/to/attachment1.pdf" },
@@ -65,7 +66,7 @@ export default {
         id: 3,
         title: "帖子标题2",
         content: "这是第二个帖子内容。",
-        author: "用户2",
+        name: "用户2",
         date: "2024-05-21",
         attachments: [
           { name: "Attachment 1", url: "path/to/attachment1.pdf" },
@@ -81,7 +82,7 @@ export default {
         id: 4,
         title: "帖子标题2",
         content: "这是第二个帖子内容。",
-        author: "用户2",
+        name: "用户2",
         date: "2024-05-21",
         attachments: [
           { name: "Attachment 1", url: "path/to/attachment1.pdf" },
@@ -100,7 +101,7 @@ export default {
         title: "Post Title 1",
         content:
           "This is a brief descripti This is a brief description of post 2",
-        author: "用户2",
+        name: "用户2",
         date: "2024-05-21",
         attachments: [
           { name: "Attachment 1", url: "path/to/attachment1.pdf" },
@@ -116,7 +117,7 @@ export default {
         id: 2,
         title: "Post Title 2This is a brief description of post 2",
         content: "This is a brief description of post 2",
-        author: "用户2",
+        name: "用户2",
         date: "2024-05-21",
         attachments: [
           { name: "Attachment 1", url: "path/to/attachment1.pdf" },
@@ -132,7 +133,7 @@ export default {
         id: 3,
         title: "Post Title 3",
         content: "This is a brief description of post 3",
-        author: "用户2",
+        name: "用户2",
         date: "2024-05-21",
         attachments: [
           { name: "Attachment 1", url: "path/to/attachment1.pdf" },
@@ -184,17 +185,24 @@ export default {
       state.filter_info.start = start;
       state.filter_info.end = end;
     },
+
+    set_post_num(state, num) {
+      state.post_num = num;
+    },
   },
 
   actions: {
     async fetchForum({ commit }) {
       try {
+        console.log("start fetching");
         const response1 = await fetchMajorCoursesInside();
         commit("set_major_courses", response1.data.major_courses);
         const response2 = await fetchAllPostsInside();
         commit("set_all_posts", response2.data.all_posts);
         const response3 = await fetchMyPostsInside();
         commit("set_my_posts", response3.data.my_posts);
+        const response4 = await getPageNum();
+        commit("set_post_num", response4.data);
       } catch (error) {
         console.error("Error:", error);
       }

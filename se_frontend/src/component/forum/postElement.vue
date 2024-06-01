@@ -3,7 +3,7 @@
     <h2>{{ post.title }}</h2>
     <p>{{ post.content }}</p>
     <el-divider></el-divider>
-    <small>作者: {{ post.author }} | 发布于: {{ post.date }}</small>
+    <small>作者: {{ post.name }} | 发布于: {{ post.date }}</small>
     <div class="button-container">
       <el-button type="primary" @click="goToPost(post.id)">查看详情</el-button>
     </div>
