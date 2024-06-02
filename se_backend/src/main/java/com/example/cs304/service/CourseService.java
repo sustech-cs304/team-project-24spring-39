@@ -12,14 +12,8 @@ public class CourseService {
     private CourseRepository courseRepository;
 
     @Transactional
-    public void selectCourse(String courseId, String studentId, int score) {
-        courseRepository.selectCourse(courseId, studentId, score);
-    }
-
-    @Transactional
     public void dropCourse(String courseId, String studentId) {
         courseRepository.dropCourse(courseId, studentId);
     }
 
 }
-

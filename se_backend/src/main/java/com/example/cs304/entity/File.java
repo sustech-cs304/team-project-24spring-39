@@ -22,10 +22,6 @@ public class File {
     @Column(name = "filepath", nullable = false, length = 100)
     private String filepath;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "uploader_id", nullable = false, referencedColumnName = "SID")
-    private Student uploader;
-
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "upload_time", nullable = false)
     private Instant uploadTime;
@@ -60,14 +56,6 @@ public class File {
 
     public void setFilepath(String filepath) {
         this.filepath = filepath;
-    }
-
-    public Student getUploader() {
-        return uploader;
-    }
-
-    public void setUploader(Student uploader) {
-        this.uploader = uploader;
     }
 
     public Instant getUploadTime() {

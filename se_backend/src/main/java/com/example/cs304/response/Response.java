@@ -12,9 +12,9 @@ public class Response<T> {
 
     public static <E> Response<E> success(E data) {
         if (data == null) {
-            return new Response<>(200, "success", null);
+            return new Response<>(200, "successful", null);
         } else {
-            return new Response<>(200, "success", data);
+            return new Response<>(200, "successful", data);
         }
     }
 
@@ -48,4 +48,5 @@ public class Response<T> {
     public void setData(T data) {
         this.data = data;
     }
+
 }

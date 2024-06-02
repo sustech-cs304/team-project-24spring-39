@@ -58,6 +58,7 @@ public class ReservationController {
 
     @GetMapping("/locations")
     public ResponseEntity<Response> findLocations() {
+        System.out.println("test");
         List<Building> buildings = buildingRepository.findAll();
         List<Location> locations = new ArrayList<>();
 
@@ -80,9 +81,18 @@ public class ReservationController {
 //        List<Reservation> reservations = reservationRepository.findAll();
 //        return ResponseEntity.ok(reservations);
 //    }
-    @GetMapping("/bookings/{room_id}")
-    public Response getReservations(@PathVariable("room_id") int room_id){
-        List<Reservation> reservations = reservationRepository.findByRoom(room_id);
+    @GetMapping("/bookings")
+    public Response getReservations(@RequestParam(value = "room_id",required = false) Integer room_id,
+                                    @RequestParam(value = "date",required = false) String date){
+        List<Reservation> reservations = reservationRepository.findAll();
+        if (date == null && room_id != null) {
+            reservations = reservationRepository.findByRoom(room_id);
+        } else if (date != null && room_id == null) {
+            reservations = reservationRepository.findByDate(date);
+        } else if (date != null) {
+            reservations = reservationRepository.findByRoomAndDate(date, room_id);
+        }
+
 //        List<ReservationRequest> reservations = reservationRepository.findAllReservations();
         List<ReservationRequest> reservationRequests = new ArrayList<>();
 
@@ -108,7 +118,7 @@ public class ReservationController {
 //    void addReservation(String student_id, int room_id, String date, String start_time, String end_time, String purpose);
     @Transactional
     @PostMapping("/submit")
-    public void addReservation(@RequestParam("student") List<String> student,
+    public Response addReservation(@RequestParam("persons") List<String> student,
                                @RequestParam("room_id") int room_id,
                                @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                @RequestParam("start_time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime start_time,
@@ -119,6 +129,64 @@ public class ReservationController {
         for (String student_id : student) {
             SRrepository.insertStudentReservation(student_id, reservation_id);
         }
+        return Response.success(null);
+    }
+
+    @DeleteMapping("/delete")
+    public Response deleteReservation(@RequestParam("reservation_id") int reservation_id) {
+        SRrepository.deleteStudentReservation(reservation_id);
+        reservationRepository.deleteById(reservation_id);
+        return Response.success(null);
+
+    }
+
+    @PostMapping("/add_building")
+    public Response addBuilding(@RequestParam("name") String name,
+                                @RequestParam("status") String status) {
+        buildingRepository.addBuilding(name, status);
+        return Response.success(null);
+    }
+
+    @PostMapping("/add_room")
+    public Response addRoom(@RequestParam("place") String place,
+                            @RequestParam("room_name") String room_name,
+                            @RequestParam("capacity") int capacity,
+                            @RequestParam("status") String status) {
+        roomRepository.addRoom(place, room_name, capacity, status);
+        buildingRepository.addBuidingCapacity(capacity, place);
+        return Response.success(null);
+    }
+
+    @DeleteMapping("/delete_building")
+    public Response deleteBuilding(@RequestParam("name") String name) {
+        buildingRepository.deleteBuilding(name);
+        roomRepository.deleteRoomByBuilding(name);
+        return Response.success(null);
+    }
+
+    @DeleteMapping("/delete_room")
+    public Response deleteRoom(@RequestParam("room_id") int room_id) {
+        Room room = roomRepository.findById(room_id).get();
+        roomRepository.deleteRoom(room_id);
+        String place = room.getPlace();
+        buildingRepository.addBuidingCapacity(-room.getCapacity(), place);
+        return Response.success(null);
+    }
+
+    @PostMapping("/update_building_status")
+    public Response updateBuildingStatus(@RequestParam("name") String name,
+                                         @RequestParam("status") String status) {
+        buildingRepository.updateBuildingStatus(name, status);
+        return Response.success(null);
+    }
+
+    @PostMapping("/update_room_status")
+    public Response updateRoomStatus(@RequestParam("room_id") int room_id,
+                                     @RequestParam("status") String status) {
+        Room room = roomRepository.findById(room_id).get();
+        room.setStatus(status);
+        roomRepository.save(room);
+        return Response.success(null);
     }
 
 

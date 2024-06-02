@@ -60,27 +60,23 @@ INSERT INTO room (id, place, name, capacity) VALUES (3, '涵泳图书馆', '图�
 
 
 -- file
-INSERT INTO file (id, name, filetype, filepath, uploader_id) VALUES (1, '报告.pdf', 'document', '/uploads/12345678/report.pdf', '12345678');
-INSERT INTO file (id, name, filetype, filepath, uploader_id) VALUES (2, '照片.jpg', 'image', '/uploads/87654321/photo.jpg', '87654321');
-INSERT INTO file (id, name, filetype, filepath, uploader_id) VALUES (3, '演讲.mp4', 'video', '/uploads/23456789/presentation.mp4', '23456789');
+INSERT INTO file (id, name, filetype, filepath) VALUES (1, '报告.pdf', 'document', '/uploads/12345678/report.pdf');
+INSERT INTO file (id, name, filetype, filepath) VALUES (2, '照片.jpg', 'image', '/uploads/87654321/photo.jpg');
+INSERT INTO file (id, name, filetype, filepath) VALUES (3, '演讲.mp4', 'video', '/uploads/23456789/presentation.mp4');
 
 -- post
-INSERT INTO post (id, author_id, title, content, file_id, major_category, course_category) VALUES (1, '12345678', '数据结构问题', '关于树的部分我不太懂，谁能帮我解释一下？', null, '计算机科学与技术', 'CS001');
-INSERT INTO post (id, author_id, title, content, file_id, major_category, course_category) VALUES (2, '87654321', '物理实验求助', '我在实验室遇到了问题，需要一些帮助', null, '电子工程', 'PH001');
-INSERT INTO post (id, author_id, title, content, file_id, major_category, course_category) VALUES (3, '23456789', '化学课程疑问', '对于这个化学反应，我有几个问题', null, '化学工程', 'CH001');
+INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (4, '12345678', '数据结构问题', '关于树的部分我不太懂，谁能帮我解释一下？', '计算机科学与技术', '数据结构');
+INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (5, '87654321', '物理实验求助', '我在实验室遇到了问题，需要一些帮助','电子工程', '大学物理');
+INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (6, '23456789', '化学课程疑问', '对于这个化学反应，我有几个问题', '化学工程', '有机化学');
 
 -- reply
-INSERT INTO reply (id, post_id, author_id, content, file_id) VALUES (1, 1, '87654321', '树的这部分其实很简单的，你可以这样理解...', null);
-INSERT INTO reply (id, post_id, author_id, content, file_id) VALUES (2, 2, '12345678', '我也有同样的问题，希望有人能解答', null);
-
--- secondary_reply (继续)
-INSERT INTO secondary_reply (id, reply_id, author_id, content, file_id) VALUES (1, 1, '23456789', '谢谢你的解释，我现在明白了', null);
-INSERT INTO secondary_reply (id, reply_id, author_id, content, file_id) VALUES (2, 2, '45678912', '我也是新手，希望大神解答', null);
+INSERT INTO reply (id, post_id, author_id, content) VALUES (1, 1, '87654321', '树的这部分其实很简单的，你可以这样理解...');
+INSERT INTO reply (id, post_id, author_id, content) VALUES (2, 2, '12345678', '我也有同样的问题，希望有人能解答');
 
 -- like
-INSERT INTO `like` (id, post_id, author_id) VALUES (1, 1, '87654321');
-INSERT INTO `like` (id, post_id, author_id) VALUES (2, 2, '12345678');
-INSERT INTO `like` (id, post_id, author_id) VALUES (3, 3, '23456789');
+# INSERT INTO `like` (id, post_id, author_id) VALUES (1, 1, '87654321');
+# INSERT INTO `like` (id, post_id, author_id) VALUES (2, 2, '12345678');
+# INSERT INTO `like` (id, post_id, author_id) VALUES (3, 3, '23456789');
 
 -- message
 INSERT INTO message (id, receiver_id, content) VALUES (1, '12345678', '你有一个新的课程通知，请及时查看');

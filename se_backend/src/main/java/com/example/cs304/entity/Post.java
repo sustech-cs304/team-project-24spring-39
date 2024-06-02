@@ -1,12 +1,22 @@
 package com.example.cs304.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
+import java.util.List;
 
+@Setter
+@Getter
 @Entity
 @Table(name = "post")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
+
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -25,11 +35,8 @@ public class Post {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "posting_time", nullable = false)
+    @JsonProperty("date")
     private Instant postingTime;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id")
-    private File file;
 
     @Column(name = "major_category", length = 50)
     private String majorCategory;
@@ -37,68 +44,9 @@ public class Post {
     @Column(name = "course_category", length = 50)
     private String courseCategory;
 
-    public Integer getId() {
-        return id;
-    }
+    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "post_id")
+    private List<Reply> comments;
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Student getAuthor() {
-        return author;
-    }
-
-    public void setAuthor(Student author) {
-        this.author = author;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
-    }
-
-    public Instant getPostingTime() {
-        return postingTime;
-    }
-
-    public void setPostingTime(Instant postingTime) {
-        this.postingTime = postingTime;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
-    }
-
-    public String getMajorCategory() {
-        return majorCategory;
-    }
-
-    public void setMajorCategory(String majorCategory) {
-        this.majorCategory = majorCategory;
-    }
-
-    public String getCourseCategory() {
-        return courseCategory;
-    }
-
-    public void setCourseCategory(String courseCategory) {
-        this.courseCategory = courseCategory;
-    }
 
 }

@@ -1,5 +1,7 @@
 package com.example.cs304.entity;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 
@@ -7,6 +9,7 @@ import java.time.Instant;
 
 @Entity
 @Table(name = "reply")
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Reply {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

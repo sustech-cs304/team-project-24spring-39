@@ -4,6 +4,9 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
@@ -12,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
+@Data
 @Table(name = "course")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Course {
@@ -39,6 +43,7 @@ public class Course {
     @Column(name = "credit", nullable = false)
     private Integer credit;
 
+    @Getter
     @Column(name = "hours", nullable = false)
     private Integer hours;
 
@@ -55,128 +60,17 @@ public class Course {
     @Column(name = "description", length = 1000)
     private String description;
 
-    @Column(name = "time", nullable = false)
+    @Column(name = "time")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> time;
+    private List<String> time;
 
     @ManyToMany
     @JoinTable(
-    name = "course_professor",
-    joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "CID"),
-    inverseJoinColumns = @JoinColumn(name = "professor_id", referencedColumnName = "PID"))
+            name = "course_professor",
+            joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "CID"),
+            inverseJoinColumns = @JoinColumn(name = "professor_id", referencedColumnName = "PID"))
     private List<Professor> professors;
 
-
-    public List<Professor> getProfessors() {
-        return professors;
+    private Float rate;
 }
 
-
-    public void setProfessors(List<Professor> professors) {
-        this.professors = professors;
-    }
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public String getCid() {
-        return cid;
-    }
-
-    public void setCid(String cid) {
-        this.cid = cid;
-    }
-
-    public String getSemester() {
-        return semester;
-    }
-
-    public void setSemester(String semester) {
-        this.semester = semester;
-    }
-
-    public String getType() {
-        return type;
-    }
-
-    public void setType(String type) {
-        this.type = type;
-    }
-
-    public Department getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(Department department) {
-        this.department = department;
-    }
-
-    public Integer getCredit() {
-        return credit;
-    }
-
-    public void setCredit(Integer credit) {
-        this.credit = credit;
-    }
-
-    public Integer getHours() {
-        return hours;
-    }
-
-    public void setHours(Integer hours) {
-        this.hours = hours;
-    }
-
-    public Integer getCapacity() {
-        return capacity;
-    }
-
-    public void setCapacity(Integer capacity) {
-        this.capacity = capacity;
-    }
-
-    public Integer getSelected() {
-        return selected;
-    }
-
-    public void setSelected(Integer selected) {
-        this.selected = selected;
-    }
-
-    public String getLocation() {
-        return location;
-    }
-
-    public void setLocation(String location) {
-        this.location = location;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public Map<String, Object> getTime() {
-        return time;
-    }
-
-    public void setTime(Map<String, Object> time) {
-        this.time = time;
-    }
-
-}
