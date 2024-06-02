@@ -8,6 +8,5 @@ import org.springframework.stereotype.Repository;
 import java.util.List;
 @Repository
 public interface DepartmentRepository extends JpaRepository<Department, Integer> {
-    @Query("SELECT d FROM Department d JOIN FETCH d.courses")
-    List<Department> findAllWithCourses();
+
 }
