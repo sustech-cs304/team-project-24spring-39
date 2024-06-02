@@ -4,13 +4,13 @@ import request from "@/utils/request";
  * @description 根据条件查询预约情况
  * @param {Object} params - 查询参数
  * @param {string} [params.date] - 查询的日期
- * @param {string[]} [params.placeIds] - 查询的地点ID
+ * @param {string} [params.room_id] - 查询的地点ID
  * @returns {Promise} 请求的Promise
  */
 export function fetchBookings(params) {
   return request({
     method: "get",
-    url: "/reservation/bookings/2", // 根据你的实际API端点修改
+    url: "/reservation/bookings", // 根据你的实际API端点修改
     params: params, // 将所有查询参数传递给后端API
   });
 }
@@ -41,6 +41,14 @@ export function submitReservation(data) {
   });
 }
 
+export function deleteReservation(recordId) {
+  return request({
+    method: "delete",
+    url: `/reservation/delete`,
+    params: { reservation_id: recordId },
+  });
+}
+
 // 地点管理
 /**
  * @description 获取所有地点信息
@@ -53,10 +61,50 @@ export function fetchLocations() {
   });
 }
 
-export function submitLocation(data) {
-  const queryParams = new URLSearchParams(data).toString();
+export function submitBuilding(params) {
   return request({
     method: "post",
-    url: `/reservation/submit-location?${queryParams}`,
+    url: "/reservation/add_building",
+    params,
+  });
+}
+
+export function updateBuilding(params) {
+  return request({
+    method: "post",
+    url: "/reservation/update_building_status",
+    params,
+  });
+}
+
+export function deleteBuilding(name) {
+  return request({
+    method: "delete",
+    url: "/reservation/delete_building",
+    params: { name: name },
+  });
+}
+
+export function submitRoom(params) {
+  return request({
+    method: "post",
+    url: `/reservation/add_room`,
+    params,
+  });
+}
+
+export function updateRoom(params) {
+  return request({
+    method: "post",
+    url: "/reservation/update_room_status",
+    params,
+  });
+}
+
+export function deleteRoom(room_id) {
+  return request({
+    method: "delete",
+    url: "/reservation/delete_room",
+    params: { room_id: room_id },
   });
 }

@@ -38,9 +38,9 @@ const fetchData = async (placeId) => {
     try {
       const res = await fetchBookings({
         date: selectedDay.value || currentDate,
-        placeIds: [room.id],
+        room_id: room.id,
       });
-      bookings[room.id] = res.data.reserveList;
+      bookings[room.id] = res.data;
       // console.log("bookings: ", bookings); // Debugging line
     } catch (error) {
       console.error("查询失败，请稍后重试");
@@ -95,21 +95,25 @@ const hours = computed(() => {
 });
 
 // 计算开始的网格线位置
-const getGridStart = (timeslot) => {
-  const [start] = timeslot.split(" - ").map((time) => time.trim().split(":"));
-  // 将小时和分钟转换成网格位置，每小时两格，从6点开始，每30分钟一个格子
-  const startHour = parseInt(start[0]);
-  const startMinute = parseInt(start[1]);
+const getGridStart = (startTime) => {
+  // 将startTime按照":"分割为小时和分钟
+  const [startHour, startMinute] = startTime
+    .trim()
+    .split(":")
+    .map((time) => parseInt(time));
+  // 计算网格线位置
   return (startHour - 6) * 2 + (startMinute === 30 ? 1 : 0) + 3; // 加3因为网格线从3开始
 };
 
 // 计算结束的网格线位置
-const getGridEnd = (timeslot) => {
-  const [, end] = timeslot.split(" - ").map((time) => time.trim().split(":"));
-  // 同样的计算逻辑，但是结束时间对应的网格线是下一个网格线
-  const endHour = parseInt(end[0]);
-  const endMinute = parseInt(end[1]);
-  return (endHour - 6) * 2 + (endMinute === 30 ? 1 : 0) + 4; // 结束时间对应的网格线需要比实际时间多1
+const getGridEnd = (endTime) => {
+  // 将endTime按照":"分割为小时和分钟
+  const [endHour, endMinute] = endTime
+    .trim()
+    .split(":")
+    .map((time) => parseInt(time));
+  // 计算网格线位置
+  return (endHour - 6) * 2 + (endMinute === 30 ? 1 : 0) + 3; // 现在的写法结束时间对应的网格线【不】需要比实际时间多1
 };
 
 const dialogVisible = ref(false);
@@ -210,6 +214,34 @@ const submitForm = () => {
     if (valid) {
       try {
         const currentDate = format(new Date(), "yyyy-MM-dd"); // 获取当前日期并格式化
+        const selectedDate = selectedDay.value || currentDate;
+        const newStartTime = new Date(`${selectedDate}T${form.startTime}:00`);
+        const newEndTime = new Date(`${selectedDate}T${form.endTime}:00`);
+
+        // 获取当前房间的所有预约记录
+        const roomBookings = bookings[currentBooking.value.id] || [];
+
+        // 检查新预约时间是否与现有预约时间冲突
+        const isConflict = roomBookings.some((booking) => {
+          const bookingStartTime = new Date(
+            `${selectedDate}T${booking.start_time}`
+          );
+          const bookingEndTime = new Date(
+            `${selectedDate}T${booking.end_time}`
+          );
+          return (
+            (newStartTime >= bookingStartTime &&
+              newStartTime < bookingEndTime) ||
+            (newEndTime > bookingStartTime && newEndTime <= bookingEndTime) ||
+            (newStartTime <= bookingStartTime && newEndTime >= bookingEndTime)
+          );
+        });
+
+        if (isConflict) {
+          ElMessage.error("预约时间冲突，请选择其他时间段");
+          return;
+        }
+
         await submitReservation({
           room_id: currentBooking.value.id,
           date: selectedDay.value || currentDate,
@@ -222,6 +254,7 @@ const submitForm = () => {
         ElMessage.success("提交成功");
         dialogVisible.value = false;
         resetForm();
+        location.reload();
       } catch (error) {
         // 错误处理
         ElMessage.error("提交失败，请稍后重试");
@@ -286,8 +319,8 @@ const resetForm = (showMessage = false) => {
           :key="booking.id"
           class="booking-slot"
           :style="{
-            'grid-column-start': getGridStart(booking.timeslot),
-            'grid-column-end': getGridEnd(booking.timeslot),
+            'grid-column-start': getGridStart(booking.startTime),
+            'grid-column-end': getGridEnd(booking.endTime),
           }"
         >
           {{ booking.status }}
@@ -309,9 +342,9 @@ const resetForm = (showMessage = false) => {
             style="width: 240px"
             :max-time="form.endTime"
             placeholder="Start time"
-            start="08:00"
+            start="06:00"
             step="00:30"
-            end="22:00"
+            end="18:00"
           />
         </el-form-item>
         <el-form-item prop="endTime">
@@ -320,9 +353,9 @@ const resetForm = (showMessage = false) => {
             style="width: 240px"
             :min-time="form.startTime"
             placeholder="End time"
-            start="08:00"
+            start="06:00"
             step="00:30"
-            end="22:00"
+            end="18:00"
           />
         </el-form-item>
       </el-form-item>

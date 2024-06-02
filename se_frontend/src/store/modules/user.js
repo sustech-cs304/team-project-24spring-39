@@ -2,6 +2,9 @@ import { register, login } from "@/api/user";
 import router from "@/router/index";
 import adminRoutes from "@/router/role/admin";
 import userRoutes from "@/router/role/user";
+// import { useI18n } from "vue-i18n";
+//
+// const { t } = useI18n();
 
 export default {
   namespace: true,
