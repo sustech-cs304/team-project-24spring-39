@@ -11,6 +11,9 @@ import {
   updateRoom,
 } from "@/api/reservation";
 import { ElMessage } from "element-plus";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const store = useStore();
 
@@ -179,7 +182,7 @@ const handleDelete = async (location) => {
     } else {
       await deleteBuilding(location.name);
     }
-    ElMessage.success("删除成功");
+    ElMessage.success(t("deleteSuccess"));
   } catch (error) {
     console.log(error);
     ElMessage.error(error);
@@ -240,9 +243,9 @@ const saveLocation = async () => {
           place: newLocation.name,
         });
       }
-      ElMessage.success("提交成功");
+      ElMessage.success(t("submitSuccess"));
     } catch (error) {
-      ElMessage.error("提交失败，请稍后重试");
+      ElMessage.error(t("submitFail"));
     }
   }
   handleClose();
@@ -267,13 +270,13 @@ const saveLocation = async () => {
     <div class="header">
       <el-input
         v-model="searchRoom"
-        placeholder="Please input"
+        :placeholder="$t('inputPlaceholder')"
         class="location-search"
       >
         <template #prepend>
           <el-select
             v-model="searchLibrary"
-            placeholder="Select"
+            :placeholder="$t('selectPlaceholder')"
             style="width: 115px"
           >
             <el-option
@@ -290,24 +293,26 @@ const saveLocation = async () => {
         v-model="searchMin"
         :min="1"
         :max="10"
-        label="Number"
-        placeholder="Min Capacity"
+        :label="$t('number')"
+        :placeholder="$t('minCapacity')"
         controls-position="right"
       />
       <el-input-number
         v-model="searchMax"
         :min="1"
         :max="10"
-        label="Number"
-        placeholder="Max Capacity"
+        :label="$t('number')"
+        :placeholder="$t('maxCapacity')"
         controls-position="right"
       />
       <!-- 自动扩展的空白元素 -->
       <div class="spacer"></div>
-      <el-button type="primary" plain @click="handleSearch">查询</el-button>
-      <el-button type="primary" plain @click="() => openDialog()"
-        >添加地点</el-button
-      >
+      <el-button type="primary" plain @click="handleSearch">{{
+        t("search")
+      }}</el-button>
+      <el-button type="primary" plain @click="openDialog">{{
+        t("addLocation")
+      }}</el-button>
     </div>
 
     <div class="table">
@@ -320,11 +325,11 @@ const saveLocation = async () => {
         border
         default-expand-all
       >
-        <el-table-column fixed prop="name" label="地点名称" sortable />
-        <el-table-column prop="status" label="状态" sortable />
-        <el-table-column prop="capacity" label="容量" sortable />
-        <el-table-column prop="remark" label="备注" />
-        <el-table-column fixed="right" label="操作">
+        <el-table-column fixed prop="name" :label="t('name')" sortable />
+        <el-table-column prop="status" :label="t('status')" sortable />
+        <el-table-column prop="capacity" :label="t('capacity')" sortable />
+        <el-table-column prop="remark" :label="t('remark')" />
+        <el-table-column fixed="right" :label="t('action')">
           <template #default="scope">
             <el-button
               type="primary"
@@ -357,44 +362,44 @@ const saveLocation = async () => {
 
   <el-dialog
     v-model="dialogVisible"
-    :title="isEditing.valueOf() ? '编辑地点' : '添加地点'"
+    :title="isEditing ? $t('dialog.editLocation') : $t('dialog.addLocation')"
     :before-close="handleClose"
   >
     <el-form :model="currentEditting" label-width="120px">
-      <el-form-item label="地点类型">
+      <el-form-item :label="$t('dialog.locationType')">
         <el-button-group>
           <el-button
             :type="currentEditting.type === 'library' ? 'primary' : ''"
             @click="() => setLocationType('library')"
             :disabled="isEditing.value"
-            >图书馆
+            >{{ $t("dialog.library") }}
           </el-button>
           <el-button
             :type="currentEditting.type === 'room' ? 'primary' : ''"
             @click="() => setLocationType('room')"
             :disabled="isEditing.value"
-            >讨论间
+            >{{ $t("dialog.room") }}
           </el-button>
         </el-button-group>
       </el-form-item>
-      <el-form-item label="地点名称">
+      <el-form-item :label="$t('dialog.locationName')">
         <el-input v-model="currentEditting.name"></el-input>
       </el-form-item>
-      <el-form-item label="状态">
+      <el-form-item :label="$t('dialog.status')">
         <el-button-group>
           <el-button
             :type="currentEditting.state === '开放' ? 'primary' : ''"
             @click="() => setLocationState('开放')"
-            >开放
+            >{{ $t("dialog.open") }}
           </el-button>
           <el-button
             :type="currentEditting.state === '关闭' ? 'primary' : ''"
             @click="() => setLocationState('关闭')"
-            >关闭
+            >{{ $t("dialog.closed") }}
           </el-button>
         </el-button-group>
       </el-form-item>
-      <el-form-item label="容量">
+      <el-form-item :label="$t('dialog.capacity')">
         <el-input-number
           v-model="currentEditting.capacity"
           controls-position="right"
@@ -404,8 +409,10 @@ const saveLocation = async () => {
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="saveLocation">保存</el-button>
+        <el-button @click="handleClose">{{ $t("dialog.cancel") }}</el-button>
+        <el-button type="primary" @click="saveLocation">{{
+          $t("dialog.save")
+        }}</el-button>
       </div>
     </template>
   </el-dialog>
