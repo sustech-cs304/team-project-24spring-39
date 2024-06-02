@@ -1,3 +1,7 @@
+create database if not exists cs304proj;
+use cs304proj;
+
+-- department
 create table if not exists department
 (
     id int auto_increment primary key,
@@ -62,7 +66,6 @@ create table if not exists course
     selected int not null default 0,
     location varchar(50) not null,
     description varchar(1000),
-    time json not null,
     foreign key (department) references department(name),
     constraint check_CID check (CID REGEXP '[A-Z]{2}[0-9]{3}$')
 );
@@ -74,6 +77,7 @@ create table if not exists course_student
     student_id varchar(8) not null,
     score int not null default 0,
     valid boolean not null default false,
+    judged boolean not null default false,
     foreign key (course_id) references course(CID),
     foreign key (student_id) references student(SID),
     unique (course_id, student_id)
@@ -228,4 +232,23 @@ create table if not exists message
     creat_time datetime not null default now(),
     end_time datetime not null,
     foreign key (receiver_id) references student(SID)
+);
+
+create table if not exists timeslot
+(
+    id int auto_increment primary key,
+    day varchar(10) not null,
+    start_time time not null,
+    end_time time not null,
+    week enum ('odd', 'even', 'both') not null
+);
+
+create table if not exists course_timeslot
+(
+    id int auto_increment primary key,
+    course_id varchar(5) not null,
+    timeslot_id int not null,
+    foreign key (course_id) references course(CID),
+    foreign key (timeslot_id) references timeslot(id),
+    unique (course_id, timeslot_id)
 );

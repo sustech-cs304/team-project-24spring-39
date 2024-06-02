@@ -17,6 +17,12 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     @Query(value="select * from reservation where room_id = ?;",nativeQuery = true)
     List<Reservation> findByRoom(int room_id);
 
+    @Query(value = "select * from reservation where date = ?;",nativeQuery = true)
+    List<Reservation> findByDate(String date);
+
+    @Query(value = "select * from reservation where date = ? and room_id = ?;",nativeQuery = true)
+    List<Reservation> findByRoomAndDate(String date, int room_id);
+
     //find by room
 //    @Query(value = "select * from reservation where room_id=?;",nativeQuery = true)
 //    List<Reservation> findByroom(String room);

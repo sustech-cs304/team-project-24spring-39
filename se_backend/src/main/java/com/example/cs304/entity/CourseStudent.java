@@ -26,6 +26,18 @@ public class CourseStudent {
     @Column(name = "valid", nullable = false)
     private Boolean valid = false;
 
+    @ColumnDefault("0")
+    @Column(name = "judged", nullable = false)
+    private Boolean judged = false;
+
+    public Boolean getJudged() {
+        return judged;
+    }
+
+    public void setJudged(Boolean judged) {
+        this.judged = judged;
+    }
+
     public Integer getId() {
         return id;
     }
