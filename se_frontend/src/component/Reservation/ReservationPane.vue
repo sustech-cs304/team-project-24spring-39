@@ -9,7 +9,9 @@ import {
 } from "@/api/reservation";
 import { ElMessage, ElMessageBox } from "element-plus";
 import { useStore } from "vuex";
+import { useI18n } from "vue-i18n";
 
+const { t } = useI18n();
 const store = useStore();
 
 onMounted(async () => {
@@ -135,7 +137,7 @@ const handleClose = (done) => {
   if (isFormEmpty) {
     done();
   } else {
-    ElMessageBox.confirm("可能还有未保存的数据，确定关闭吗？")
+    ElMessageBox.confirm(t("confirmClose"))
       .then(() => {
         // 用户点击确定按钮触发的分支
         done(); // el-dialog的回调函数，用于关闭对话框
@@ -183,13 +185,23 @@ const form = reactive({
 
 // 表单校验规则
 const rules = reactive({
-  startTime: [{ required: true, message: "请选择开始时间", trigger: "blur" }],
+  startTime: [
+    {
+      required: true,
+      message: t("validation.requiredStartTime"),
+      trigger: "blur",
+    },
+  ],
   endTime: [
-    { required: true, message: "请选择结束时间", trigger: "blur" },
+    {
+      required: true,
+      message: t("validation.requiredEndTime"),
+      trigger: "blur",
+    },
     {
       validator: (rule, value, callback) => {
         if (value <= form.startTime) {
-          callback(new Error("结束时间必须大于开始时间"));
+          callback(new Error(t("validation.endTimeGreaterThanStartTime")));
         } else {
           callback();
         }
@@ -202,7 +214,7 @@ const rules = reactive({
       type: "array",
       required: true,
       min: 1,
-      message: "至少添加一位人员",
+      message: t("validation.requiredAddedPersons"),
       trigger: "change",
     },
   ],
@@ -285,19 +297,21 @@ const resetForm = (showMessage = false) => {
     <el-date-picker
       v-model="selectedDay"
       type="date"
-      placeholder="Pick a day"
+      :placeholder="$t('pickADay')"
       size="default"
       :disabledDate="disabledDate"
     />
     <!-- 自动扩展的空白元素 -->
     <div class="spacer"></div>
-    <el-button type="primary" plain @click="fetchBookings">查询</el-button>
+    <el-button type="primary" plain @click="fetchBookings">{{
+      $t("query")
+    }}</el-button>
   </div>
   <div class="body-container">
     <div class="scrollable-panel">
       <div class="time-header">
-        <div>场地</div>
-        <div>操作</div>
+        <div>{{ $t("room") }}</div>
+        <div>{{ $t("operation") }}</div>
         <div v-for="hour in hours" :key="hour">{{ hour }}</div>
       </div>
       <div class="booking-row" v-for="room in childrenRooms" :key="room.id">
@@ -311,7 +325,7 @@ const resetForm = (showMessage = false) => {
         </div>
         <div>
           <el-button type="primary" plain @click="openDialog(room)">
-            预约
+            {{ $t("reserve") }}
           </el-button>
         </div>
         <div
@@ -335,7 +349,7 @@ const resetForm = (showMessage = false) => {
     :before-close="handleClose"
   >
     <el-form ref="formRef" :model="form" :rules="rules">
-      <el-form-item label="预约时间" required>
+      <el-form-item :label="$t('appointmentTime')" required>
         <el-form-item prop="startTime">
           <el-time-select
             v-model="form.startTime"
@@ -359,7 +373,7 @@ const resetForm = (showMessage = false) => {
           />
         </el-form-item>
       </el-form-item>
-      <el-form-item label="输入学号添加人员" required>
+      <el-form-item :label="$t('appointmentTime')" required>
         <el-autocomplete
           v-model="form.searchState"
           :fetch-suggestions="querySearchAsync"
@@ -367,7 +381,7 @@ const resetForm = (showMessage = false) => {
           @select="addSelectedPerson"
         ></el-autocomplete>
       </el-form-item>
-      <el-form-item label="已添加的人员：" prop="addedPersons">
+      <el-form-item :label="$t('addedPerson')" prop="addedPersons">
         <div v-if="form.addedPersons.length > 0">
           <ul>
             <li v-for="person in form.addedPersons" :key="person.id">
@@ -379,8 +393,10 @@ const resetForm = (showMessage = false) => {
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="resetForm(true)">Reset</el-button>
-        <el-button type="primary" @click="submitForm"> Confirm </el-button>
+        <el-button @click="resetForm(true)">{{ $t("reset") }}</el-button>
+        <el-button type="primary" @click="submitForm">
+          {{ $t("confirm") }}
+        </el-button>
       </div>
     </template>
   </el-dialog>

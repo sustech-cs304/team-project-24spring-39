@@ -44,12 +44,12 @@ const submit = async () => {
       <!-- 菜单项 -->
       <template #dropdown>
         <el-dropdown-menu>
-          <el-dropdown-item icon="UserFilled" command="changeAvatar"
-            >修改头像</el-dropdown-item
-          >
-          <el-dropdown-item icon="SwitchButton" command="logout"
-            >退出登录</el-dropdown-item
-          >
+          <el-dropdown-item icon="UserFilled" command="changeAvatar">{{
+            $t("changeAvatar")
+          }}</el-dropdown-item>
+          <el-dropdown-item icon="SwitchButton" command="logout">{{
+            $t("logout")
+          }}</el-dropdown-item>
         </el-dropdown-menu>
       </template>
     </el-dropdown>
@@ -57,12 +57,12 @@ const submit = async () => {
 
   <el-dialog
     v-model="dialogVisible"
-    title="修改头像"
+    :title="$t('changeAvatar')"
     :before-close="handleClose"
   >
     <el-input v-model="avatarUrl" />
     <template #footer>
-      <el-button type="primary" @click="submit">确定</el-button>
+      <el-button type="primary" @click="submit">{{ $t("confirm") }}</el-button>
     </template>
   </el-dialog>
 </template>

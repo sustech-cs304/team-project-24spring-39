@@ -83,7 +83,9 @@
           class="selected"
         ></path>
       </svg>
-      <span v-if="$store.state.layoutStore.isExpand">Campus Circle</span>
+      <span v-if="$store.state.layoutStore.isExpand">{{
+        $t("asideBarTitle")
+      }}</span>
     </div>
     <!-- 导航菜单 -->
     <Menu />

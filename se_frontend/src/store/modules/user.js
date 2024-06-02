@@ -1,10 +1,8 @@
-import { register, login } from "@/api/user";
+import { login, register } from "@/api/user";
 import router from "@/router/index";
 import adminRoutes from "@/router/role/admin";
 import userRoutes from "@/router/role/user";
-// import { useI18n } from "vue-i18n";
-//
-// const { t } = useI18n();
+import i18n from "@/locales";
 
 export default {
   namespace: true,
@@ -115,105 +113,6 @@ export default {
         children: null,
       },
     ],
-
-    // 用户的菜单列表数据
-    userMenuList: [
-      {
-        id: 0,
-        pid: 0,
-        title: "首页",
-        icon: "House",
-        url: "/",
-        children: null,
-      },
-      {
-        id: 1,
-        pid: 0,
-        title: "选课",
-        icon: "Grid",
-        url: "/selection",
-        children: [
-          {
-            id: 6,
-            pid: 1,
-            title: "我要选课",
-            icon: "",
-            url: "/selection",
-            children: null,
-          },
-          {
-            id: 7,
-            pid: 1,
-            title: "选课2",
-            icon: "House",
-            url: "/selection2",
-            children: null,
-          },
-        ],
-      },
-      {
-        id: 2,
-        pid: 0,
-        title: "评教",
-        icon: "Finished",
-        url: "/evaluation",
-        children: null,
-      },
-      {
-        id: 3,
-        pid: 0,
-        title: "课程论坛",
-        icon: "ChatLineSquare",
-        url: "/forum",
-        children: null,
-      },
-      {
-        id: 4,
-        pid: 0,
-        title: "自习室预约",
-        icon: "Clock",
-        url: "/reservation",
-        children: [
-          {
-            id: 8,
-            pid: 4,
-            title: "预约",
-            icon: "House",
-            url: "/reservation",
-            children: null,
-          },
-          {
-            id: 9,
-            pid: 4,
-            title: "地点管理",
-            icon: "House",
-            url: "/reservation-locations",
-            children: null,
-          },
-          {
-            id: 10,
-            pid: 4,
-            title: "记录管理",
-            icon: "House",
-            url: "/reservation-records",
-            children: null,
-          },
-        ],
-      },
-      {
-        id: 5,
-        pid: 0,
-        title: "设置",
-        icon: "Setting",
-        url: "/setting",
-        children: null,
-      },
-    ],
-
-    adminMenuList: [
-      { name: "管理首页", link: "/admin/home" },
-      { name: "用户管理", link: "/admin/users" },
-    ],
   },
   mutations: {
     // 设置用户信息
@@ -262,8 +161,107 @@ export default {
       }
     },
 
+    loadMenuList({ state, commit }) {
+      let menuList = [];
+      const { t } = i18n.global;
+      if (!state.isAdmin) {
+        // 如果是学生
+        menuList = [
+          {
+            id: 0,
+            pid: 0,
+            title: t("home"),
+            icon: "House",
+            url: "/",
+            children: null,
+          },
+          {
+            id: 1,
+            pid: 0,
+            title: t("courseSelection"),
+            icon: "Grid",
+            url: "/selection",
+            children: [
+              {
+                id: 6,
+                pid: 1,
+                title: "我要选课",
+                icon: "",
+                url: "/selection",
+                children: null,
+              },
+              {
+                id: 7,
+                pid: 1,
+                title: "选课2",
+                icon: "House",
+                url: "/selection2",
+                children: null,
+              },
+            ],
+          },
+          {
+            id: 2,
+            pid: 0,
+            title: t("courseEvaluation"),
+            icon: "Finished",
+            url: "/evaluation",
+            children: null,
+          },
+          {
+            id: 3,
+            pid: 0,
+            title: t("courseForum"),
+            icon: "ChatLineSquare",
+            url: "/forum",
+            children: null,
+          },
+          {
+            id: 4,
+            pid: 0,
+            title: t("roomReservation"),
+            icon: "Clock",
+            url: "/reservation",
+            children: [
+              {
+                id: 8,
+                pid: 4,
+                title: t("reservation"),
+                icon: "",
+                url: "/reservation",
+                children: null,
+              },
+              {
+                id: 9,
+                pid: 4,
+                title: t("locationManagement"),
+                icon: "",
+                url: "/reservation-locations",
+                children: null,
+              },
+              {
+                id: 10,
+                pid: 4,
+                title: t("recordManagement"),
+                icon: "",
+                url: "/reservation-records",
+                children: null,
+              },
+            ],
+          },
+        ];
+      } else {
+        // 如果是管理员
+        menuList = [
+          { name: "管理首页", link: "/admin/home" },
+          { name: "用户管理", link: "/admin/users" },
+        ];
+      }
+      commit("setMenuList", menuList); // 更新菜单列表
+    },
+
     // 处理登录的业务逻辑
-    async handleLogin({ state, commit }, data) {
+    async handleLogin({ state, commit, dispatch }, data) {
       // 发送登录的网络请求
       try {
         const res = await login(data);
@@ -274,16 +272,8 @@ export default {
         // 2. 设置token
         commit("setToken", res.data.token);
         // 3. 设置菜单列表
-        let menuList = [];
-        if (res.data.SID) {
-          state.isAdmin = false;
-          menuList = state.userMenuList;
-        } else {
-          state.isAdmin = true;
-          menuList = state.adminMenuList;
-        }
-        console.log("menuList: ", menuList);
-        commit("setMenuList", menuList); // 更新菜单列表
+        state.isAdmin = !res.data.SID;
+        dispatch("loadMenuList");
 
         // 4. 跳转到首页
         await router.push("/");
@@ -292,6 +282,7 @@ export default {
         return Promise.reject(error);
       }
     },
+
     // 处理退出登录
     logout({ commit }) {
       commit("setLoginState", false);
