@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
@@ -14,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 
 @Entity
+@Data
 @Table(name = "course")
 @JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Course {
@@ -60,7 +62,7 @@ public class Course {
 
     @Column(name = "time")
     @JdbcTypeCode(SqlTypes.JSON)
-    private Map<String, Object> time;
+    private List<String> time;
 
     @ManyToMany
     @JoinTable(
