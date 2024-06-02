@@ -2,11 +2,11 @@
   <el-row>
     <!-- 左侧内容 -->
     <el-col :span="16">
-      <p>{{ selectedPostAuthor }}</p>
-      <p>{{ selectedPostDate }}</p>
-      <h1>{{ selectedPostTitle }}</h1>
-      <p>{{ selectedPostContent }}</p>
-      <div>
+      <div class="background">
+        <p>{{ selectedPostAuthor }}</p>
+        <p>{{ selectedPostDate }}</p>
+        <h1>{{ selectedPostTitle }}</h1>
+        <p>{{ selectedPostContent }}</p>
         <h3>附件</h3>
         <div
           v-for="attachment in selectedPostAttachments"
@@ -96,7 +96,8 @@ const selectedPostComments = computed(
 const commentDialogVisible = ref(false);
 
 const newComment = ref({
-  user: "00000001",
+  postId: store.state.forumStore.selectedPost.id,
+  user: store.state.userStore.userInfo.name,
   content: "",
 });
 
@@ -117,15 +118,12 @@ const submitComment = async () => {
 
 <style scoped>
 .scrollbar-demo-item {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  height: 50px;
-  margin: 10px;
-  text-align: center;
-  border-radius: 4px;
+  padding: 10px;
+  margin: 5px 0;
   background: var(--el-color-primary-light-9);
   color: var(--el-color-primary);
+  border-radius: 4px;
+  word-wrap: break-word; /* 确保长单词自动换行 */
 }
 
 .comment-section {
@@ -143,5 +141,10 @@ const submitComment = async () => {
 .comment-header span {
   font-size: 18px;
   font-weight: bold;
+}
+
+.background {
+  background: white;
+  margin: 20px;
 }
 </style>

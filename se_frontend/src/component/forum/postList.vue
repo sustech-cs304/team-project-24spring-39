@@ -1,12 +1,13 @@
 <template>
   <div class="forum">
     <el-scrollbar height="90%">
-      <Post v-for="post in posts" :key="post.id" :post="post" />
+      <Post v-for="post in paginatedPosts" :key="post.id" :post="post" />
     </el-scrollbar>
     <el-pagination
       background
       layout="prev, pager, next"
-      :total="post_num"
+      :total="totalPosts"
+      :page-size="pageSize"
       :current-page="currentPage"
       @current-change="handlePageChange"
     />
@@ -20,17 +21,22 @@ import { useStore } from "vuex";
 import "element-plus/theme-chalk/el-card.css";
 import "element-plus/theme-chalk/el-divider.css";
 const store = useStore();
-const posts = computed(() => store.state.forumStore.all_posts);
-const post_num = computed(() => store.state.forumStore.post_num);
+
+const pageSize = ref(8);
 const currentPage = ref(1);
+
+const allPosts = computed(() => store.state.forumStore.all_posts);
+
+const totalPosts = computed(() => allPosts.value.length);
+
+const paginatedPosts = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return allPosts.value.slice(start, end);
+});
+
 const handlePageChange = async (page) => {
   currentPage.value = page;
-  store.commit(
-    "set_start_end",
-    (currentPage.value - 1) * 8,
-    (currentPage.value - 1) * 8
-  );
-  await store.dispatch("applyFilter", store.state.forumStore.filter_info);
 };
 </script>
 

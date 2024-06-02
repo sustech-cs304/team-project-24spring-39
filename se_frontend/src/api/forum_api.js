@@ -1,15 +1,15 @@
 import request from "@/utils/request";
 
 export function fetchAllPostsInside() {
-  const url = "/forum/all";
+  const url = "/forum/get_post_by_condition";
   return request({
     method: "get",
     url: url,
   });
 }
 
-export function fetchMyPostsInside() {
-  const url = "/forum/my";
+export function fetchMyPostsInside(SID) {
+  const url = "/forum/get_post_by_condition?authorId=" + String(SID);
   return request({
     method: "get",
     url: url,
@@ -29,7 +29,7 @@ export function createPostInside(payLoad) {
   return request({
     method: "post",
     url: url,
-    payLoad,
+    data: payLoad,
   });
 }
 
@@ -46,16 +46,20 @@ export function makeCommentInside(payLoad) {
   return request({
     method: "post",
     url: url,
-    payLoad,
+    data: payLoad,
   });
 }
 
 export function applyFilterInside(payLoad) {
-  const url = "/forum/filter";
+  const url =
+    "/forum/get_post_by_condition?" +
+    "majorTag=" +
+    String(payLoad.majorTag) +
+    "&courseTag=" +
+    String(payLoad.courseTag);
   return request({
-    method: "post",
+    method: "get",
     url: url,
-    payLoad,
   });
 }
 

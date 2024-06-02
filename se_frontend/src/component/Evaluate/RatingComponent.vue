@@ -79,13 +79,13 @@ const form = reactive({
 const submitData = async () => {
   console.log(store.state.evalStore.selectedCourse.id);
   const payload = {
-    courseID: selectedCourseId,
+    course_id: selectedCourseId,
     difficulty: radio1.value,
-    grading_policy: radio2.value,
+    grading: radio2.value,
     workload: radio3.value,
-    learning_gains: radio4.value,
-    overall: value.value,
-    comment: textarea.value,
+    gains: radio4.value,
+    rate: value.value,
+    description: textarea.value,
   };
   try {
     // console.log(payload);
