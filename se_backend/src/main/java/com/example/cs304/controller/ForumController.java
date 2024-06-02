@@ -4,6 +4,7 @@ import com.example.cs304.converter.JwtTokenProvider;
 import com.example.cs304.entity.*;
 import com.example.cs304.repository.*;
 import com.example.cs304.response.Response;
+import lombok.AllArgsConstructor;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -15,6 +16,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/forum")
 public class ForumController {
 
@@ -25,14 +27,7 @@ public class ForumController {
     private final MajorRepository majorRepository;
     private final DepartmentRepository departmentRepository;
     private JwtTokenProvider jwtTokenProvider;
-    public ForumController(PostRepository postRepository, StudentRepository studentRepository, FileRepository fileRepository, ReplyRepository replyRepository, MajorRepository majorRepository, DepartmentRepository departmentRepository) {
-        this.postRepository = postRepository;
-        this.studentRepository = studentRepository;
-        this.fileRepository = fileRepository;
-        this.replyRepository = replyRepository;
-        this.majorRepository = majorRepository;
-        this.departmentRepository = departmentRepository;
-    }
+
 
     @GetMapping("/get_post_count")
     public Response<?> getPostCount() {
@@ -40,6 +35,7 @@ public class ForumController {
     }
     @GetMapping("/get_department")
     public Response<?> getDepartments(){
+        System.out.println(departmentRepository.findAll());
         return Response.success(departmentRepository.findAll());
     }
 //    @GetMapping("/get_course_department")
@@ -56,7 +52,8 @@ public class ForumController {
 //        return new Response<>(200, "Get posts successfully", postRepository.findAllPostsReplies());
 //    }
     @PostMapping("/posting")//暂时用一下，后续要改
-    public Post createPost(@RequestHeader String Authorization ,@RequestBody Map<String, Object> requestBody) throws IOException {
+    public Post createPost(@RequestHeader String Authorization ,
+                           @RequestBody Map<String, Object> requestBody) throws IOException {
         String title = (String) requestBody.get("title");
         String content = (String) requestBody.get("content");
         String majorTag = (String) requestBody.get("majorTag");
@@ -72,20 +69,19 @@ public class ForumController {
         if (student != null) {
             post.setAuthor(student);
         } else {
-            throw new IllegalArgumentException("No student found with " );
+            throw new IllegalArgumentException("No student found" );
         }
 
         if (multipartFile != null) {
             File file = new File();
-            file.setName(multipartFile.getOriginalFilename());
+            String name = multipartFile.getOriginalFilename();
+            String path = "storage/" +post.getId()+"/"+ name;
+            file.setName(name);
             file.setFiletype(multipartFile.getContentType());
-            file.setFilepath("storage"); // replace with your actual storage location
-            file.setUploader(student);
+            file.setFilepath(path); // replace with your actual storage location
             file.setUploadTime(Instant.now());
-            file = fileRepository.save(file);
-            post.setFile(file);
-
-            java.io.File fileToSave = new java.io.File("storage/" + multipartFile.getOriginalFilename());
+            fileRepository.save(file);
+            java.io.File fileToSave = new java.io.File(path);
             multipartFile.transferTo(fileToSave);
         }
 
@@ -103,21 +99,17 @@ public class ForumController {
     }
     //发评论
     @PostMapping("/comment")
-    public Response<?> createComment(@RequestBody Map<String, Object> requestBody) {
-        int postId = (int) requestBody.get("postID");
+    public Response<?> createComment(@RequestHeader String Authorization, @RequestBody Map<String, Object> requestBody) {
+        int postId = (int) requestBody.get("postId");
+        System.out.println(postId);
         String content = (String) requestBody.get("content");
-        String SID = (String) requestBody.get("authorID");
+        System.out.println(content);
 
         Reply reply = new Reply();
         reply.setContent(content);
 
-        Student student = studentRepository.findBySid(SID);
-        if (student != null) {
-            reply.setAuthor(student);
-        } else {
-            throw new IllegalArgumentException("No student found with SID: " + SID);
-        }
-
+        Student student = studentRepository.findBySid(jwtTokenProvider.getUsername(Authorization));
+        reply.setAuthor(student);
         Post post = postRepository.findById(postId).orElse(null);
         if (post != null) {
             reply.setPost(post);

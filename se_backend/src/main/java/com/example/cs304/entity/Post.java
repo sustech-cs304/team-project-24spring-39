@@ -38,10 +38,6 @@ public class Post {
     @JsonProperty("date")
     private Instant postingTime;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id")
-    private File file;
-
     @Column(name = "major_category", length = 50)
     private String majorCategory;
 

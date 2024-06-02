@@ -10,7 +10,7 @@ services:
 #      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
   app:
-    image: phystar/cs304-app:1.0
+    image: phystar/cs304-app:latest
     ports:
       - "8080:8080"
     depends_on:

@@ -37,6 +37,7 @@ public class AuthController {
         Map<String, Object> res;
         if (studentService.getStudentBySID(userDTO.getUsername()) != null){
             res = new HashMap<>(studentService.getStudentBySID(userDTO.getUsername()).convertStudentToMap());
+            System.out.println(res);
             res.put("token", token);
         }else {
             res = new HashMap<>();
