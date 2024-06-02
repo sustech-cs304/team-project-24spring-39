@@ -11,11 +11,7 @@ public class Response<T> {
     }
 
     public static <E> Response<E> success(E data) {
-        if (data == null) {
-            return new Response<>(200, "success", null);
-        } else {
-            return new Response<>(200, "success", data);
-        }
+        return new Response<>(200, "success", data);
     }
 
     public static <E> Response<E> fail(int status, String message) {

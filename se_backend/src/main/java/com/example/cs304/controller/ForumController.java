@@ -77,7 +77,6 @@ public class ForumController {
             file.setName(multipartFile.getOriginalFilename());
             file.setFiletype(multipartFile.getContentType());
             file.setFilepath("path/to/your/storage/location"); // replace with your actual storage location
-            file.setUploader(student);
             file.setUploadTime(Instant.now());
             file = fileRepository.save(file);
             post.setFile(file);
@@ -128,7 +127,6 @@ public class ForumController {
         fileEntity.setName(file.getOriginalFilename());
         fileEntity.setFiletype(file.getContentType());
         fileEntity.setFilepath("path/to/your/storage/location"); // replace with your actual storage location
-        fileEntity.setUploader(studentRepository.findBySid(uploaderID));
         fileEntity.setUploadTime(Instant.now());
         fileEntity = fileRepository.save(fileEntity);
         return new Response<>(200, "File uploaded successfully", fileEntity);

@@ -1,23 +1,14 @@
 package com.example.cs304.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
-import org.springframework.data.jpa.repository.Modifying;
 
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-@Entity
-@Table(name = "course")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-public class Course {
+public class SelectedCourse {
     @Id
     @Column(name = "id", nullable = false)
     private Integer id;
@@ -60,26 +51,24 @@ public class Course {
 
     @ManyToMany
     @JoinTable(
-    name = "course_professor",
-    joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "CID"),
-    inverseJoinColumns = @JoinColumn(name = "professor_id", referencedColumnName = "PID"))
+            name = "course_professor",
+            joinColumns = @JoinColumn(name = "course_id", referencedColumnName = "CID"),
+            inverseJoinColumns = @JoinColumn(name = "professor_id", referencedColumnName = "PID"))
     private List<Professor> professors;
 
     @Column(name = "time")
     @JdbcTypeCode(SqlTypes.JSON)
     private List<String> time;
 
-    private Float rate;
+    private int score;
 
-    public Float getRate() {
-        return rate;
+    public int getScore() {
+        return score;
     }
 
-    public void setRate(Float rate) {
-        this.rate = rate;
+    public void setScore(int score) {
+        this.score = score;
     }
-
-
 
     public List<String> getTime() {
         return time;
@@ -89,10 +78,9 @@ public class Course {
         this.time = time;
     }
 
-
     public List<Professor> getProfessors() {
         return professors;
-}
+    }
 
 
     public void setProfessors(List<Professor> professors) {
@@ -193,6 +181,5 @@ public class Course {
     public void setDescription(String description) {
         this.description = description;
     }
-
 
 }
