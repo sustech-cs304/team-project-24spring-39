@@ -1,8 +1,12 @@
 <script setup>
-import { ref, watch, computed } from "vue";
+import { computed, onMounted, ref, watch } from "vue";
 import { ElMessage, ElTree } from "element-plus";
 import { Delete, Edit } from "@element-plus/icons-vue";
-import { fetchBookings, submitLocation } from "@/api/reservation";
+import {
+  deleteReservation,
+  fetchBookings,
+  submitReservation,
+} from "@/api/reservation";
 
 const selectedDay = ref("");
 
@@ -29,15 +33,58 @@ const checkedPlaces = computed(() => {
 
 const handleSearch = async () => {
   try {
-    const response = await fetchBookings({
-      date: selectedDay.value || undefined,
-      placeIds: checkedPlaces.value.length ? checkedPlaces.value : undefined,
+    console.log(checkedPlaces.value);
+    const selectedDate = selectedDay.value || undefined;
+    const placeIds = checkedPlaces.value;
+
+    let responses;
+
+    if (placeIds.length === 0) {
+      // 如果 placeIds 为空，只需根据 selectedDate 的值决定是否发送 date 参数
+      const params = {};
+      if (selectedDate) {
+        params.date = selectedDate;
+      }
+      responses = [await fetchBookings(params)];
+    } else {
+      // 如果 placeIds 不为空，对每个 placeId 发送请求，并根据 selectedDate 的值决定是否发送 date 参数
+      const fetchPromises = placeIds.map((placeId) => {
+        const params = { room_id: placeId };
+        if (selectedDate) {
+          params.date = selectedDate;
+        }
+        return fetchBookings(params);
+      });
+
+      // 等待所有请求完成
+      responses = await Promise.all(fetchPromises);
+    }
+
+    // 合并所有响应数据
+    const allData = responses.flatMap((response) => response.data);
+
+    // 处理数据并赋值给 displayData.value
+    displayData.value = allData.map((item) => {
+      return {
+        ...item,
+        createTime: item.createTime.replace("T", " ").substring(0, 19),
+        library: item.room.place,
+        room: item.room.name,
+        startTime: item.startTime.substring(0, 5),
+        endTime: item.endTime.substring(0, 5),
+        persons: item.students
+          .map((student) => `${student.sid} ${student.name}`)
+          .join("\n"),
+      };
     });
-    displayData.value = response.data;
   } catch (error) {
     ElMessage.error("查询失败，请稍后重试");
   }
 };
+
+onMounted(() => {
+  handleSearch();
+});
 
 const placeData = ref([
   {
@@ -192,6 +239,16 @@ const openDialog = (record = {}) => {
   dialogVisible.value = true;
 };
 
+const handleDelete = async (record) => {
+  try {
+    await deleteReservation(record.id);
+    ElMessage.success("删除成功");
+    location.reload();
+  } catch (error) {
+    ElMessage.error("删除失败，请稍后重试");
+  }
+};
+
 const handleClose = () => {
   dialogVisible.value = false;
 };
@@ -210,7 +267,7 @@ const saveRecord = async () => {
     };
     // reserveData.value.push(newRecord);
     try {
-      await submitLocation(newRecord);
+      await submitReservation(newRecord);
       ElMessage.success("提交成功");
     } catch (error) {
       ElMessage.error("提交失败，请稍后重试");
@@ -298,7 +355,12 @@ watch(
                 circle
                 @click="() => openDialog(scope.row)"
               />
-              <el-button type="danger" :icon="Delete" circle />
+              <el-button
+                type="danger"
+                :icon="Delete"
+                circle
+                @click="() => handleDelete(scope.row)"
+              />
             </template>
           </el-table-column>
         </el-table>

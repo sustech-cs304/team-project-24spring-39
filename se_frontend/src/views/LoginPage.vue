@@ -24,7 +24,7 @@
             :hovered="{ scale: 1.2 }"
             :delay="200"
           >
-            注册账号
+            {{ $t("registerTitle") }}
           </h3>
           <div class="form-container">
             <el-form
@@ -45,7 +45,7 @@
               >
                 <el-input
                   v-model="registerForm.username"
-                  placeholder="请输入用户名"
+                  :placeholder="$t('userPlaceholder')"
                 >
                   <template #prefix>
                     <el-icon>
@@ -64,7 +64,7 @@
                 <el-input
                   type="password"
                   show-password
-                  placeholder="请输入密码"
+                  :placeholder="$t('PWPlaceholder')"
                   v-model="registerForm.password"
                 >
                   <template #prefix>
@@ -84,7 +84,7 @@
                 <el-input
                   type="password"
                   show-password
-                  placeholder="请确认密码"
+                  :placeholder="$t('confirmPWPlaceholder')"
                   v-model="registerForm.confirmPassword"
                 >
                   <template #prefix>
@@ -107,7 +107,7 @@
                 @click="handleRegister"
                 :loading="regBtnLoading"
               >
-                注册
+                {{ $t("register") }}
               </el-button>
             </div>
           </div>
@@ -123,7 +123,7 @@
           :hovered="{ scale: 1.2 }"
           :delay="200"
         >
-          登录账号
+          {{ $t("loginTitle") }}
         </h3>
         <div class="form-container">
           <el-form
@@ -142,7 +142,10 @@
               :initial="{ opacity: 0, y: 100 }"
               :enter="{ opacity: 1, y: 0, transition: { delay: 300 } }"
             >
-              <el-input v-model="loginForm.username" placeholder="请输入用户名">
+              <el-input
+                v-model="loginForm.username"
+                :placeholder="$t('userPlaceholder')"
+              >
                 <template #prefix>
                   <el-icon>
                     <Avatar />
@@ -160,7 +163,7 @@
               <el-input
                 type="password"
                 show-password
-                placeholder="请输入密码"
+                :placeholder="$t('PWPlaceholder')"
                 v-model="loginForm.password"
               >
                 <template #prefix>
@@ -203,12 +206,12 @@
               @click="handleLogin"
               :loading="logBtnLoading"
             >
-              {{ "signIn" }}
+              {{ $t("login") }}
             </el-button>
           </div>
         </div>
-        <!-- 国际化 -->
-        <!--        <Language class="language" />-->
+        <!--        国际化-->
+        <Language class="language" />
         <!-- 主题切换 -->
         <!--        <Theme class="theme" />-->
       </div>
@@ -222,6 +225,10 @@ import { Avatar, Lock } from "@element-plus/icons-vue";
 import { useStore } from "vuex";
 // import { login } from "@/api/user";
 import useMessage from "@/hooks/useMessage";
+import Language from "@/layout/components/Header/component/Language.vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const showRegister = ref(false);
 
@@ -248,10 +255,10 @@ const loginForm = reactive({
 const logBtnLoading = ref(false);
 // 登录表单的校验规则
 const loginRules = reactive({
-  username: [{ required: true, message: "userError", trigger: "blur" }],
+  username: [{ required: true, message: t("userError"), trigger: "blur" }],
   password: [
-    { required: true, message: "PWError", trigger: "blur" },
-    { min: 3, message: "length > 3", trigger: "blur" },
+    { required: true, message: t("PWError"), trigger: "blur" },
+    { min: 3, message: t("PWSubError"), trigger: "blur" },
   ],
 });
 // 滑动验证码校验成功
@@ -261,7 +268,7 @@ function captchaSuccess() {
 // 处理登录
 async function handleLogin() {
   if (!loginForm.captchaSuccess) {
-    ElMessage.error("请先完成滑动验证");
+    ElMessage.error(t("captchaError"));
     return;
   }
   await loginFormRef.value.validate(async (valid) => {
@@ -273,12 +280,12 @@ async function handleLogin() {
         const res = await store.dispatch("handleLogin", toRaw(loginForm));
         console.log("res: " + res);
       } catch (error) {
-        ElMessage.error("登录失败, 请稍后重试");
+        ElMessage.error(t("loginError"));
       } finally {
         logBtnLoading.value = false;
       }
     } else {
-      ElMessage.warning("用户名或密码错误");
+      ElMessage.warning(t("checkError"));
     }
   });
 }
@@ -298,13 +305,13 @@ const regBtnLoading = ref(false);
 
 // 注册表单的校验规则
 const registerRules = reactive({
-  username: [{ required: true, message: "请输入用户名", trigger: "blur" }],
+  username: [{ required: true, message: t("userError"), trigger: "blur" }],
   password: [
-    { required: true, message: "请输入密码", trigger: "blur" },
-    { min: 3, message: "密码长度应大于3位", trigger: "blur" },
+    { required: true, message: t("PWError"), trigger: "blur" },
+    { min: 3, message: t("PWSubError"), trigger: "blur" },
   ],
   confirmPassword: [
-    { required: true, message: "请确认密码", trigger: "blur" },
+    { required: true, message: t("confirmPW"), trigger: "blur" },
     { validator: validateConfirmPassword, trigger: "blur" },
   ],
 });
@@ -312,7 +319,7 @@ const registerRules = reactive({
 // 自定义校验器
 function validateConfirmPassword(rule, value, callback) {
   if (value !== registerForm.password) {
-    callback(new Error("两次输入的密码不一致"));
+    callback(new Error(t("confirmPWError")));
   } else {
     callback();
   }

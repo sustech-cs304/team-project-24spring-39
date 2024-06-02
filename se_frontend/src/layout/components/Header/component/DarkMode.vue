@@ -22,7 +22,7 @@ function changeTheme() {
   <div class="dark-mode" @click="changeTheme">
     <el-tooltip
       effect="dark"
-      :content="isDark ? '默认主题' : '暗黑主题'"
+      :content="isDark ? $t('dayMode') : $t('nightMode')"
       placement="bottom"
     >
       <el-icon>

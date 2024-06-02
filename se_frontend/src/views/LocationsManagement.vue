@@ -2,7 +2,14 @@
 import { ref, onMounted } from "vue";
 import { Delete, Edit } from "@element-plus/icons-vue";
 import { useStore } from "vuex";
-import { submitLocation } from "@/api/reservation";
+import {
+  deleteBuilding,
+  deleteRoom,
+  submitBuilding,
+  submitRoom,
+  updateBuilding,
+  updateRoom,
+} from "@/api/reservation";
 import { ElMessage } from "element-plus";
 
 const store = useStore();
@@ -91,9 +98,9 @@ onMounted(async () => {
   tableData.value = store.state.reservationStore.locations;
   displayData.value = [...tableData.value];
   // 打印 displayData.value 数组中每一项的 children 字段
-  displayData.value.forEach((item) => {
-    console.log(item.children);
-  });
+  // displayData.value.forEach((item) => {
+  //   console.log(item.children);
+  // });
 });
 
 // todo: 使用gpt生成
@@ -137,7 +144,7 @@ const dialogVisible = ref(false);
 const currentEditting = ref({
   type: "library", // 默认为'library'
   name: "",
-  createTime: "",
+  state: "开放", // 默认为'开放'
   capacity: 0,
 });
 const isEditing = ref(false);
@@ -156,12 +163,27 @@ const openDialog = (place = {}) => {
     currentEditting.value = {
       type: "library",
       name: "",
-      createTime: "",
+      state: "开放",
       capacity: 0,
     };
     isEditing.value = false;
   }
   dialogVisible.value = true;
+};
+
+const handleDelete = async (location) => {
+  try {
+    console.log(location);
+    if (location.place) {
+      await deleteRoom(location.id);
+    } else {
+      await deleteBuilding(location.name);
+    }
+    ElMessage.success("删除成功");
+  } catch (error) {
+    console.log(error);
+    ElMessage.error(error);
+  }
 };
 
 const handleClose = () => {
@@ -172,6 +194,10 @@ const setLocationType = (type) => {
   currentEditting.value.type = type;
 };
 
+const setLocationState = (state) => {
+  currentEditting.value.state = state;
+};
+
 const saveLocation = async () => {
   if (isEditing.value) {
     const index = tableData.value.findIndex(
@@ -180,18 +206,40 @@ const saveLocation = async () => {
     if (index !== -1) {
       tableData.value[index] = { ...currentEditting.value };
     }
+
+    console.log(currentEditting.value);
+    if (currentEditting.value.type === "library") {
+      await updateBuilding({
+        name: currentEditting.value.name,
+        status: currentEditting.value.state,
+      });
+    }
+    if (currentEditting.value.type === "room") {
+      await updateRoom({
+        room_id: currentEditting.value.id,
+        status: currentEditting.value.state,
+      });
+    }
   } else {
     const newLocation = {
       ...currentEditting.value,
-      createTime: new Date().toISOString().split("T")[0],
-      children: currentEditting.value.type === "library" ? [] : undefined,
+      // children: currentEditting.value.type === "library" ? [] : undefined,
     };
     if (newLocation.type === "library") {
       newLocation.capacity = 0;
     }
-    // tableData.value.push(newLocation);
     try {
-      await submitLocation(newLocation);
+      if (newLocation.type === "library") {
+        await submitBuilding({
+          name: newLocation.name,
+          status: newLocation.state,
+        });
+      }
+      if (newLocation.type === "room") {
+        await submitRoom({
+          place: newLocation.name,
+        });
+      }
       ElMessage.success("提交成功");
     } catch (error) {
       ElMessage.error("提交失败，请稍后重试");
@@ -284,7 +332,12 @@ const saveLocation = async () => {
               circle
               @click="() => openDialog(scope.row)"
             />
-            <el-button type="danger" :icon="Delete" circle />
+            <el-button
+              type="danger"
+              :icon="Delete"
+              circle
+              @click="() => handleDelete(scope.row)"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -327,12 +380,19 @@ const saveLocation = async () => {
       <el-form-item label="地点名称">
         <el-input v-model="currentEditting.name"></el-input>
       </el-form-item>
-      <el-form-item label="创建时间">
-        <el-date-picker
-          v-model="currentEditting.createTime"
-          type="date"
-          placeholder="选择日期"
-        ></el-date-picker>
+      <el-form-item label="状态">
+        <el-button-group>
+          <el-button
+            :type="currentEditting.state === '开放' ? 'primary' : ''"
+            @click="() => setLocationState('开放')"
+            >开放
+          </el-button>
+          <el-button
+            :type="currentEditting.state === '关闭' ? 'primary' : ''"
+            @click="() => setLocationState('关闭')"
+            >关闭
+          </el-button>
+        </el-button-group>
       </el-form-item>
       <el-form-item label="容量">
         <el-input-number

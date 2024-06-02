@@ -7,7 +7,7 @@ const { toggle, isFullscreen } = useFullscreen();
   <div class="fullScreen">
     <el-tooltip
       effect="dark"
-      :content="isFullscreen ? '退出全屏' : '全屏'"
+      :content="isFullscreen ? $t('exitFullScreen') : $t('fullScreen')"
       placement="bottom"
     >
       <el-icon @click="toggle" v-if="!isFullscreen">
