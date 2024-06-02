@@ -66,6 +66,8 @@ create table if not exists course
     selected int not null default 0,
     location varchar(50) not null,
     description varchar(1000),
+    time json,
+    rate float,
     foreign key (department) references department(name),
     constraint check_CID check (CID REGEXP '[A-Z]{2}[0-9]{3}$')
 );
@@ -82,6 +84,7 @@ create table if not exists course_student
     foreign key (student_id) references student(SID),
     unique (course_id, student_id)
 );
+
 
 create table if not exists course_professor
 (
@@ -113,7 +116,7 @@ create table if not exists building
 (
     id int auto_increment primary key,
     name varchar(50) not null unique,
-    capacity int not null,
+    capacity int not null default 0,
     status enum('开放', '关闭') not null default '开放'
 );
 
@@ -121,11 +124,13 @@ create table if not exists room
 (
     id int auto_increment primary key,
     place varchar(50) not null,
-    name varchar(50) not null unique,
+    name varchar(50) not null,
     capacity int not null,
-    status enum('空闲', '占用') not null default '空闲',
-    foreign key (place) references building(name)
+    status enum('开放', '关闭') not null default '开放',
+    foreign key (place) references building(name),
+    unique (place, name)
 );
+
 
 create table if not exists student_reservation
 (
@@ -171,10 +176,9 @@ create table if not exists file
     name varchar(50) not null,
     filetype enum('image', 'video', 'audio', 'document') not null,
     filepath varchar(100) not null,
-    uploader_id varchar(8) not null,
-    foreign key (uploader_id) references student(SID),
     upload_time timestamp not null default now()
 );
+
 
 create table if not exists post
 (
@@ -235,23 +239,4 @@ create table if not exists message
     content varchar(1000) not null,
     time timestamp not null default now(),
     foreign key (receiver_id) references student(SID)
-);
-
-create table if not exists timeslot
-(
-    id int auto_increment primary key,
-    day varchar(10) not null,
-    start_time time not null,
-    end_time time not null,
-    week enum ('odd', 'even', 'both') not null
-);
-
-create table if not exists course_timeslot
-(
-    id int auto_increment primary key,
-    course_id varchar(5) not null,
-    timeslot_id int not null,
-    foreign key (course_id) references course(CID),
-    foreign key (timeslot_id) references timeslot(id),
-    unique (course_id, timeslot_id)
 );
