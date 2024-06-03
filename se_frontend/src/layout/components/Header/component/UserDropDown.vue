@@ -4,6 +4,9 @@ import { ArrowDown } from "@element-plus/icons-vue";
 import { ref } from "vue";
 import { ElMessage } from "element-plus";
 import { submitAvatar } from "@/api/home";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const store = useStore();
 
@@ -25,7 +28,7 @@ const submit = async () => {
   console.log(avatarUrl.value);
   await submitAvatar(avatarUrl.value);
   store.commit("updateUserAvatar", avatarUrl.value);
-  ElMessage.success("修改成功");
+  ElMessage.success(t("changeAvatarSuccess"));
   handleClose();
 };
 </script>
@@ -35,7 +38,7 @@ const submit = async () => {
     <el-dropdown trigger="click" @command="handleCommand">
       <!-- 用户名 -->
       <span class="el-dropdown-link">
-        admin
+        {{ $t("personalCenter") }}
         <el-icon>
           <arrow-down />
         </el-icon>
@@ -72,7 +75,7 @@ const submit = async () => {
 
 .userDropDown {
   cursor: pointer;
-  width: 80px;
+  width: 100px;
   height: 100%;
   padding: 0 10px;
   box-sizing: border-box;

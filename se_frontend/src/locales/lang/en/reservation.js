@@ -6,6 +6,14 @@ export default {
     endTimeGreaterThanStartTime: "End time must be greater than start time",
     requiredAddedPersons: "Please add at least one person",
   },
+  messages: {
+    reservationConflict:
+      "Reservation time conflict, please choose another time slot",
+    submitSuccess: "Submission successful",
+    submitFail: "Submission failed, please try again later",
+    formValidationFail: "Form validation failed, please check your input",
+    formReset: "Form has been reset",
+  },
 
   pickADay: "Pick a Day",
   room: "Room",
@@ -14,4 +22,37 @@ export default {
   appointmentTime: "Appointment Time",
   addPerson: "Input SID to Add Person",
   addedPerson: "Added Person: ",
+
+  // LocationManagement.vue
+  inputPlaceholder: "Please input",
+  selectPlaceholder: "Select",
+  minCapacity: "Min Capacity",
+  maxCapacity: "Max Capacity",
+  number: "Number",
+
+  deleteSuccess: "Deletion successful",
+  submitSuccess: "Submission successful",
+  submitFail: "Submission failed, please try again later",
+  search: "Search",
+  addLocation: "Add Location",
+  name: "Name",
+  status: "Status",
+  capacity: "Capacity",
+  remark: "Remark",
+  action: "Action",
+  dialog: {
+    editLocation: "Edit Location",
+    addLocation: "Add Location",
+    locationType: "Location Type",
+    chooseLibrary: "Choose Library",
+    library: "Library",
+    room: "Room",
+    locationName: "Location Name",
+    status: "Status",
+    open: "Open",
+    closed: "Closed",
+    capacity: "Capacity",
+    cancel: "Cancel",
+    save: "Save",
+  },
 };

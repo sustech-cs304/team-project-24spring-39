@@ -11,6 +11,9 @@ import {
   updateRoom,
 } from "@/api/reservation";
 import { ElMessage } from "element-plus";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const store = useStore();
 
@@ -19,76 +22,86 @@ const searchLibrary = ref("");
 const searchMin = ref(null);
 const searchMax = ref(null);
 
-// const tableData = ref([
-//   {
-//     id: 1,
-//     name: "一丹图书馆",
-//     createTime: "2021-09-01",
-//     capacity: 5,
-//     children: [
-//       {
-//         id: 11,
-//         name: "一楼",
-//         createTime: "2021-09-01",
-//         capacity: 5,
-//       },
-//       {
-//         id: 12,
-//         name: "二楼",
-//         createTime: "2021-09-01",
-//         capacity: 5,
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: "琳恩图书馆",
-//     createTime: "2021-09-02",
-//     capacity: 5,
-//     children: [
-//       {
-//         id: 21,
-//         name: "一楼",
-//         createTime: "2021-09-02",
-//         capacity: 5,
-//       },
-//       {
-//         id: 22,
-//         name: "二楼",
-//         createTime: "2021-09-02",
-//         capacity: 5,
-//       },
-//     ],
-//   },
-//   {
-//     id: 3,
-//     name: "涵泳图书馆",
-//     createTime: "2021-09-03",
-//     capacity: 5,
-//     children: [
-//       {
-//         id: 31,
-//         name: "一楼",
-//         createTime: "2021-09-03",
-//         capacity: 6,
-//       },
-//       {
-//         id: 32,
-//         name: "二楼",
-//         createTime: "2021-09-03",
-//         capacity: 9,
-//       },
-//       {
-//         id: 33,
-//         name: "三楼",
-//         createTime: "2021-09-03",
-//         capacity: 1,
-//       },
-//     ],
-//   },
-// ]);
+const tableData = ref([
+  {
+    id: 1,
+    name: "一丹图书馆",
+    state: "开放",
+    createTime: "2021-09-01",
+    capacity: 5,
+    children: [
+      {
+        id: 11,
+        name: "一楼",
+        state: "开放",
+        createTime: "2021-09-01",
+        capacity: 5,
+      },
+      {
+        id: 12,
+        name: "二楼",
+        state: "开放",
+        createTime: "2021-09-01",
+        capacity: 5,
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "琳恩图书馆",
+    state: "开放",
+    createTime: "2021-09-02",
+    capacity: 5,
+    children: [
+      {
+        id: 21,
+        name: "一楼",
+        state: "开放",
+        createTime: "2021-09-02",
+        capacity: 5,
+      },
+      {
+        id: 22,
+        name: "二楼",
+        state: "开放",
+        createTime: "2021-09-02",
+        capacity: 5,
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "涵泳图书馆",
+    state: "开放",
+    createTime: "2021-09-03",
+    capacity: 5,
+    children: [
+      {
+        id: 31,
+        name: "一楼",
+        state: "开放",
+        createTime: "2021-09-03",
+        capacity: 6,
+      },
+      {
+        id: 32,
+        name: "二楼",
+        state: "开放",
+        createTime: "2021-09-03",
+        capacity: 9,
+      },
+      {
+        id: 33,
+        name: "三楼",
+        state: "开放",
+        createTime: "2021-09-03",
+        capacity: 1,
+      },
+    ],
+  },
+]);
 
-const tableData = ref([]);
+// const tableData = ref([]);
 
 const displayData = ref([...tableData.value]);
 
@@ -154,32 +167,37 @@ const openDialog = (place = {}) => {
     currentEditting.value = {
       ...place,
       type: place.children ? "library" : "room",
+      library: place.children ? "" : place.place,
+      state: place.status,
       capacity: place.children
         ? place.children.reduce((sum, child) => sum + child.capacity, 0)
         : place.capacity,
     };
+    // console.log(currentEditting.value);
     isEditing.value = true;
   } else {
     currentEditting.value = {
       type: "library",
+      library: "",
       name: "",
       state: "开放",
       capacity: 0,
     };
     isEditing.value = false;
+    // console.log(displayData.value);
   }
   dialogVisible.value = true;
 };
 
 const handleDelete = async (location) => {
   try {
-    console.log(location);
+    // console.log(location);
     if (location.place) {
       await deleteRoom(location.id);
     } else {
       await deleteBuilding(location.name);
     }
-    ElMessage.success("删除成功");
+    ElMessage.success(t("deleteSuccess"));
   } catch (error) {
     console.log(error);
     ElMessage.error(error);
@@ -207,7 +225,7 @@ const saveLocation = async () => {
       tableData.value[index] = { ...currentEditting.value };
     }
 
-    console.log(currentEditting.value);
+    // console.log(currentEditting.value);
     if (currentEditting.value.type === "library") {
       await updateBuilding({
         name: currentEditting.value.name,
@@ -237,12 +255,15 @@ const saveLocation = async () => {
       }
       if (newLocation.type === "room") {
         await submitRoom({
-          place: newLocation.name,
+          place: newLocation.library,
+          room_name: newLocation.name,
+          status: newLocation.state,
+          capacity: newLocation.capacity,
         });
       }
-      ElMessage.success("提交成功");
+      ElMessage.success(t("submitSuccess"));
     } catch (error) {
-      ElMessage.error("提交失败，请稍后重试");
+      ElMessage.error(t("submitFail"));
     }
   }
   handleClose();
@@ -267,13 +288,13 @@ const saveLocation = async () => {
     <div class="header">
       <el-input
         v-model="searchRoom"
-        placeholder="Please input"
+        :placeholder="$t('inputPlaceholder')"
         class="location-search"
       >
         <template #prepend>
           <el-select
             v-model="searchLibrary"
-            placeholder="Select"
+            :placeholder="$t('selectPlaceholder')"
             style="width: 115px"
           >
             <el-option
@@ -290,24 +311,26 @@ const saveLocation = async () => {
         v-model="searchMin"
         :min="1"
         :max="10"
-        label="Number"
-        placeholder="Min Capacity"
+        :label="$t('number')"
+        :placeholder="$t('minCapacity')"
         controls-position="right"
       />
       <el-input-number
         v-model="searchMax"
         :min="1"
         :max="10"
-        label="Number"
-        placeholder="Max Capacity"
+        :label="$t('number')"
+        :placeholder="$t('maxCapacity')"
         controls-position="right"
       />
       <!-- 自动扩展的空白元素 -->
       <div class="spacer"></div>
-      <el-button type="primary" plain @click="handleSearch">查询</el-button>
-      <el-button type="primary" plain @click="() => openDialog()"
-        >添加地点</el-button
-      >
+      <el-button type="primary" plain @click="handleSearch">{{
+        t("search")
+      }}</el-button>
+      <el-button type="primary" plain @click="openDialog">{{
+        t("addLocation")
+      }}</el-button>
     </div>
 
     <div class="table">
@@ -320,11 +343,19 @@ const saveLocation = async () => {
         border
         default-expand-all
       >
-        <el-table-column fixed prop="name" label="地点名称" sortable />
-        <el-table-column prop="status" label="状态" sortable />
-        <el-table-column prop="capacity" label="容量" sortable />
-        <el-table-column prop="remark" label="备注" />
-        <el-table-column fixed="right" label="操作">
+        <el-table-column fixed prop="name" :label="t('name')" />
+        <el-table-column prop="status" :label="t('status')">
+          <template #default="scope">
+            <el-button
+              :type="scope.row.status === '开放' ? 'success' : 'danger'"
+            >
+              {{ scope.row.status }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column prop="capacity" :label="t('capacity')" />
+        <el-table-column prop="remark" :label="t('remark')" />
+        <el-table-column fixed="right" :label="t('action')">
           <template #default="scope">
             <el-button
               type="primary"
@@ -345,56 +376,72 @@ const saveLocation = async () => {
     </div>
 
     <div class="footer">
-      <el-pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :page-sizes="[10, 25, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
-      />
+      <!--      <el-pagination-->
+      <!--        v-model:current-page="currentPage"-->
+      <!--        v-model:page-size="pageSize"-->
+      <!--        :page-sizes="[10, 25, 50, 100]"-->
+      <!--        layout="total, sizes, prev, pager, next, jumper"-->
+      <!--        :total="400"-->
+      <!--      />-->
     </div>
   </div>
 
   <el-dialog
     v-model="dialogVisible"
-    :title="isEditing.valueOf() ? '编辑地点' : '添加地点'"
+    :title="isEditing ? $t('dialog.editLocation') : $t('dialog.addLocation')"
     :before-close="handleClose"
   >
     <el-form :model="currentEditting" label-width="120px">
-      <el-form-item label="地点类型">
+      <el-form-item :label="$t('dialog.locationType')">
         <el-button-group>
           <el-button
             :type="currentEditting.type === 'library' ? 'primary' : ''"
             @click="() => setLocationType('library')"
-            :disabled="isEditing.value"
-            >图书馆
+            :disabled="isEditing"
+            >{{ $t("dialog.library") }}
           </el-button>
           <el-button
             :type="currentEditting.type === 'room' ? 'primary' : ''"
             @click="() => setLocationType('room')"
-            :disabled="isEditing.value"
-            >讨论间
+            :disabled="isEditing"
+            >{{ $t("dialog.room") }}
           </el-button>
         </el-button-group>
       </el-form-item>
-      <el-form-item label="地点名称">
+      <el-form-item
+        v-if="currentEditting.type === 'room'"
+        :label="$t('dialog.library')"
+      >
+        <el-select
+          v-model="currentEditting.library"
+          :placeholder="$t('dialog.chooseLibrary')"
+        >
+          <el-option
+            v-for="library in displayData"
+            :key="library.id"
+            :label="library.name"
+            :value="library.name"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item :label="$t('dialog.locationName')">
         <el-input v-model="currentEditting.name"></el-input>
       </el-form-item>
-      <el-form-item label="状态">
+      <el-form-item :label="$t('dialog.status')">
         <el-button-group>
           <el-button
             :type="currentEditting.state === '开放' ? 'primary' : ''"
             @click="() => setLocationState('开放')"
-            >开放
+            >{{ $t("dialog.open") }}
           </el-button>
           <el-button
             :type="currentEditting.state === '关闭' ? 'primary' : ''"
             @click="() => setLocationState('关闭')"
-            >关闭
+            >{{ $t("dialog.closed") }}
           </el-button>
         </el-button-group>
       </el-form-item>
-      <el-form-item label="容量">
+      <el-form-item :label="$t('dialog.capacity')">
         <el-input-number
           v-model="currentEditting.capacity"
           controls-position="right"
@@ -404,8 +451,10 @@ const saveLocation = async () => {
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="saveLocation">保存</el-button>
+        <el-button @click="handleClose">{{ $t("dialog.cancel") }}</el-button>
+        <el-button type="primary" @click="saveLocation">{{
+          $t("dialog.save")
+        }}</el-button>
       </div>
     </template>
   </el-dialog>

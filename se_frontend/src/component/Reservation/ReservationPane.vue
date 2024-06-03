@@ -43,7 +43,6 @@ const fetchData = async (placeId) => {
         room_id: room.id,
       });
       bookings[room.id] = res.data;
-      // console.log("bookings: ", bookings); // Debugging line
     } catch (error) {
       console.error("查询失败，请稍后重试");
     }
@@ -250,7 +249,7 @@ const submitForm = () => {
         });
 
         if (isConflict) {
-          ElMessage.error("预约时间冲突，请选择其他时间段");
+          ElMessage.error(t("messages.reservationConflict"));
           return;
         }
 
@@ -263,17 +262,17 @@ const submitForm = () => {
             person.toString().slice(0, 8)
           ),
         });
-        ElMessage.success("提交成功");
+        ElMessage.success(t("messages.submitSuccess"));
         dialogVisible.value = false;
         resetForm();
         location.reload();
       } catch (error) {
         // 错误处理
-        ElMessage.error("提交失败，请稍后重试");
+        ElMessage.error(t("messages.submitFail"));
         console.log(error);
       }
     } else {
-      ElMessage.warning("表单验证失败，请检查输入");
+      ElMessage.warning(t("messages.formValidationFail"));
     }
   });
 };
@@ -284,7 +283,7 @@ const resetForm = (showMessage = false) => {
   if (showMessage) {
     ElMessage({
       showClose: true,
-      message: "表单已重置",
+      message: t("messages.formReset"),
       type: "info",
       grouping: true,
     });
@@ -300,10 +299,11 @@ const resetForm = (showMessage = false) => {
       :placeholder="$t('pickADay')"
       size="default"
       :disabledDate="disabledDate"
+      value-format="YYYY-MM-DD"
     />
     <!-- 自动扩展的空白元素 -->
     <div class="spacer"></div>
-    <el-button type="primary" plain @click="fetchBookings">{{
+    <el-button type="primary" plain @click="fetchData(props.placeId)">{{
       $t("query")
     }}</el-button>
   </div>
@@ -420,7 +420,8 @@ const resetForm = (showMessage = false) => {
 .body-container {
   width: 100%;
   height: calc(100% - 52.8px); // 52.8px 是 filter-bar 的高度
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
   overflow: auto;
   margin-top: 10px; // 为了让筛选框和预约展示表格有一定的间距
 }

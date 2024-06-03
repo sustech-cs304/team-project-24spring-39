@@ -2,11 +2,14 @@
 import { computed, onMounted, ref, watch } from "vue";
 import { ElMessage, ElTree } from "element-plus";
 import { Delete, Edit } from "@element-plus/icons-vue";
+import { useStore } from "vuex";
 import {
   deleteReservation,
   fetchBookings,
   submitReservation,
 } from "@/api/reservation";
+
+const store = useStore();
 
 const selectedDay = ref("");
 
@@ -82,78 +85,81 @@ const handleSearch = async () => {
   }
 };
 
-onMounted(() => {
-  handleSearch();
+onMounted(async () => {
+  await store.dispatch("reservationStore/loadLocations");
+  placeData.value = store.state.reservationStore.locations;
+  await handleSearch();
 });
 
-const placeData = ref([
-  {
-    id: 1,
-    name: "一丹图书馆",
-    createTime: "2021-09-01",
-    capacity: 5,
-    children: [
-      {
-        id: 11,
-        name: "一楼",
-        createTime: "2021-09-01",
-        capacity: 5,
-      },
-      {
-        id: 12,
-        name: "二楼",
-        createTime: "2021-09-01",
-        capacity: 5,
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "琳恩图书馆",
-    createTime: "2021-09-02",
-    capacity: 5,
-    children: [
-      {
-        id: 21,
-        name: "一楼",
-        createTime: "2021-09-02",
-        capacity: 5,
-      },
-      {
-        id: 22,
-        name: "二楼",
-        createTime: "2021-09-02",
-        capacity: 5,
-      },
-    ],
-  },
-  {
-    id: 3,
-    name: "涵泳图书馆",
-    createTime: "2021-09-03",
-    capacity: 5,
-    children: [
-      {
-        id: 31,
-        name: "一楼",
-        createTime: "2021-09-03",
-        capacity: 6,
-      },
-      {
-        id: 32,
-        name: "二楼",
-        createTime: "2021-09-03",
-        capacity: 9,
-      },
-      {
-        id: 33,
-        name: "三楼",
-        createTime: "2021-09-03",
-        capacity: 1,
-      },
-    ],
-  },
-]);
+// const placeData = ref([
+//   {
+//     id: 1,
+//     name: "一丹图书馆",
+//     createTime: "2021-09-01",
+//     capacity: 5,
+//     children: [
+//       {
+//         id: 11,
+//         name: "一楼",
+//         createTime: "2021-09-01",
+//         capacity: 5,
+//       },
+//       {
+//         id: 12,
+//         name: "二楼",
+//         createTime: "2021-09-01",
+//         capacity: 5,
+//       },
+//     ],
+//   },
+//   {
+//     id: 2,
+//     name: "琳恩图书馆",
+//     createTime: "2021-09-02",
+//     capacity: 5,
+//     children: [
+//       {
+//         id: 21,
+//         name: "一楼",
+//         createTime: "2021-09-02",
+//         capacity: 5,
+//       },
+//       {
+//         id: 22,
+//         name: "二楼",
+//         createTime: "2021-09-02",
+//         capacity: 5,
+//       },
+//     ],
+//   },
+//   {
+//     id: 3,
+//     name: "涵泳图书馆",
+//     createTime: "2021-09-03",
+//     capacity: 5,
+//     children: [
+//       {
+//         id: 31,
+//         name: "一楼",
+//         createTime: "2021-09-03",
+//         capacity: 6,
+//       },
+//       {
+//         id: 32,
+//         name: "二楼",
+//         createTime: "2021-09-03",
+//         capacity: 9,
+//       },
+//       {
+//         id: 33,
+//         name: "三楼",
+//         createTime: "2021-09-03",
+//         capacity: 1,
+//       },
+//     ],
+//   },
+// ]);
+const placeData = ref();
 
 const reserveData = ref([
   {
@@ -284,6 +290,23 @@ watch(
     selectedLibraryRooms.value = library ? library.children : [];
   }
 );
+
+const currentPage = ref(1);
+const pageSize = ref(10);
+
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return displayData.value.slice(start, end);
+});
+
+const handleCurrentChange = (page) => {
+  currentPage.value = page;
+};
+
+const handleSizeChange = (size) => {
+  pageSize.value = size;
+};
 </script>
 
 <template>
@@ -326,7 +349,7 @@ watch(
 
       <div class="table-wrapper">
         <el-table
-          :data="displayData"
+          :data="paginatedData"
           style="margin-bottom: 20px; width: 100%"
           stripe
           row-key="id"
@@ -372,7 +395,9 @@ watch(
           v-model:page-size="pageSize"
           :page-sizes="[10, 25, 50, 100]"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
+          :total="displayData.length"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
         />
       </div>
     </div>

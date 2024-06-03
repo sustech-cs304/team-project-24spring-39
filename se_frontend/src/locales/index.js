@@ -28,3 +28,8 @@ const i18n = createI18n({
 });
 
 export default i18n;
+
+// 添加 getTranslation 函数
+export const getTranslation = (key) => {
+  return i18n.global.t(key);
+};

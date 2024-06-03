@@ -2,16 +2,17 @@ import request from "@/utils/request";
 
 /**
  * @description 根据条件查询预约情况
- * @param {Object} params - 查询参数
- * @param {string} [params.date] - 查询的日期
- * @param {string} [params.room_id] - 查询的地点ID
+ * @param {{date: (string|string), room_id: Identifier}} params - 查询参数
+ * @param {string} params.date - 查询的日期
+ * @param {id} params.room_id - 查询的地点ID
  * @returns {Promise} 请求的Promise
  */
-export function fetchBookings(params) {
+export async function fetchBookings(params) {
+  console.log("Params:", params); // 打印参数，检查是否有多余的参数
+  const queryParams = new URLSearchParams(params).toString();
   return request({
     method: "get",
-    url: "/reservation/bookings", // 根据你的实际API端点修改
-    params: params, // 将所有查询参数传递给后端API
+    url: `/reservation/bookings?${queryParams}`,
   });
 }
 
