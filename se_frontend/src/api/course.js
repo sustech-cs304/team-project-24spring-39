@@ -8,12 +8,6 @@ export function fetchDataByType(type) {
 }
 
 // 更新 Vuex state
-export function fetchCourse() {
-  return request({
-    method: "get",
-    url: "/course/get_course_test",
-  });
-}
 
 export function ReturnSelectedCourse() {
   return request({
@@ -69,6 +63,12 @@ export function queryCourse(data) {
       time: data.time,
       name: data.name,
     },
+  });
+}
+export function queryStopState() {
+  return request({
+    method: "get",
+    url: `/course/query-stop-state`, // 根据你的实际API端点修改
   });
 }
 
