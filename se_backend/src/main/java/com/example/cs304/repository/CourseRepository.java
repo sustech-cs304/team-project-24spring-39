@@ -38,7 +38,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     void dropCourse(@Param("courseId") String courseId, @Param("studentId") String studentId);
 
 
-    @Query(value = "select s.sid, s.name\n" +
+    @Query(value = "select s.sid, s.name, cs.score\n" +
             "from student s left join course_student cs on s.sid = cs.student_id\n" +
             "where cs.course_id = ?;", nativeQuery = true)
     List<Map<String, Object>> findStudentsInCourse(String CID);
@@ -48,6 +48,9 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query(value = "select * from course where type like '%选修课%';", nativeQuery = true)
     List<Course> findElectiveCourses();
+
+//    @Query(value = "select * from course where type like :type", nativeQuery = true)
+//    List<Course> findCourseType(@Param("type") String type);
 
     @Query(value = "select * from course where CID in (select course_id from course_student where student_id = :SID and valid = true)", nativeQuery = true)
     List<Course> findSelectedCourses(String SID);
@@ -72,4 +75,23 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     @Modifying
     @Query(value = "delete from course where CID = :CID", nativeQuery = true)
     void deleteCourse(@Param("CID") String CID);
+
+    @Query(value = "select * from course where rate >= 9.0", nativeQuery = true)
+    List<Course> findHighScoreCourses();
+
+    @Query(value = "SELECT * FROM course " +
+            "WHERE (:department IS NULL OR department = :department) " +
+            "AND (:time IS NULL OR JSON_EXTRACT(time, '$[*]') LIKE CONCAT('%', :time, '%')) " +
+            "AND (:courseName IS NULL OR name LIKE CONCAT('%', :courseName, '%'))", nativeQuery = true)
+    List<Course> queryCourse(@Param("department") String department,
+                             @Param("time") String time,
+                             @Param("courseName") String courseName);
+
+    @Query(value = "SELECT COUNT(*) FROM course_student WHERE course_id = :course_id and student_id = :student_id", nativeQuery = true)
+    Integer countCourseStudent(@Param("course_id") String course_id,@Param("student_id") String student_id);
+
+//    @Modifying
+//    @Transactional
+//    @Query(value = "update ", nativeQuery = true)
+//    void findByCID(@Param("CID") String CID);
 }

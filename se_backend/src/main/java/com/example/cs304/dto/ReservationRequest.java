@@ -1,4 +1,7 @@
-package com.example.cs304.entity;
+package com.example.cs304.dto;
+
+import com.example.cs304.entity.Room;
+import com.example.cs304.entity.Student;
 
 import java.time.Instant;
 import java.time.LocalDate;

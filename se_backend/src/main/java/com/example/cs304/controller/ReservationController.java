@@ -1,13 +1,15 @@
 package com.example.cs304.controller;
 
+import com.example.cs304.converter.JwtTokenProvider;
+import com.example.cs304.dto.Location;
+import com.example.cs304.dto.ReservationRequest;
 import com.example.cs304.entity.*;
 import com.example.cs304.repository.*;
 import com.example.cs304.response.Response;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/reservation")
 public class ReservationController {
     @PersistenceContext
@@ -30,22 +33,16 @@ public class ReservationController {
     private final StudentRepository studentRepository;
     private final BuildingRepository buildingRepository;
     private final SRrepository SRrepository;
-
-    public ReservationController(ReservationRepository reservationRepository, RoomRepository roomRepository, StudentRepository studentRepository, BuildingRepository buildingRepository, SRrepository SRrepository) {
-        this.reservationRepository = reservationRepository;
-        this.roomRepository = roomRepository;
-        this.studentRepository = studentRepository;
-        this.buildingRepository = buildingRepository;
-        this.SRrepository = SRrepository;
-    }
+    private JwtTokenProvider jwtTokenProvider;
 
 //    @GetMapping("/{student_id}")
 //    public ResponseEntity<List<Reservation>> getReservations(@PathVariable("student_id") String student_id) {
 //        List<Reservation> reservations = reservationRepository.findBysid(student_id);
 //        return ResponseEntity.ok(reservations);
 //    }
-    @GetMapping("/{student_id}")
-    public Response getReservations(@PathVariable("student_id") String student_id) {
+    @GetMapping("/search-student")
+    public Response<?> getReservations(@RequestHeader String Authorization) {
+        String student_id = jwtTokenProvider.getUsername(Authorization);
         List<Map<String, Object>> students = studentRepository.findnameBysid(student_id);
         return Response.success(students);
     }
@@ -57,7 +54,7 @@ public class ReservationController {
 //    }
 
     @GetMapping("/locations")
-    public ResponseEntity<Response> findLocations() {
+    public Response<?> findLocations() {
         System.out.println("test");
         List<Building> buildings = buildingRepository.findAll();
         List<Location> locations = new ArrayList<>();
@@ -73,16 +70,11 @@ public class ReservationController {
             locations.add(location);
         }
 
-        return ResponseEntity.ok(Response.success(locations));
+        return Response.success(locations);
     }
 
-//    @GetMapping("/bookings")
-//    public ResponseEntity<List<Reservation>> getReservations() {
-//        List<Reservation> reservations = reservationRepository.findAll();
-//        return ResponseEntity.ok(reservations);
-//    }
     @GetMapping("/bookings")
-    public Response getReservations(@RequestParam(value = "room_id",required = false) Integer room_id,
+    public Response<?> getReservations(@RequestParam(value = "room_id",required = false) Integer room_id,
                                     @RequestParam(value = "date",required = false) String date){
         List<Reservation> reservations = reservationRepository.findAll();
         if (date == null && room_id != null) {
@@ -93,7 +85,6 @@ public class ReservationController {
             reservations = reservationRepository.findByRoomAndDate(date, room_id);
         }
 
-//        List<ReservationRequest> reservations = reservationRepository.findAllReservations();
         List<ReservationRequest> reservationRequests = new ArrayList<>();
 
         for (Reservation reservation : reservations) {
@@ -113,12 +104,8 @@ public class ReservationController {
         return Response.success(reservationRequests);
     }
 
-//    @Modifying
-//    @Query(value = "insert into reservation (student_id, room_id, date, start_time, end_time, purpose) values (:student_id, :room_id, :date, :start_time, :end_time, :purpose);", nativeQuery = true)
-//    void addReservation(String student_id, int room_id, String date, String start_time, String end_time, String purpose);
-    @Transactional
     @PostMapping("/submit")
-    public Response addReservation(@RequestParam("persons") List<String> student,
+    public Response<?> addReservation(@RequestParam("persons") List<String> student,
                                @RequestParam("room_id") int room_id,
                                @RequestParam("date") @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
                                @RequestParam("start_time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime start_time,
@@ -133,7 +120,7 @@ public class ReservationController {
     }
 
     @DeleteMapping("/delete")
-    public Response deleteReservation(@RequestParam("reservation_id") int reservation_id) {
+    public Response<?> deleteReservation(@RequestParam("reservation_id") int reservation_id) {
         SRrepository.deleteStudentReservation(reservation_id);
         reservationRepository.deleteById(reservation_id);
         return Response.success(null);
@@ -141,14 +128,14 @@ public class ReservationController {
     }
 
     @PostMapping("/add_building")
-    public Response addBuilding(@RequestParam("name") String name,
+    public Response<?> addBuilding(@RequestParam("name") String name,
                                 @RequestParam("status") String status) {
         buildingRepository.addBuilding(name, status);
         return Response.success(null);
     }
 
     @PostMapping("/add_room")
-    public Response addRoom(@RequestParam("place") String place,
+    public Response<?> addRoom(@RequestParam("place") String place,
                             @RequestParam("room_name") String room_name,
                             @RequestParam("capacity") int capacity,
                             @RequestParam("status") String status) {
@@ -158,14 +145,14 @@ public class ReservationController {
     }
 
     @DeleteMapping("/delete_building")
-    public Response deleteBuilding(@RequestParam("name") String name) {
+    public Response<?> deleteBuilding(@RequestParam("name") String name) {
         buildingRepository.deleteBuilding(name);
         roomRepository.deleteRoomByBuilding(name);
         return Response.success(null);
     }
 
     @DeleteMapping("/delete_room")
-    public Response deleteRoom(@RequestParam("room_id") int room_id) {
+    public Response<?> deleteRoom(@RequestParam("room_id") int room_id) {
         Room room = roomRepository.findById(room_id).get();
         roomRepository.deleteRoom(room_id);
         String place = room.getPlace();
@@ -174,14 +161,14 @@ public class ReservationController {
     }
 
     @PostMapping("/update_building_status")
-    public Response updateBuildingStatus(@RequestParam("name") String name,
+    public Response<?> updateBuildingStatus(@RequestParam("name") String name,
                                          @RequestParam("status") String status) {
         buildingRepository.updateBuildingStatus(name, status);
         return Response.success(null);
     }
 
     @PostMapping("/update_room_status")
-    public Response updateRoomStatus(@RequestParam("room_id") int room_id,
+    public Response<?> updateRoomStatus(@RequestParam("room_id") int room_id,
                                      @RequestParam("status") String status) {
         Room room = roomRepository.findById(room_id).get();
         room.setStatus(status);
