@@ -64,7 +64,7 @@
           <!--        <el-text>已选学分：{{ totalCredits }}</el-text>-->
           <!--      </el-col>-->
           <el-col :span="6">
-            <el-text>剩余分数：{{ remainingPoints.value }}</el-text>
+            <el-text>剩余分数：{{ remainingPoints }}</el-text>
           </el-col>
           <el-col :span="6">
             <el-button plain @click="OpenDialog">查看已选课程</el-button>
@@ -169,7 +169,7 @@ import {
   queryStopState,
 } from "@/api/course";
 
-let remainingPoints = ref(100);
+const remainingPoints = ref(100);
 let state = ref();
 async function queryState() {
   const response = await queryStopState();
@@ -216,7 +216,7 @@ async function handleTabClick(tab) {
 onMounted(async () => {
   state.value = await queryState();
   console.log("state.value:", state.value);
-  console.log("state:", state);
+  console.log("remainingPoints:", remainingPoints.value);
   if (state.value === true) {
     ElMessage.error("选课已结束");
   }
@@ -345,9 +345,9 @@ async function HandleAdd(row) {
     try {
       // 调用 API 函数
       const response = await submitSelectedCourse(row.courseCid, row.score);
-      remainingPoints.value = response.data.data;
+      remainingPoints.value = response.data;
       console.log("Submitted successfully", remainingPoints.value);
-      console.log("Submitted successfully", response);
+      console.log("Submitted successfully", response.data);
       ElMessage.success("Course added successfully!");
       row.score = ""; // 清空输入框
     } catch (error) {
@@ -392,7 +392,6 @@ const SelectTableColumns = [
   { prop: "capacitySelectedNumber", label: "容量/已选", width: "120" },
   { prop: "points", label: "投入分数", width: "120" },
 ];
-
 // const totalCredits = computed(() => {
 //   if (props.state === false) {
 //     return tableData.value.reduce(
@@ -448,7 +447,7 @@ async function DeleteCourse(courseCid) {
         (course) => course.courseCid !== courseCid
       );
       ElMessage.success("Course deleted successfully!");
-      remainingPoints.value = response.data.data;
+      remainingPoints.value = response.data;
       console.log("remainingPoints:", remainingPoints.value);
     }
   } catch (error) {

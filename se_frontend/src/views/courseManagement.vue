@@ -132,8 +132,8 @@
         <el-form-item label="所属系" required>
           <el-select v-model="formData.department" placeholder="请选择">
             <el-option
-              label="计算机科学与工程系"
-              value="计算机科学与工程系"
+              label="计算机科学与技术"
+              value="计算机科学与技术"
             ></el-option>
             <el-option label="艺术中心" value="艺术中心"></el-option>
           </el-select>
@@ -421,17 +421,16 @@ const dialogFormVisible = ref(false);
 const formRef = ref(null);
 const formData = reactive({
   type: "通识必修课",
-  name: "",
+  name: "小学物理",
   CID: "GH101",
   credit: "3",
   hours: "32",
-  department: "计算机科学与工程系",
+  department: "计算机科学与技术",
   professor: [],
   location: "理学院101",
   weekType: "",
   times: [],
   capacity: "100",
-  addedPersons: ["12345678"],
 });
 const rules = reactive({
   addedPersons: [
@@ -481,7 +480,7 @@ const submitForm = () => {
           credit: formData.credit,
           hours: formData.hours,
           department: formData.department,
-          professorName: formData.professor.map((prof) => prof.professor_name),
+          professorNames: formData.professor.map((prof) => prof.professor_name),
           location: formData.location,
           time: formattedTimes, // 使用格式化后的时间数据
           capacity: formData.capacity,
