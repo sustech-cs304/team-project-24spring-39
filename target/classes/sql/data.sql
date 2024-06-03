@@ -1,9 +1,9 @@
 -- department
-INSERT INTO department (id, name) VALUES (1, '计算机科学与技术');
-INSERT INTO department (id, name) VALUES (2, '电子工程');
-INSERT INTO department (id, name) VALUES (3, '机械工程');
-INSERT INTO department (id, name) VALUES (4, '化学工程');
-INSERT INTO department (id, name) VALUES (5, '数学');
+INSERT INTO department (id, name) VALUES (1, '计算机科学与工程系');
+INSERT INTO department (id, name) VALUES (2, '电子系');
+INSERT INTO department (id, name) VALUES (3, '机械系');
+INSERT INTO department (id, name) VALUES (4, '化学系');
+INSERT INTO department (id, name) VALUES (5, '数学系');
 
 -- major
 INSERT INTO major (id, name, department) VALUES (1, '计算机科学与技术', '计算机科学与技术');
@@ -73,10 +73,6 @@ INSERT INTO post (id, author_id, title, content,  major_category, course_categor
 INSERT INTO reply (id, post_id, author_id, content) VALUES (1, 1, '87654321', '树的这部分其实很简单的，你可以这样理解...');
 INSERT INTO reply (id, post_id, author_id, content) VALUES (2, 2, '12345678', '我也有同样的问题，希望有人能解答');
 
--- like
-# INSERT INTO `like` (id, post_id, author_id) VALUES (1, 1, '87654321');
-# INSERT INTO `like` (id, post_id, author_id) VALUES (2, 2, '12345678');
-# INSERT INTO `like` (id, post_id, author_id) VALUES (3, 3, '23456789');
 
 -- message
 INSERT INTO message (id, receiver_id, content) VALUES (1, '12345678', '你有一个新的课程通知，请及时查看');
