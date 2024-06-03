@@ -1,6 +1,8 @@
 package com.example.cs304.controller;
 
 
+import ch.qos.logback.core.net.SMTPAppenderBase;
+import com.example.cs304.converter.JwtTokenProvider;
 import com.example.cs304.dto.SelectedCourse;
 import com.example.cs304.entity.*;
 import com.example.cs304.repository.*;
@@ -36,6 +38,7 @@ public class CourseController {
     @Autowired
     private CourseService courseService;
     private CPrepository cpRepository;
+    private JwtTokenProvider jwtTokenProvider;
 
     public CourseController(CourseRepository courseRepository, ProfessorRepository professorRepository, RateRepository rateRepository, CSrepository csRepository, CPrepository cpRepository) {
         this.courseRepository = courseRepository;
@@ -123,7 +126,8 @@ public class CourseController {
     }
 
     @GetMapping("/show_selected_course")
-    public Response<?> findTakenCourses(@RequestParam("SID") String SID) {
+    public Response<?> findTakenCourses(@RequestHeader String Authorization, @RequestBody Map<String, Object> requestBody) {
+        String SID = jwtTokenProvider.getUsername(Authorization);
         List<CourseStudent> courseStudents = csRepository.findTakenCourses(SID);
         List<SelectedCourse> selectedCourses = new ArrayList<>();
         for (CourseStudent courseStudent : courseStudents) {
@@ -164,7 +168,8 @@ public class CourseController {
 //    }
 
     @GetMapping("/taken")
-    public Response<?> findSelectedCourses(@RequestParam("SID") String SID) {
+    public Response<?> findSelectedCourses(@RequestHeader String Authorization, @RequestBody Map<String, Object> requestBody) {
+        String SID = jwtTokenProvider.getUsername(Authorization);
         List<Course> courses = courseRepository.findSelectedCourses(SID);
         return Response.success(courses);
     }

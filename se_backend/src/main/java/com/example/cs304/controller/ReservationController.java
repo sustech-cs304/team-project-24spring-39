@@ -1,5 +1,6 @@
 package com.example.cs304.controller;
 
+import com.example.cs304.converter.JwtTokenProvider;
 import com.example.cs304.dto.Location;
 import com.example.cs304.dto.ReservationRequest;
 import com.example.cs304.entity.*;
@@ -30,6 +31,7 @@ public class ReservationController {
     private final StudentRepository studentRepository;
     private final BuildingRepository buildingRepository;
     private final SRrepository SRrepository;
+    private JwtTokenProvider jwtTokenProvider;
 
     public ReservationController(ReservationRepository reservationRepository, RoomRepository roomRepository, StudentRepository studentRepository, BuildingRepository buildingRepository, SRrepository SRrepository) {
         this.reservationRepository = reservationRepository;
@@ -45,7 +47,8 @@ public class ReservationController {
 //        return ResponseEntity.ok(reservations);
 //    }
     @GetMapping("/search-student")
-    public Response<?> getReservations(@RequestParam("student_id") String student_id) {
+    public Response<?> getReservations(@RequestHeader String Authorization, @RequestBody Map<String, Object> requestBody) {
+        String student_id = jwtTokenProvider.getUsername(Authorization);
         List<Map<String, Object>> students = studentRepository.findnameBysid(student_id);
         return Response.success(students);
     }
