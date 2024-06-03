@@ -27,6 +27,13 @@ export function fetchTodoList(type) {
   });
 }
 
+export function deleteMessage(id) {
+  return request({
+    method: "delete",
+    url: `/message/delete_message/${id}`,
+  });
+}
+
 /**
  * @description 提交待办事项
  * @param data

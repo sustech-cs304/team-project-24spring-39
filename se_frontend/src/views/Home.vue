@@ -1,12 +1,12 @@
 <script setup>
-import { ref, reactive, computed, onMounted } from "vue";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useStore } from "vuex";
 import HorizonTimeLine from "@/component/Home/HorizonTimeLine.vue";
 import { format } from "date-fns";
 import { ElMessage, ElMessageBox } from "element-plus";
 
-import { fetchTodoList, submitTodo } from "@/api/home";
-import { Plus } from "@element-plus/icons-vue";
+import { deleteMessage, fetchTodoList, submitTodo } from "@/api/home";
+import { Delete, Plus } from "@element-plus/icons-vue";
 import { useI18n } from "vue-i18n";
 
 const { t } = useI18n();
@@ -18,9 +18,20 @@ const store = useStore();
 //     circleUrl.value = response.data;
 //   });
 // });
-onMounted(() => {
+onMounted(async () => {
   circleUrl.value = userInfo.value.avatar;
   console.log(circleUrl.value);
+  const response = await fetchTodoList("self");
+  tables.value[activeTab.value] = response.data.map((item) => {
+    if (item.endTime) {
+      return {
+        ...item,
+        endTime: item.endTime.replace("T", " "),
+        creatTime: item.creatTime.replace("T", " "),
+      };
+    }
+    return item;
+  });
 });
 
 const circleUrl = ref(
@@ -80,44 +91,6 @@ const currentYear = ref(new Date().getFullYear());
 const activeTab = ref("self");
 
 const tables = ref({
-  // selection: [],
-  // evaluation: [],
-  // forum: [
-  //   {
-  //     date: "2016-05-02",
-  //     name: "王小虎",
-  //   },
-  //   {
-  //     date: "2016-05-04",
-  //     name: "王小虎",
-  //   },
-  //   {
-  //     date: "2016-05-01",
-  //     name: "王小虎",
-  //   },
-  //   {
-  //     date: "2016-05-03",
-  //     name: "王小虎",
-  //   },
-  // ],
-  // reservation: [
-  //   {
-  //     date: "2016-05-02",
-  //     name: "王小虎",
-  //   },
-  //   {
-  //     date: "2016-05-04",
-  //     name: "王小虎",
-  //   },
-  //   {
-  //     date: "2016-05-01",
-  //     name: "王小虎",
-  //   },
-  //   {
-  //     date: "2016-05-03",
-  //     name: "王小虎",
-  //   },
-  // ],
   self: [],
 });
 
@@ -224,6 +197,15 @@ const saveTodo = () => {
     }
   });
 };
+const handleDelete = async (message) => {
+  try {
+    await deleteMessage(message.id);
+    ElMessage.success("删除成功");
+    location.reload();
+  } catch (error) {
+    ElMessage.error("删除失败，请稍后重试");
+  }
+};
 </script>
 
 <template>
@@ -296,8 +278,17 @@ const saveTodo = () => {
     <el-table class="table" :data="tables[activeTab]">
       <el-table-column prop="endTime" :label="$t('labels.endTime')" />
       <el-table-column prop="content" :label="$t('labels.content')" />
-      <el-table-column prop="createTime" :label="$t('labels.createTime')" />
-      <!-- Add more columns as needed -->
+      <el-table-column prop="creatTime" :label="$t('labels.createTime')" />
+      <el-table-column :label="$t('operation')">
+        <template #default="scope">
+          <el-button
+            type="danger"
+            :icon="Delete"
+            circle
+            @click="() => handleDelete(scope.row)"
+          />
+        </template>
+      </el-table-column>
     </el-table>
     <el-button
       type="primary"
