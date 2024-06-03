@@ -1,17 +1,14 @@
 package com.example.cs304.repository;
 
 import com.example.cs304.entity.Reservation;
-import com.example.cs304.entity.ReservationRequest;
-import com.fasterxml.jackson.annotation.JsonRawValue;
+import com.example.cs304.dto.ReservationRequest;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
-import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 public interface ReservationRepository extends JpaRepository<Reservation, Integer>{
     @Query(value="select * from reservation where room_id = ?;",nativeQuery = true)

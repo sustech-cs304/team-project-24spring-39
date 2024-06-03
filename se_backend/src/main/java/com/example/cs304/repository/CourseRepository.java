@@ -72,4 +72,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     @Modifying
     @Query(value = "delete from course where CID = :CID", nativeQuery = true)
     void deleteCourse(@Param("CID") String CID);
+
+    @Query(value = "select * from course where rate >= 9.0", nativeQuery = true)
+    List<Course> findHighScoreCourses();
 }

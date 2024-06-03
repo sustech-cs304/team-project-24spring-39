@@ -131,22 +131,6 @@ create table if not exists room
     unique (place, name)
 );
 
-
-create table if not exists student_reservation
-(
-    id int auto_increment primary key,
-    student_id varchar(8) not null,
-    room_id int not null,
-    date date not null,
-    start_time time not null,
-    end_time time not null,
-    create_time timestamp not null default now(),
-    status enum('预约','非开放预约时段') not null default '预约',
-    foreign key (student_id) references student(SID),
-    foreign key (room_id) references room(id),
-    unique (room_id, date, start_time, end_time)
-);
-
 create table if not exists reservation
 (
     id int auto_increment primary key,
@@ -208,29 +192,7 @@ create table if not exists reply
     unique (author_id, time)
 );
 
-create table if not exists secondary_reply
-(
-    id int auto_increment primary key,
-    reply_id int not null,
-    author_id varchar(8) not null,
-    content varchar(1000) not null,
-    time timestamp not null default now(),
-    file_id int,
-    foreign key (reply_id) references reply(id),
-    foreign key (author_id) references student(SID),
-    foreign key (file_id) references file(id),
-    unique (author_id, time)
-);
 
-create table if not exists `like`
-(
-    id int auto_increment primary key,
-    post_id int not null,
-    author_id varchar(8) not null,
-    foreign key (post_id) references post(id),
-    foreign key (author_id) references student(SID),
-    unique (post_id, author_id)
-);
 
 create table if not exists message
 (

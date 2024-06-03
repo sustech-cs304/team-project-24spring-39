@@ -1,5 +1,6 @@
-package com.example.cs304.entity;
+package com.example.cs304.dto;
 
+import com.example.cs304.entity.Room;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 

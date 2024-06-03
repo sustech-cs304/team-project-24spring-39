@@ -32,10 +32,6 @@ public class Reply {
     @Column(name = "time", nullable = false)
     private Instant time = Instant.now();
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "file_id")
-    private File file;
-
     public Integer getId() {
         return id;
     }
@@ -74,14 +70,6 @@ public class Reply {
 
     public void setTime(Instant time) {
         this.time = time;
-    }
-
-    public File getFile() {
-        return file;
-    }
-
-    public void setFile(File file) {
-        this.file = file;
     }
 
 }

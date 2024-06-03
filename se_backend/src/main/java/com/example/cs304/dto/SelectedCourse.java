@@ -1,12 +1,13 @@
-package com.example.cs304.entity;
+package com.example.cs304.dto;
 
+import com.example.cs304.entity.Department;
+import com.example.cs304.entity.Professor;
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.util.List;
-import java.util.Map;
 
 public class SelectedCourse {
     @Id

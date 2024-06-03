@@ -2,6 +2,8 @@ package com.example.cs304.entity;
 
 import jakarta.persistence.*;
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import java.time.Instant;
 
@@ -25,6 +27,19 @@ public class File {
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "upload_time", nullable = false)
     private Instant uploadTime;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @OnDelete(action = OnDeleteAction.CASCADE)
+    @JoinColumn(name = "post_id")
+    private Post post;
+
+    public Post getPost() {
+        return post;
+    }
+
+    public void setPost(Post post) {
+        this.post = post;
+    }
 
     public Integer getId() {
         return id;

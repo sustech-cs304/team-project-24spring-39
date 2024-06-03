@@ -34,9 +34,9 @@ INSERT INTO student (id, name, SID, password, class, major, score) VALUES (4, '�
 INSERT INTO student (id, name, SID, password, class, major, score) VALUES (5, '学生5', '45678912', 'password5', '5班', '化学工程与工艺', 75);
 
 -- course
-INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (1, '数据结构', 'CS001', '春季学期', '专业必修课', '计算机科学与技术', 4, 64, 100, 0, '教学楼A101', '数据结构课程描述', '{"days": ["周一", "周三"], "times": ["08:00", "10:00"]}');
-INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (2, '大学物理', 'PH001', '秋季学期', '通识必修课', '电子工程', 3, 48, 150, 0, '实验楼B201', '大学物理课程描述', '{"days": ["周二", "周四"], "times": ["14:00", "16:00"]}');
-INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (4, '有机化学', 'CH001', '秋季学期', '专业必修课', '化学工程', 4, 64, 100, 0, '化学楼C201', '有机化学基础课程，涵盖有机化合物的基本概念和反应机理', '{"days": ["周二", "周四"], "times": ["13:00", "15:00"]}');
+INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (1, '数据结构', 'CS001', '春季学期', '专业必修课', '计算机科学与技术', 4, 64, 100, 0, '教学楼A101', '数据结构课程描述', '["Monday 08:00-09:50 odd", "Wednesday 08:00-09:50 odd"]');
+INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (2, '大学物理', 'PH001', '秋季学期', '通识必修课', '电子工程', 3, 48, 150, 0, '实验楼B201', '大学物理课程描述', '["Tuesday 08:00-09:50 odd", "Thursday 08:00-09:50 odd"]');
+INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (4, '有机化学', 'CH001', '秋季学期', '专业必修课', '化学工程', 4, 64, 100, 0, '化学楼C201', '有机化学基础课程，涵盖有机化合物的基本概念和反应机理', '["Monday 14:00-15:50 both", "Wednesday 08:00-09:50 odd"]');
 
 -- course_student
 INSERT INTO course_student (id, course_id, student_id, score, valid) VALUES (1, 'CS001', '12345678', 0, false);

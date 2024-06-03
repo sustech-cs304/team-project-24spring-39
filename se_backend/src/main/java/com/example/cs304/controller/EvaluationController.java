@@ -26,7 +26,7 @@ public class EvaluationController {
 
     @PostMapping("/add_evaluation")
     @Transactional
-    public Response addEvaluation(@RequestParam("course_id") String course_id, @RequestParam("student_id") String student_id,
+    public Response<?> addEvaluation(@RequestParam("course_id") String course_id, @RequestParam("student_id") String student_id,
                                   @RequestParam("rate") int rate, @RequestParam("difficulty") String difficulty,
                                   @RequestParam("workload") String workload, @RequestParam("grading") String grading,
                                   @RequestParam("gain") String gain, @RequestParam("description") String description) {
@@ -36,7 +36,7 @@ public class EvaluationController {
     }
 
     @GetMapping("/get_evaluations")
-    public Response getEvaluations() {
+    public Response<?> getEvaluations() {
         List<Rate> evaluations = rateRepository.getEvaluations();
         return Response.success(evaluations);
     }
