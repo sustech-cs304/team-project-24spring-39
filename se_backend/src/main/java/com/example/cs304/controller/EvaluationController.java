@@ -15,6 +15,8 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
+
 @RequestMapping("/evaluation")
 public class EvaluationController {
     private final EvaluationRepository evaluationRepository;

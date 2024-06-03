@@ -1,7 +1,6 @@
 package com.example.cs304.controller;
 
 
-import ch.qos.logback.core.net.SMTPAppenderBase;
 import com.example.cs304.converter.JwtTokenProvider;
 import com.example.cs304.dto.CourseDTO;
 import com.example.cs304.dto.SelectedCourse;
@@ -17,8 +16,6 @@ import jakarta.persistence.PersistenceContext;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 
 import org.springframework.web.bind.annotation.*;
 
@@ -28,6 +25,8 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
+
 @RequestMapping("/course")
 public class CourseController {
 

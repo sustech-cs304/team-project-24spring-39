@@ -59,12 +59,12 @@ INSERT INTO room (id, place, name, capacity) VALUES (2, '一丹图书馆', '会�
 INSERT INTO room (id, place, name, capacity) VALUES (3, '涵泳图书馆', '图书馆研讨室', 30);
 
 
--- file
-INSERT INTO file (id, name, filetype, filepath) VALUES (1, '报告.pdf', 'document', '/uploads/12345678/report.pdf');
-INSERT INTO file (id, name, filetype, filepath) VALUES (2, '照片.jpg', 'image', '/uploads/87654321/photo.jpg');
-INSERT INTO file (id, name, filetype, filepath) VALUES (3, '演讲.mp4', 'video', '/uploads/23456789/presentation.mp4');
 
 -- post
+INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (1, '12345678', '软件工程求助', 'project写不完了怎么办', '计算机科学与技术', '软件工程');
+INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (2, '87654321', '物理实验求助', '我在实验室遇到了问题，需要一些帮助','电子工程', '大学物理');
+INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (3, '23456789', '化学课程疑问', '对于这个化学反应，我有几个问题', '化学工程', '有机化学');
+
 INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (4, '12345678', '数据结构问题', '关于树的部分我不太懂，谁能帮我解释一下？', '计算机科学与技术', '数据结构');
 INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (5, '87654321', '物理实验求助', '我在实验室遇到了问题，需要一些帮助','电子工程', '大学物理');
 INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (6, '23456789', '化学课程疑问', '对于这个化学反应，我有几个问题', '化学工程', '有机化学');

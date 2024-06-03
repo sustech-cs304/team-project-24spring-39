@@ -1,22 +1,16 @@
 package com.example.cs304.entity;
 
-import com.fasterxml.jackson.annotation.JsonIdentityInfo;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.ColumnDefault;
 
 import java.time.Instant;
-import java.util.List;
 
-@Setter
 @Getter
+@Setter
 @Entity
 @Table(name = "post")
-@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
-
 public class Post {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -35,7 +29,6 @@ public class Post {
 
     @ColumnDefault("CURRENT_TIMESTAMP")
     @Column(name = "posting_time", nullable = false)
-    @JsonProperty("date")
     private Instant postingTime;
 
     @Column(name = "major_category", length = 50)
@@ -43,10 +36,5 @@ public class Post {
 
     @Column(name = "course_category", length = 50)
     private String courseCategory;
-
-    @OneToMany(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-    @JoinColumn(name = "post_id")
-    private List<Reply> comments;
-
 
 }

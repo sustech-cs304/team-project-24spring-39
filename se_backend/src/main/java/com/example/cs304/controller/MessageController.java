@@ -14,6 +14,8 @@ import java.util.List;
 import java.util.Map;
 @RequestMapping("message")
 @RestController
+@CrossOrigin
+
 public class MessageController {
     private final MessageRepository messageRepository;
     private final StudentService studentService;

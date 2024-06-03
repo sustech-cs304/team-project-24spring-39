@@ -15,6 +15,8 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
+
 @RequestMapping("/student")
 public class StudentController {
 

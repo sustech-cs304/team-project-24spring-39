@@ -7,7 +7,7 @@ services:
       MYSQL_DATABASE: cs304proj
     volumes:
       - db_data:/var/lib/mysql
-#      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
     restart: always
   app:
     image: phystar/cs304-app:latest
