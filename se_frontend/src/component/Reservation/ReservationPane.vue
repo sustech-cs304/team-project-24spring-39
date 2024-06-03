@@ -420,7 +420,8 @@ const resetForm = (showMessage = false) => {
 .body-container {
   width: 100%;
   height: calc(100% - 52.8px); // 52.8px 是 filter-bar 的高度
-  background-color: white;
+  //background-color: white;
+  @include block_bg_color();
   overflow: auto;
   margin-top: 10px; // 为了让筛选框和预约展示表格有一定的间距
 }

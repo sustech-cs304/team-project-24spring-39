@@ -43,6 +43,7 @@ export default {
     editLocation: "编辑地点",
     addLocation: "添加地点",
     locationType: "地点类型",
+    chooseLibrary: "选择图书馆",
     library: "图书馆",
     room: "讨论间",
     locationName: "地点名称",

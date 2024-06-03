@@ -26,18 +26,21 @@ const tableData = ref([
   {
     id: 1,
     name: "一丹图书馆",
+    state: "开放",
     createTime: "2021-09-01",
     capacity: 5,
     children: [
       {
         id: 11,
         name: "一楼",
+        state: "开放",
         createTime: "2021-09-01",
         capacity: 5,
       },
       {
         id: 12,
         name: "二楼",
+        state: "开放",
         createTime: "2021-09-01",
         capacity: 5,
       },
@@ -46,18 +49,21 @@ const tableData = ref([
   {
     id: 2,
     name: "琳恩图书馆",
+    state: "开放",
     createTime: "2021-09-02",
     capacity: 5,
     children: [
       {
         id: 21,
         name: "一楼",
+        state: "开放",
         createTime: "2021-09-02",
         capacity: 5,
       },
       {
         id: 22,
         name: "二楼",
+        state: "开放",
         createTime: "2021-09-02",
         capacity: 5,
       },
@@ -66,24 +72,28 @@ const tableData = ref([
   {
     id: 3,
     name: "涵泳图书馆",
+    state: "开放",
     createTime: "2021-09-03",
     capacity: 5,
     children: [
       {
         id: 31,
         name: "一楼",
+        state: "开放",
         createTime: "2021-09-03",
         capacity: 6,
       },
       {
         id: 32,
         name: "二楼",
+        state: "开放",
         createTime: "2021-09-03",
         capacity: 9,
       },
       {
         id: 33,
         name: "三楼",
+        state: "开放",
         createTime: "2021-09-03",
         capacity: 1,
       },
@@ -157,10 +167,13 @@ const openDialog = (place = {}) => {
     currentEditting.value = {
       ...place,
       type: place.children ? "library" : "room",
+      library: place.children ? "" : place.place,
+      state: place.status,
       capacity: place.children
         ? place.children.reduce((sum, child) => sum + child.capacity, 0)
         : place.capacity,
     };
+    // console.log(currentEditting.value);
     isEditing.value = true;
   } else {
     currentEditting.value = {
@@ -171,14 +184,14 @@ const openDialog = (place = {}) => {
       capacity: 0,
     };
     isEditing.value = false;
-    console.log(displayData.value);
+    // console.log(displayData.value);
   }
   dialogVisible.value = true;
 };
 
 const handleDelete = async (location) => {
   try {
-    console.log(location);
+    // console.log(location);
     if (location.place) {
       await deleteRoom(location.id);
     } else {
@@ -212,7 +225,7 @@ const saveLocation = async () => {
       tableData.value[index] = { ...currentEditting.value };
     }
 
-    console.log(currentEditting.value);
+    // console.log(currentEditting.value);
     if (currentEditting.value.type === "library") {
       await updateBuilding({
         name: currentEditting.value.name,
@@ -243,7 +256,7 @@ const saveLocation = async () => {
       if (newLocation.type === "room") {
         await submitRoom({
           place: newLocation.library,
-          name: newLocation.name,
+          room_name: newLocation.name,
           status: newLocation.state,
           capacity: newLocation.capacity,
         });
@@ -330,9 +343,17 @@ const saveLocation = async () => {
         border
         default-expand-all
       >
-        <el-table-column fixed prop="name" :label="t('name')" sortable />
-        <el-table-column prop="status" :label="t('status')" sortable />
-        <el-table-column prop="capacity" :label="t('capacity')" sortable />
+        <el-table-column fixed prop="name" :label="t('name')" />
+        <el-table-column prop="status" :label="t('status')">
+          <template #default="scope">
+            <el-button
+              :type="scope.row.status === '开放' ? 'success' : 'danger'"
+            >
+              {{ scope.row.status }}
+            </el-button>
+          </template>
+        </el-table-column>
+        <el-table-column prop="capacity" :label="t('capacity')" />
         <el-table-column prop="remark" :label="t('remark')" />
         <el-table-column fixed="right" :label="t('action')">
           <template #default="scope">
@@ -376,19 +397,25 @@ const saveLocation = async () => {
           <el-button
             :type="currentEditting.type === 'library' ? 'primary' : ''"
             @click="() => setLocationType('library')"
-            :disabled="isEditing.value"
+            :disabled="isEditing"
             >{{ $t("dialog.library") }}
           </el-button>
           <el-button
             :type="currentEditting.type === 'room' ? 'primary' : ''"
             @click="() => setLocationType('room')"
-            :disabled="isEditing.value"
+            :disabled="isEditing"
             >{{ $t("dialog.room") }}
           </el-button>
         </el-button-group>
       </el-form-item>
-      <el-form-item v-if="currentEditting.type === 'room'" label="图书馆">
-        <el-select v-model="currentEditting.library" placeholder="选择图书馆">
+      <el-form-item
+        v-if="currentEditting.type === 'room'"
+        :label="$t('dialog.library')"
+      >
+        <el-select
+          v-model="currentEditting.library"
+          :placeholder="$t('dialog.chooseLibrary')"
+        >
           <el-option
             v-for="library in displayData"
             :key="library.id"

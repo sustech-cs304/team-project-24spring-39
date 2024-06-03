@@ -8,10 +8,11 @@ import request from "@/utils/request";
  * @returns {Promise} 请求的Promise
  */
 export function fetchBookings(params) {
+  const queryParams = new URLSearchParams(params).toString();
   return request({
     method: "get",
-    url: "/reservation/bookings", // 根据你的实际API端点修改
-    params: params, // 将所有查询参数传递给后端API
+    url: `/reservation/bookings?${queryParams}`, // 根据你的实际API端点修改
+    // params: params, // 将所有查询参数传递给后端API
   });
 }
 

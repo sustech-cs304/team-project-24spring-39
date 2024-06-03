@@ -44,6 +44,7 @@ export default {
     editLocation: "Edit Location",
     addLocation: "Add Location",
     locationType: "Location Type",
+    chooseLibrary: "Choose Library",
     library: "Library",
     room: "Room",
     locationName: "Location Name",

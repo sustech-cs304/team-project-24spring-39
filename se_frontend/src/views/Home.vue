@@ -6,6 +6,10 @@ import { format } from "date-fns";
 import { ElMessage, ElMessageBox } from "element-plus";
 
 import { fetchTodoList, submitTodo } from "@/api/home";
+import { Plus } from "@element-plus/icons-vue";
+import { useI18n } from "vue-i18n";
+
+const { t } = useI18n();
 
 const store = useStore();
 
@@ -46,106 +50,75 @@ const userInfo = computed(() => store.state.userStore.userInfo);
 //   console.log(value, direction, movedKeys);
 // };
 
+// const timelineData = ref([
+//   {
+//     year: 2021,
+//   },
+//   {
+//     year: 2022,
+//   },
+//   {
+//     year: 2023,
+//   },
+//   {
+//     year: 2024,
+//   },
+// ]);
+// 当前年份
+// 获取入学年份
+const sid = userInfo.value.SID;
+const enrollmentYear = parseInt(sid.substring(1, 3), 10) + 2000;
+// 生成 timelineData
 const timelineData = ref([
-  {
-    year: 2021,
-  },
-  {
-    year: 2022,
-  },
-  {
-    year: 2023,
-  },
-  {
-    year: 2024,
-  },
+  { year: enrollmentYear },
+  { year: enrollmentYear + 1 },
+  { year: enrollmentYear + 2 },
+  { year: enrollmentYear + 3 },
 ]);
+const currentYear = ref(new Date().getFullYear());
 
-const activeTab = ref("selection");
+const activeTab = ref("self");
 
 const tables = ref({
-  selection: [
-    {
-      date: "2016-05-02",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-04",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-01",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-03",
-      name: "王小虎",
-    },
-  ],
-  evaluation: [
-    {
-      date: "2016-05-02",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-04",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-01",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-03",
-      name: "王小虎",
-    },
-  ],
-  forum: [
-    {
-      date: "2016-05-02",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-04",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-01",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-03",
-      name: "王小虎",
-    },
-  ],
-  reservation: [
-    {
-      date: "2016-05-02",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-04",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-01",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-03",
-      name: "王小虎",
-    },
-  ],
-  self: [
-    {
-      date: "2016-05-02",
-      name: "王小虎",
-    },
-    {
-      date: "2016-05-04",
-      name: "王小虎",
-    },
-  ],
+  // selection: [],
+  // evaluation: [],
+  // forum: [
+  //   {
+  //     date: "2016-05-02",
+  //     name: "王小虎",
+  //   },
+  //   {
+  //     date: "2016-05-04",
+  //     name: "王小虎",
+  //   },
+  //   {
+  //     date: "2016-05-01",
+  //     name: "王小虎",
+  //   },
+  //   {
+  //     date: "2016-05-03",
+  //     name: "王小虎",
+  //   },
+  // ],
+  // reservation: [
+  //   {
+  //     date: "2016-05-02",
+  //     name: "王小虎",
+  //   },
+  //   {
+  //     date: "2016-05-04",
+  //     name: "王小虎",
+  //   },
+  //   {
+  //     date: "2016-05-01",
+  //     name: "王小虎",
+  //   },
+  //   {
+  //     date: "2016-05-03",
+  //     name: "王小虎",
+  //   },
+  // ],
+  self: [],
 });
 
 const dialogVisible = ref(false);
@@ -197,7 +170,7 @@ const handleClose = (done) => {
   if (isFormEmpty) {
     done();
   } else {
-    ElMessageBox.confirm("可能还有未保存的数据，确定关闭吗？")
+    ElMessageBox.confirm(t("confirmClose"))
       .then(() => {
         // 用户点击确定按钮触发的分支
         done(); // el-dialog的回调函数，用于关闭对话框
@@ -300,7 +273,11 @@ const saveTodo = () => {
   </el-row>
   <!--  时间轴-->
   <el-row>
-    <HorizonTimeLine class="h-timeline" :timelineData="timelineData" />
+    <HorizonTimeLine
+      class="h-timeline"
+      :timelineData="timelineData"
+      :active-year="currentYear"
+    />
   </el-row>
   <!--  消息提醒-->
   <el-row class="message-reminding">
@@ -310,42 +287,48 @@ const saveTodo = () => {
       class="tabs"
       @tab-click="handleClick"
     >
-      <el-tab-pane label="选课" name="selection"></el-tab-pane>
-      <el-tab-pane label="评教" name="evaluation"></el-tab-pane>
-      <el-tab-pane label="课程论坛" name="forum"></el-tab-pane>
-      <el-tab-pane label="自习室预约" name="reservation"></el-tab-pane>
-      <el-tab-pane label="自定义" name="self">Self Made</el-tab-pane>
+      <!--      <el-tab-pane label="选课" name="selection"></el-tab-pane>-->
+      <!--      <el-tab-pane label="评教" name="evaluation"></el-tab-pane>-->
+      <!--      <el-tab-pane label="课程论坛" name="forum"></el-tab-pane>-->
+      <!--      <el-tab-pane label="自习室预约" name="reservation"></el-tab-pane>-->
+      <el-tab-pane :label="$t('labels.customTodo')" name="self"></el-tab-pane>
     </el-tabs>
     <el-table class="table" :data="tables[activeTab]">
-      <el-table-column prop="endTime" label="endTime" />
-      <el-table-column prop="content" label="content" />
-      <el-table-column prop="createTime" label="createTime" />
+      <el-table-column prop="endTime" :label="$t('labels.endTime')" />
+      <el-table-column prop="content" :label="$t('labels.content')" />
+      <el-table-column prop="createTime" :label="$t('labels.createTime')" />
       <!-- Add more columns as needed -->
     </el-table>
-    <el-button type="primary" plain @click="openDialog">Add Todo</el-button>
+    <el-button
+      type="primary"
+      circle
+      :icon="Plus"
+      @click="openDialog"
+      style="margin-left: 10px"
+    ></el-button>
   </el-row>
 
   <el-dialog
     v-model="dialogVisible"
-    title="添加自定义待办"
+    :title="$t('addCustomTodo')"
     :before-close="handleClose"
   >
     <el-form ref="formRef" :model="todoForm" :rules="rules" label-width="120px">
-      <el-form-item label="内容" prop="content">
+      <el-form-item :label="$t('content')" prop="content">
         <el-input v-model="todoForm.content" />
       </el-form-item>
-      <el-form-item label="提醒时间" prop="deadline">
+      <el-form-item :label="$t('reminderTime')" prop="deadline">
         <el-date-picker
           v-model="todoForm.deadline"
           type="datetime"
-          placeholder="Select date and time"
+          :placeholder="$t('selectDateTime')"
           :shortcuts="shortcuts"
           :disabledDate="disabledDate"
         />
       </el-form-item>
       <el-form-item>
-        <el-button @click="resetForm(true)">Reset</el-button>
-        <el-button type="primary" @click="saveTodo">添加</el-button>
+        <el-button @click="resetForm(true)">{{ $t("reset") }}</el-button>
+        <el-button type="primary" @click="saveTodo">{{ $t("add") }}</el-button>
       </el-form-item>
     </el-form>
   </el-dialog>

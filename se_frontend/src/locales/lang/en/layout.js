@@ -39,4 +39,12 @@ export default {
   changeAvatar: "Change Avatar",
   logout: "Logout",
   changeAvatarSuccess: "Change avatar success",
+
+  // Home.vue
+  labels: {
+    customTodo: "Todo List",
+    endTime: "End Time",
+    content: "Content",
+    createTime: "Create Time",
+  },
 };
