@@ -1,16 +1,17 @@
 <template>
-  <el-row style="margin-top: 10px" gutter="30px">
-    <el-col :span="6">
-      <el-text>已选学分：{{ totalCredits }}</el-text>
-    </el-col>
-    <el-col :span="6">
-      <el-text>剩余分数：{{ remainingPoints }}</el-text>
-    </el-col>
-    <el-col :span="6">
-      <el-button plain @click="OpenDialog">查看已选课程</el-button>
-    </el-col>
-  </el-row>
-
+  <div class="selectedCourse">
+    <el-row style="margin-top: 10px" gutter="20px">
+      <el-col :span="6">
+        <el-text>已选学分：{{ totalCredits }}</el-text>
+      </el-col>
+      <el-col :span="6">
+        <el-text>剩余分数：{{ remainingPoints }}</el-text>
+      </el-col>
+      <el-col :span="6">
+        <el-button plain @click="OpenDialog">查看已选课程</el-button>
+      </el-col>
+    </el-row>
+  </div>
   <el-dialog title="已选课程" v-model="dialogVisible" width="80%" height="80%">
     <!-- 对话框内容 -->
     <el-table :data="tableData" style="width: 100%" max-height="400">
@@ -22,19 +23,40 @@
         :width="column.width"
       />
       <el-table-column fixed="right" label="Operations">
-        <el-button type="danger" @click="DeleteCourse" width="30px"
-          >Delete
-        </el-button>
+        <template #default="scope">
+          <el-button
+            type="danger"
+            @click="DeleteCourse(scope.row.courseCid)"
+            width="30px"
+            >Delete
+          </el-button>
+        </template>
       </el-table-column>
     </el-table>
   </el-dialog>
 </template>
 
 <script setup>
-import { ref, computed } from "vue";
-import { ReturnSelectedCourse } from "@/api/course";
+import { computed, ref, watch } from "vue";
+import {
+  DeleteSelectedCourseByCourseId,
+  ReturnSelectedCourse,
+} from "@/api/course";
+import { useStore } from "vuex";
+import { ElMessage } from "element-plus";
 
 const MAX_POINTS = 100;
+const tableData = ref([]);
+const tableColumns = [
+  { prop: "courseCid", label: "课程编号", width: "120" },
+  { prop: "courseType", label: "课程类型", width: "150" },
+  { prop: "courseName", label: "课程名称", width: "120" },
+  { prop: "courseDepartment", label: "课程部门", width: "120" },
+  { prop: "courseCredit", label: "学分", width: "120" },
+  { prop: "capacitySelectedNumber", label: "容量/已选", width: "120" },
+  { prop: "points", label: "投入分数", width: "120" },
+];
+
 const remainingPoints = computed(() => {
   let totalUsedPoints = tableData.value.reduce(
     (acc, course) => acc + course.points,
@@ -44,23 +66,12 @@ const remainingPoints = computed(() => {
 });
 
 const totalCredits = computed(() => {
-  let totalCredit = tableData.value.reduce(
-    (acc, course) => acc + course.courseCredit,
-    0
-  );
-  return totalCredit;
+  return tableData.value.reduce((acc, course) => acc + course.courseCredit, 0);
 });
-
-const tableData = ref([]);
-const tableColumns = [
-  { prop: "courseType", label: "课程类型", width: "150" },
-  { prop: "courseName", label: "课程名称", width: "120" },
-  { prop: "courseID", label: "课程代码", width: "120" },
-  { prop: "courseCredit", label: "学分", width: "120" },
-  { prop: "courseInformation", label: "课程信息", width: "120" },
-  { prop: "capacitySelectedNumber", label: "容量/已选", width: "120" },
-  { prop: "points", label: "投入分数", width: "120" },
-];
+const store = useStore();
+watch(remainingPoints, (newValue) => {
+  store.commit("setRemainingPoints", newValue);
+});
 
 const dialogVisible = ref(false);
 const fetchData = async () => {
@@ -69,13 +80,13 @@ const fetchData = async () => {
       const response = await ReturnSelectedCourse();
       console.log("response:", response.data);
       tableData.value = response.data.map((item) => ({
+        courseCid: item.cid,
         courseType: item.type,
-        courseName: item.name,
-        courseID: item.CID,
+        courseName: `${item.name}`,
         courseCredit: item.credit,
-        courseInformation: `${item.professor_name}; ${item.location}; ${item.time}`,
+        courseDepartment: item.department.name,
         capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
-        points: item.points,
+        points: item.score,
       }));
     } catch (error) {
       console.error("Failed to fetch data:", error);
@@ -88,11 +99,31 @@ async function OpenDialog() {
   await fetchData();
 }
 
-function DeleteCourse() {
-  console.log("Delete course");
+async function DeleteCourse(courseCid) {
+  try {
+    // 调用 API 删除课程
+    console.log("Deleting course:", courseCid);
+    const response = await DeleteSelectedCourseByCourseId(courseCid);
+    console.log("Deleted course response:", response);
+
+    // 从本地状态移除已删除的课程
+    tableData.value = tableData.value.filter(
+      (course) => course.courseCid !== courseCid
+    );
+    ElMessage.success("Course deleted successfully!");
+
+    // 可选：更新 Vuex state，如果需要
+    store.commit("updateCreditsAndPoints");
+  } catch (error) {
+    console.error("Failed to delete course:", error);
+    ElMessage.error("Failed to delete course!");
+  }
 }
 </script>
 
-<style scoped>
-/* 对话框样式 */
+<style scoped lang="scss">
+@import "@/style/mixin.scss";
+.showSelectedCourse {
+  @include block_bg_color();
+}
 </style>

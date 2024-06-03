@@ -4,6 +4,7 @@ import { createStore } from "vuex";
 import userStore from "@/store/modules/user";
 // 布局相关的store
 import layoutStore from "@/store/modules/layout";
+import courseStore from "@/store/modules/course";
 // import courseStore from "@/store/modules/course";
 // 预约相关的store
 import reservationStore from "@/store/modules/reservation";
@@ -19,5 +20,6 @@ export default createStore({
     layoutStore,
     evalStore,
     reservationStore,
+    courseStore,
   },
 });
