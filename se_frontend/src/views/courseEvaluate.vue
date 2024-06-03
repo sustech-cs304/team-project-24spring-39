@@ -10,9 +10,7 @@ import RatingComponent from "../component/Evaluate/RatingComponent.vue";
       <el-container>
         <el-scrollbar height="100%">
           <div style="width: 220px">
-            <div style="text-align: center; margin-top: 30px; font-size: 18px">
-              已选课程
-            </div>
+            <div class="left-title">已选课程</div>
             <CourseList style="height: 100%" />
           </div>
         </el-scrollbar>
@@ -52,6 +50,14 @@ html {
   @include block_bg_color();
 }
 
+.left-title {
+  font-size: 20px;
+  color: var(--el-color-primary); /* 使用 Element Plus 的主颜色 */
+  font-weight: bold; /* 将字体加粗 */
+  text-align: center;
+  margin-top: 30px;
+}
+
 .main-container {
   //background-color: #e9eef3;
   //color: #333;
@@ -68,10 +74,12 @@ html {
   .courseInfo {
     width: 80%;
     @include block_bg_color();
+    @include text_color();
   }
 
   .rating-container {
     @include block_bg_color();
+    @include text_color();
     width: 80%;
     display: flex;
     justify-content: center;

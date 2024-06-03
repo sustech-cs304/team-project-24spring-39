@@ -38,11 +38,10 @@ function selectCourse(course) {
   height: 50px;
   background: var(--el-color-primary-light-9);
   margin: 10px;
-  color: var(--el-color-primary);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-  color: rgb(0, 0, 103);
-  border: 1px solid #cfcfcf; /* 添加边框 */
-  border-radius: 10px; /* 设置边框为圆角 */
+  font-size: 16px;
+  color: var(--el-color-primary); /* 使用 Element Plus 的主颜色 */
+  font-weight: bold; /* 将字体加粗 */
 }
 .infinite-list .infinite-list-item + .list-item {
   margin-top: 10px;

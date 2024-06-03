@@ -118,7 +118,8 @@ const submitComment = async () => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "@/style/mixin.scss";
 .scrollbar-demo-item {
   padding: 10px;
   margin: 5px 0;
@@ -146,7 +147,7 @@ const submitComment = async () => {
 }
 
 .background {
-  background: white;
+  @include block_bg_color();
   margin: 20px;
   height: 690px;
 }
