@@ -1,5 +1,7 @@
 package com.example.cs304.repository;
 
+import com.example.cs304.dto.CourseDTO;
+import com.example.cs304.dto.StudentDTO;
 import com.example.cs304.entity.Course;
 import com.example.cs304.entity.CourseStudent;
 import com.example.cs304.response.Response;
@@ -38,10 +40,10 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     void dropCourse(@Param("courseId") String courseId, @Param("studentId") String studentId);
 
 
-    @Query(value = "select s.sid, s.name, cs.score\n" +
-            "from student s left join course_student cs on s.sid = cs.student_id\n" +
-            "where cs.course_id = ?;", nativeQuery = true)
-    List<Map<String, Object>> findStudentsInCourse(String CID);
+//    @Query(value = "select s.sid, s.name, cs.score\n" +
+//            "from student s left join course_student cs on s.sid = cs.student_id\n" +
+//            "where cs.course_id = ?;", nativeQuery = true)
+//    List<CourseDTO> findStudentsInCourse(String CID);
 
     @Query(value = "select * from course where type like '%必修课%';", nativeQuery = true)
     List<Course> findObligatoryCourses();
@@ -52,7 +54,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 //    @Query(value = "select * from course where type like :type", nativeQuery = true)
 //    List<Course> findCourseType(@Param("type") String type);
 
-    @Query(value = "select * from course where CID in (select course_id from course_student where student_id = :SID and valid = true)", nativeQuery = true)
+    @Query(value = "select * from course where CID in (select course_id from course_student where student_id = :SID and judged = false)", nativeQuery = true)
     List<Course> findSelectedCourses(String SID);
 
     @Transactional
@@ -64,9 +66,9 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Transactional
     @Modifying
-    @Query(value = "insert into course (name, CID, semester, type, department, credit, hours, capacity, location, description, time) " +
-            "values (:name, :CID, :semester, :type, :department, :credit, :hours, :capacity, :location, :description, :time)", nativeQuery = true)
-    void addCourse(@Param("name") String name, @Param("CID") String CID, @Param("semester") String semester, @Param("type") String type,
+    @Query(value = "insert into course (name, CID, type, department, credit, hours, capacity, location, description, time) " +
+            "values (:name, :CID, :type, :department, :credit, :hours, :capacity, :location, :description, :time)", nativeQuery = true)
+    void addCourse(@Param("name") String name, @Param("CID") String CID,  @Param("type") String type,
                    @Param("department") String department, @Param("credit") Integer credit,  @Param("hours") Integer hours, @Param("capacity") Integer capacity,
                    @Param("location") String location, @Param("description") String description, @Param("time") String time
                    );
@@ -90,8 +92,52 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     @Query(value = "SELECT COUNT(*) FROM course_student WHERE course_id = :course_id and student_id = :student_id", nativeQuery = true)
     Integer countCourseStudent(@Param("course_id") String course_id,@Param("student_id") String student_id);
 
-//    @Modifying
-//    @Transactional
-//    @Query(value = "update ", nativeQuery = true)
-//    void findByCID(@Param("CID") String CID);
+    @Modifying
+    @Transactional
+    @Query(value = "update end_state set status = not status", nativeQuery = true)
+    void endCourseSelection();
+
+    @Query(value = "select * from end_state", nativeQuery = true)
+    Boolean getCourseSelectionStatus();
+
+    Course findByCid(String CID);
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE course_student cs\n" +
+            "JOIN course c ON cs.course_id = c.CID\n" +
+            "SET cs.valid = 1\n" +
+            "WHERE c.selected <= c.capacity", nativeQuery = true)
+    void updateUnderCapacityCourses();
+
+    @Modifying
+    @Transactional
+    @Query(value = "UPDATE course_student cs\n" +
+            "JOIN (\n" +
+            "    SELECT cs.id, cs.course_id, cs.student_id, cs.score,\n" +
+            "           ROW_NUMBER() OVER (PARTITION BY cs.course_id ORDER BY cs.score DESC, cs.id ASC) AS rn\n" +
+            "    FROM course_student cs\n" +
+            "    JOIN course c ON cs.course_id = c.CID\n" +
+            "    WHERE c.selected > c.capacity\n" +
+            ") tvs ON cs.id = tvs.id\n" +
+            "JOIN course c ON cs.course_id = c.CID\n" +
+            "SET cs.valid = 1\n" +
+            "WHERE tvs.rn <= c.capacity;", nativeQuery = true)
+    void updateOverCapacityCourses();
+
+    @Modifying
+    @Transactional
+    @Query(value = "delete from course_student where valid = 0", nativeQuery = true)
+    void clearUnValid();
+
+    @Modifying
+    @Transactional
+    @Query(value = "update course_student set score = :score " +
+            "where course_id = :course_id and student_id = :student_id", nativeQuery = true)
+    void updateScore(@Param("course_id") String course_id,@Param("student_id") String student_id, @Param("score") int score);
+
+    @Query(value = "select score from course_student " +
+            "where course_id = :course_id and student_id = :student_id", nativeQuery = true)
+    Integer findOldScore(@Param("course_id") String course_id,@Param("student_id") String student_id);
+
 }

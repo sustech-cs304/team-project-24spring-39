@@ -25,11 +25,16 @@ public class EvaluationController {
 
     @PostMapping("/add_evaluation")
     @Transactional
-    public Response<?> addEvaluation(@RequestParam("course_id") String course_id, @RequestHeader String Authorization,
-                                  @RequestParam("rate") int rate, @RequestParam("difficulty") String difficulty,
-                                  @RequestParam("workload") String workload, @RequestParam("grading") String grading,
-                                  @RequestParam("gain") String gain, @RequestParam("description") String description) {
+    public Response<?> addEvaluation(@RequestHeader String Authorization,
+                                     @RequestBody Map<String, Object> requestBody) {
         String student_id = jwtTokenProvider.getUsername(Authorization);
+        String course_id = (String) requestBody.get("course_id");
+        int rate = (int) requestBody.get("rate");
+        int difficulty = (int) requestBody.get("difficulty");
+        int workload = (int) requestBody.get("workload");
+        int grading = (int) requestBody.get("grading");
+        int gain = (int) requestBody.get("gains");
+        String description = (String) requestBody.get("description");
         evaluationRepository.addEvaluation(course_id, student_id, rate, difficulty, workload, grading, gain, description);
         csRepository.changeJudged(course_id, student_id);
         return Response.success(null);

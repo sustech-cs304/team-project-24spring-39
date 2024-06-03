@@ -21,8 +21,4 @@ public class Department {
 
     @Column(name = "name", nullable = false, length = 50)
     private String name;
-
-    @OneToMany(mappedBy = "department")
-    private List<Course> courses;
-
 }

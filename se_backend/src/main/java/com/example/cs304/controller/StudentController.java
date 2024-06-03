@@ -22,15 +22,15 @@ public class StudentController {
     private final StudentRepository studentRepository;
     private final JwtTokenProvider jwtTokenProvider;
     @GetMapping("/{SID}")
-    public ResponseEntity<List<Map<String, Object>>> getStudents(@PathVariable("SID") String SID) {
+    public Response<?> getStudentCourses(@PathVariable("SID") String SID) {
         List<Map<String, Object>> courses = studentRepository.findCourses(SID);
-        return ResponseEntity.ok(courses);
+        return Response.success(courses);
     }
 
-    @GetMapping("/{SID}/info")
-    public ResponseEntity<List<Map<String, Object>>> studentInfo(@PathVariable("SID") String SID) {
+    @GetMapping("/student_info")
+    public Response<?> studentInfo(@RequestParam("SID") String SID) {
         List<Map<String, Object>> studentInfo = studentRepository.studentInfo(SID);
-        return ResponseEntity.ok(studentInfo);
+        return Response.success(studentInfo);
     }
 
     @PostMapping("/update_avatar")

@@ -27,9 +27,9 @@ public class SelectedCourse {
     @Column(name = "type", nullable = false)
     private String type;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "department", nullable = false, referencedColumnName = "name")
-    private Department department;
+//    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+//    @JoinColumn(name = "department", nullable = false, referencedColumnName = "name")
+    private String department;
 
     @Column(name = "credit", nullable = false)
     private Integer credit;
@@ -127,11 +127,11 @@ public class SelectedCourse {
         this.type = type;
     }
 
-    public Department getDepartment() {
+    public String getDepartment() {
         return department;
     }
 
-    public void setDepartment(Department department) {
+    public void setDepartment(String department) {
         this.department = department;
     }
 

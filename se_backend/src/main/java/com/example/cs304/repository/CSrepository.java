@@ -16,7 +16,7 @@ public interface CSrepository extends JpaRepository<CourseStudent, Integer> {
             "WHERE course_id = :course_id AND student_id = :student_id", nativeQuery = true)
     void changeJudged(String course_id, String student_id);
 
-    @Query(value="select * from course_student where student_id = ? and valid = false;",nativeQuery = true)
+    @Query(value="select * from course_student where student_id = ?",nativeQuery = true)
     List<CourseStudent> findTakenCourses(String SID);
 
     @Query("SELECT cs FROM CourseStudent cs WHERE cs.course.id = :courseId AND cs.student.id = :studentId")

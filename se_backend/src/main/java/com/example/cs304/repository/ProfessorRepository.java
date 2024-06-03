@@ -9,4 +9,6 @@ import java.util.List;
 public interface ProfessorRepository extends JpaRepository<Professor, Integer> {
     @Query(value = "select p from Professor p where (:PID is null or p.pid = :PID)")
     List<Professor> findByCondition(String PID);
+
+    Professor findByName(String name);
 }

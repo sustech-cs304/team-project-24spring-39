@@ -41,10 +41,9 @@ public class ReservationController {
 //        return ResponseEntity.ok(reservations);
 //    }
     @GetMapping("/search-student")
-    public Response<?> getReservations(@RequestHeader String Authorization) {
-        String student_id = jwtTokenProvider.getUsername(Authorization);
-        List<Map<String, Object>> students = studentRepository.findnameBysid(student_id);
-        return Response.success(students);
+    public Response<?> getReservations(@RequestParam String student_id) {
+        Student student = studentRepository.findBySid(student_id);
+        return Response.success(student);
     }
 
 //    @GetMapping("/room/{room}")
@@ -160,21 +159,28 @@ public class ReservationController {
         return Response.success(null);
     }
 
-    @PostMapping("/update_building_status")
+    @PostMapping("/update_building")
     public Response<?> updateBuildingStatus(@RequestParam("name") String name,
                                          @RequestParam("status") String status) {
         buildingRepository.updateBuildingStatus(name, status);
         return Response.success(null);
     }
 
-    @PostMapping("/update_room_status")
-    public Response<?> updateRoomStatus(@RequestParam("room_id") int room_id,
-                                     @RequestParam("status") String status) {
+    @PostMapping("/update_room")
+    public Response<?> updateRoomStatus(@RequestParam(value = "room_id",required = false) int room_id,
+                                     @RequestParam(value = "status",required = false) String status,
+                                    @RequestParam(value = "capacity",required = false) Integer capacity) {
         Room room = roomRepository.findById(room_id).get();
+        if (capacity != null) {
+            buildingRepository.addBuidingCapacity(capacity - room.getCapacity(), room.getPlace());
+            room.setCapacity(capacity);
+        }
         room.setStatus(status);
         roomRepository.save(room);
         return Response.success(null);
     }
+
+
 
 
 }

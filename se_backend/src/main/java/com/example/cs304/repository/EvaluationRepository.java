@@ -10,5 +10,5 @@ public interface EvaluationRepository extends JpaRepository<Rate, Integer> {
     @Query(value = "insert into " +
             "rate (course_id, student_id, rate, difficulty, workload, grading, gain, description) " +
             "values (:course_id, :student_id, :rate, :difficulty, :workload, :grading, :gain, :description)", nativeQuery = true)
-    public void addEvaluation(String course_id, String student_id, int rate, String difficulty, String workload, String grading, String gain, String description);
+    public void addEvaluation(String course_id, String student_id, int rate, int difficulty, int workload, int grading, int gain, String description);
 }

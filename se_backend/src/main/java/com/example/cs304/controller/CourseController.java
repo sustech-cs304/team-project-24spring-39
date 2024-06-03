@@ -3,7 +3,9 @@ package com.example.cs304.controller;
 
 import ch.qos.logback.core.net.SMTPAppenderBase;
 import com.example.cs304.converter.JwtTokenProvider;
+import com.example.cs304.dto.CourseDTO;
 import com.example.cs304.dto.SelectedCourse;
+import com.example.cs304.dto.StudentDTO;
 import com.example.cs304.entity.*;
 import com.example.cs304.repository.*;
 import com.example.cs304.response.Response;
@@ -33,29 +35,30 @@ public class CourseController {
     private final CourseRepository courseRepository;
     private final ProfessorRepository professorRepository;
     private final RateRepository rateRepository;
-    @Autowired
     private final CSrepository csRepository;
     @PersistenceContext
     private EntityManager entityManager;
-    @Autowired
     private CourseService courseService;
     private CPrepository cpRepository;
     private JwtTokenProvider jwtTokenProvider;
-    @Autowired
     private StudentRepository studentRepository;
+    private StudentDTORepository studentDTORepository;
+
 
 
     @PostMapping("/admin_add_course")
-    public Response<?> addCourse(@RequestParam("name") String name, @RequestParam("CID") String CID, @RequestParam("semester") String semester,
+    public Response<?> addCourse(@RequestParam("name") String name, @RequestParam("CID") String CID,
                               @RequestParam("type") String type, @RequestParam("department") String department, @RequestParam("credit") Integer credit,
                               @RequestParam("hours") Integer hours, @RequestParam("capacity") Integer capacity,
                               @RequestParam("location") String location, @RequestParam("description") String description, @RequestParam("time") List<String> time,
-                              @RequestParam("professorIds") List<String> professorIds) throws JsonProcessingException {
+                              @RequestParam("professorNames") List<String> professorNames) throws JsonProcessingException {
         ObjectMapper objectMapper = new ObjectMapper();
         String timeJson = objectMapper.writeValueAsString(time);
-        courseRepository.addCourse(name, CID, semester, type, department, credit, hours, capacity, location, description, timeJson);
+        courseRepository.addCourse(name, CID, type, department, credit, hours, capacity, location, description, timeJson);
         String courseId = CID;
-        for (String professorId : professorIds) {
+        for (String professorName : professorNames) {
+            Professor professor = professorRepository.findByName(professorName);
+            String professorId = professor.getPid();
             cpRepository.addCourseProfessor(courseId, professorId);
         }
         return Response.success(null);
@@ -80,32 +83,54 @@ public class CourseController {
     }
 
     @PostMapping("/add_course")
-    public Response<?> selectCourse(@RequestParam String course_id, @RequestParam String student_id, @RequestParam int score) {
-            int count = courseRepository.countCourseStudent(course_id, student_id);
-            if (count > 0) {
-
-                return Response.success(null);
-            }
-            courseRepository.selectCourse(course_id, student_id, score);
-            courseRepository.addCourseSelected(course_id);
+    public Response<?> selectCourse(@RequestParam String course_id, @RequestHeader String Authorization, @RequestParam int score) {
+        String student_id = jwtTokenProvider.getUsername(Authorization);
+        int count = courseRepository.countCourseStudent(course_id, student_id);
+        if (count > 0) {
+            courseRepository.updateScore(course_id, student_id, score);
+            int oldScore = courseRepository.findOldScore(course_id, student_id);
             Student student = studentRepository.findBySid(student_id);
-            student.setScore(student.getScore() - score);
-            return Response.success(null);
+            int newScore = student.getScore() - score + oldScore;
+            student.setScore(newScore);
+            studentRepository.save(student);
+            return Response.success(newScore);
+        }
+        courseRepository.selectCourse(course_id, student_id, score);
+        courseRepository.addCourseSelected(course_id);
+        Student student = studentRepository.findBySid(student_id);
+        int newScore = student.getScore() - score;
+        student.setScore(newScore);
+        studentRepository.save(student);
+        return Response.success(newScore);
     }
 
     @Modifying
     @DeleteMapping("/delete_selected_course")
     public Response<?> dropCourse(@RequestParam String course_id, @RequestHeader String Authorization) {
         String student_id = jwtTokenProvider.getUsername(Authorization);
+        int oldScore = courseRepository.findOldScore(course_id, student_id);
         courseService.dropCourse(course_id, student_id);
-            return Response.success(null);
+        Student student = studentRepository.findBySid(student_id);
+        int newScore = student.getScore() + oldScore;
+        student.setScore(newScore);
+        studentRepository.save(student);
+        return Response.success(newScore);
     }
 
     //    @GetMapping("/selected_students")
     @GetMapping("/show_selected_students")
     public Response<?> findStudentsInCourse(@RequestParam("CID") String CID) {
-        List<Map<String, Object>> students = courseRepository.findStudentsInCourse(CID);
-        return Response.success(students);
+        List<StudentDTO> studentDTOS = studentDTORepository.findStudentsInCourse(CID);
+        Course course = courseRepository.findByCid(CID);
+
+        CourseDTO courseDTO = new CourseDTO();
+        courseDTO.setCID(course.getCid());
+        courseDTO.setCouseName(course.getName());
+        courseDTO.setCapacity(course.getCapacity());
+        courseDTO.setSelected(course.getSelected());
+        courseDTO.setStudents(studentDTOS);
+        return Response.success(courseDTO);
+
     }
 
 //    @GetMapping("/get_course/bixiu")
@@ -198,6 +223,24 @@ public class CourseController {
         return Response.success(courses);
     }
 
-//    @PostMapping("/end-course-selection")
+    @PostMapping("/end_course_selection")
+    public Response<?> endCourseSelection() {
+        courseRepository.endCourseSelection();
+        return Response.success(null);
+    }
+
+    @GetMapping("/get_course_selection")
+    public Response<?> getCourseSelection() {
+        Boolean courses = courseRepository.getCourseSelectionStatus();
+        return Response.success(courses);
+    }
+
+    @PostMapping("/update_selection")
+    public Response<?> updateSelection() {
+        courseRepository.updateUnderCapacityCourses();
+        courseRepository.updateOverCapacityCourses();
+        courseRepository.clearUnValid();
+        return Response.success(null);
+    }
 
 }
