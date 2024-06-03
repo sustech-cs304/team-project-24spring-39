@@ -23,6 +23,7 @@ export default {
     courseForum: "Course Forum",
     locationManagement: "Location Management",
     recordManagement: "Record Management",
+    postShow: "Post Show",
   },
 
   // 全屏

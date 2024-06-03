@@ -189,32 +189,7 @@ export default {
             title: t("roomReservation"),
             icon: "Clock",
             url: "/reservation",
-            children: [
-              {
-                id: 8,
-                pid: 4,
-                title: t("reservation"),
-                icon: "",
-                url: "/reservation",
-                children: null,
-              },
-              {
-                id: 9,
-                pid: 4,
-                title: t("locationManagement"),
-                icon: "",
-                url: "/reservation-locations",
-                children: null,
-              },
-              {
-                id: 10,
-                pid: 4,
-                title: t("recordManagement"),
-                icon: "",
-                url: "/reservation-records",
-                children: null,
-              },
-            ],
+            children: null,
           },
         ];
       } else {

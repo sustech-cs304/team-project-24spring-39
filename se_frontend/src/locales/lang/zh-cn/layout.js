@@ -23,6 +23,7 @@ export default {
     courseForum: "课程论坛",
     locationManagement: "地点管理",
     recordManagement: "记录管理",
+    postShow: "帖子详情",
   },
 
   // 全屏

@@ -43,6 +43,13 @@ export default [
   {
     path: "/post/:id",
     name: "postShow",
+    meta: {
+      title: getTranslation("breadcrumbs.postShow"),
+      breadcrumb: [
+        getTranslation("breadcrumbs.courseForum"),
+        getTranslation("breadcrumbs.postShow"),
+      ],
+    },
     component: () => import("@/views/postShow.vue"),
     props: true,
   },
