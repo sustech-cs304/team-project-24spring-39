@@ -34,7 +34,7 @@ export function createPostInside(payLoad) {
 }
 
 export function deletePostInside(postID) {
-  const url = "/forum/delete/" + String(postID);
+  const url = "/forum/delete_post/" + String(postID);
   return request({
     method: "delete",
     url: url,

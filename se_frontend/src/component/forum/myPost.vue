@@ -15,7 +15,7 @@
         <h3 class="card-title">{{ post.title }}</h3>
         <el-button
           type="danger"
-          icon="el-icon-delete"
+          icon="Delete"
           circle
           size="small"
           @click.stop="confirmDelete(post.id)"
