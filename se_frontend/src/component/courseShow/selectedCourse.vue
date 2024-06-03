@@ -1,13 +1,13 @@
 <template>
   <div class="selectedCourse">
-    <el-row style="margin-top: 10px" gutter="20px">
-      <el-col :span="6">
+    <el-row gutter="20px" class="center-vertical">
+      <el-col :span="6" class="center-vertical">
         <el-text>已选学分：{{ totalCredits }}</el-text>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="6" class="center-vertical">
         <el-text>剩余分数：{{ remainingPoints }}</el-text>
       </el-col>
-      <el-col :span="6">
+      <el-col :span="6" class="center-vertical">
         <el-button plain @click="OpenDialog">查看已选课程</el-button>
       </el-col>
     </el-row>
@@ -177,7 +177,13 @@ async function DeleteCourse(courseCid) {
 
 <style scoped lang="scss">
 @import "@/style/mixin.scss";
-.showSelectedCourse {
-  @include block_bg_color();
+//.selectedCourse {
+//  padding: 10px;
+//  margin-top: 10px;
+//  @include block_bg_color();
+//}
+.center-vertical {
+  display: flex;
+  align-items: center;
 }
 </style>

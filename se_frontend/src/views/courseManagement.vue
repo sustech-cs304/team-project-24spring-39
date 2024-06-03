@@ -60,7 +60,7 @@
   </div>
 
   <!-- 默认表格 -->
-  <div v-if="!isQueried">
+  <div class="body">
     <el-table :data="activeData" style="width: 100%" max-height="550">
       <el-table-column
         v-for="column in defaultTableColumns"
@@ -84,8 +84,6 @@
       </el-table-column>
     </el-table>
   </div>
-  <!-- 查询后的表格 -->
-  <div v-else></div>
   <div class="demo-pagination-block">
     <el-pagination
       v-model:current-page="currentPage4"
@@ -551,6 +549,11 @@ async function handleEnd() {
   .spacer {
     flex-grow: 1;
   }
+}
+
+.body {
+  margin-top: 12px;
+  overflow: auto; /* 超出部分显示滚动条 */
 }
 
 .demo-pagination-block {

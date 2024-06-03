@@ -275,6 +275,7 @@ export default {
         // 3. 设置菜单列表
         state.isAdmin = !res.data.SID;
         dispatch("loadMenuList");
+        dispatch("loadAsyncRoute");
 
         // 4. 跳转到首页
         await router.push("/");

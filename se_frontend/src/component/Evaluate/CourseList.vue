@@ -1,5 +1,5 @@
 <template>
-  <ul class="infinite-list" style="overflow: auto">
+  <ul class="infinite-list">
     <li
       v-for="course in courses"
       :key="course.id"
@@ -27,8 +27,8 @@ function selectCourse(course) {
 <style scoped>
 .infinite-list {
   height: 60%;
-  padding: 0;
-  margin: 40;
+  padding: 5px;
+  //margin: 40px;
   list-style: none;
 }
 .infinite-list .infinite-list-item {

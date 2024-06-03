@@ -105,8 +105,11 @@ const submitData = async () => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "@/style/mixin.scss";
 .radio-container {
+  //@include block_bg_color();
+  //width: 100%;
   display: flex;
   flex-direction: column;
 }

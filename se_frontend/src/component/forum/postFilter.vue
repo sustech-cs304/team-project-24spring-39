@@ -1,6 +1,6 @@
 <template>
   <el-form :inline="true" :model="formInline" class="demo-form-inline">
-    <el-form-item label="专业：">
+    <el-form-item label="专业：" class="center-item">
       <el-select
         v-model="formInline.major"
         placeholder="选择"
@@ -16,7 +16,7 @@
         />
       </el-select>
     </el-form-item>
-    <el-form-item label="课程：">
+    <el-form-item label="课程：" class="center-item">
       <el-select
         v-model="formInline.course"
         placeholder="选择"
@@ -31,7 +31,9 @@
         />
       </el-select>
     </el-form-item>
-    <el-form-item>
+    <!-- 自动扩展的空白元素 -->
+    <div class="spacer"></div>
+    <el-form-item class="center-item">
       <el-button type="primary" @click="onSubmit">查询</el-button>
     </el-form-item>
   </el-form>
@@ -78,8 +80,27 @@ const onSubmit = async () => {
 };
 </script>
 
-<style>
+<style scoped lang="scss">
+@import "@/style/mixin.scss";
 .demo-form-inline .el-select {
   --el-select-width: 170px;
+}
+
+.demo-form-inline {
+  @include block_bg_color();
+  display: flex;
+  align-items: center;
+  gap: 20px; /* 可选：添加间距 */
+  padding: 12px;
+
+  .spacer {
+    flex: 1;
+  }
+}
+
+.center-item {
+  margin: 0;
+  display: flex;
+  align-items: center;
 }
 </style>

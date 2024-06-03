@@ -60,63 +60,65 @@
     <div class="showSelectedCourse">
       <selected-course :state="state" />
     </div>
-    <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-      <el-tab-pane
-        v-for="title in titles"
-        :key="title.id"
-        :label="title.label"
-        :name="title.name"
-        v-show="activeTab === title.name"
-      >
-        <template #label>
-          <div :style="{ color: title.color }">{{ title.label }}</div>
-        </template>
-        <!-- 这里根据 activeTab 显示对应的数据 -->
-        <el-table :data="tableData" style="width: 100%" max-height="400">
-          <el-table-column
-            v-for="column in tableColumns"
-            :key="column.prop"
-            :prop="column.prop"
-            :label="column.label"
-            :width="column.width"
-          />
-          <el-table-column fixed="right" label="Operations">
-            <template #default="scope">
-              <el-form :inline="true" :model="scope.row" width="130px">
-                <el-form-item>
-                  <el-input
-                    v-model="scope.row.score"
-                    placeholder="投入分数"
-                    width="100px"
-                    clearable
-                  />
-                  <el-button
-                    type="primary"
-                    @click="HandleAdd(scope.row)"
-                    width="30px"
-                    >Add
-                  </el-button>
-                </el-form-item>
-              </el-form>
-            </template>
-          </el-table-column>
-        </el-table>
-        <div class="demo-pagination-block">
-          <el-pagination
-            v-model:current-page="currentPage4"
-            v-model:page-size="pageSize4"
-            :page-sizes="[25, 50, 75, 100]"
-            :small="small"
-            :disabled="disabled"
-            :background="background"
-            layout="total, sizes, prev, pager, next, jumper"
-            :total="totalItems"
-            @size-change="handleSizeChange"
-            @current-change="handleCurrentChange"
-          />
-        </div>
-      </el-tab-pane>
-    </el-tabs>
+    <div class="body">
+      <el-tabs v-model="activeTab" @tab-click="handleTabClick">
+        <el-tab-pane
+          v-for="title in titles"
+          :key="title.id"
+          :label="title.label"
+          :name="title.name"
+          v-show="activeTab === title.name"
+        >
+          <template #label>
+            <div :style="{ color: title.color }">{{ title.label }}</div>
+          </template>
+          <!-- 这里根据 activeTab 显示对应的数据 -->
+          <el-table :data="tableData" style="width: 100%" max-height="400">
+            <el-table-column
+              v-for="column in tableColumns"
+              :key="column.prop"
+              :prop="column.prop"
+              :label="column.label"
+              :width="column.width"
+            />
+            <el-table-column fixed="right" label="Operations">
+              <template #default="scope">
+                <el-form :inline="true" :model="scope.row" width="130px">
+                  <el-form-item>
+                    <el-input
+                      v-model="scope.row.score"
+                      placeholder="投入分数"
+                      width="100px"
+                      clearable
+                    />
+                    <el-button
+                      type="primary"
+                      @click="HandleAdd(scope.row)"
+                      width="30px"
+                      >Add
+                    </el-button>
+                  </el-form-item>
+                </el-form>
+              </template>
+            </el-table-column>
+          </el-table>
+          <div class="demo-pagination-block">
+            <el-pagination
+              v-model:current-page="currentPage4"
+              v-model:page-size="pageSize4"
+              :page-sizes="[25, 50, 75, 100]"
+              :small="small"
+              :disabled="disabled"
+              :background="background"
+              layout="total, sizes, prev, pager, next, jumper"
+              :total="totalItems"
+              @size-change="handleSizeChange"
+              @current-change="handleCurrentChange"
+            />
+          </div>
+        </el-tab-pane>
+      </el-tabs>
+    </div>
   </div>
 </template>
 
@@ -362,7 +364,16 @@ async function HandleQuery() {
     flex-grow: 1;
   }
 }
+
 .showSelectedCourse {
+  @include block_bg_color();
+  padding: 10px;
+  margin-top: 16px;
+}
+
+.body {
+  @include block_bg_color();
+  padding: 10px;
   margin-top: 16px;
 }
 </style>

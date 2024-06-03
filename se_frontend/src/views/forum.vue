@@ -22,17 +22,19 @@ onMounted(async () => {
 });
 </script>
 
-<style scoped>
+<style scoped lang="scss">
+@import "@/style/mixin.scss";
 .container {
   display: flex;
   gap: 20px; /* 可选：添加间距 */
+  //height: 617.6px; // 固定main-page为除去header的高度
 }
 
 .left-column {
   flex: 1; /* 左侧占据2份空间 */
   display: flex;
   flex-direction: column;
-  gap: 20px; /* 可选：组件之间的间距 */
+  //gap: 20px; /* 可选：组件之间的间距 */
 }
 
 .right-column {

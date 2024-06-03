@@ -1,10 +1,10 @@
 <template>
   <el-row class="header-row">
-    <span>我的发布</span>
+    <span class="header-title">我的发布</span>
     <el-button type="primary" @click="dialogVisible = true">+</el-button>
   </el-row>
 
-  <el-scrollbar height="100%">
+  <el-scrollbar height="80vh">
     <el-card
       v-for="post in posts"
       :key="post.id"
@@ -188,6 +188,12 @@ const onCourseChange = () => {
   display: flex;
   justify-content: space-between;
   align-items: center;
+}
+
+.header-title {
+  font-size: 20px;
+  color: var(--el-color-primary); /* 使用 Element Plus 的主颜色 */
+  font-weight: bold; /* 将字体加粗 */
 }
 
 .scrollbar-demo-item {

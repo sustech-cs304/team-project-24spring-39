@@ -8,24 +8,25 @@ import RatingComponent from "../component/Evaluate/RatingComponent.vue";
   <div id="app">
     <el-container style="height: 100%">
       <el-container>
-        <el-aside width="200px">
-          <div style="text-align: center; margin-top: 30px; font-size: 18px">
-            已选课程
+        <el-scrollbar height="100%">
+          <div style="width: 220px">
+            <div style="text-align: center; margin-top: 30px; font-size: 18px">
+              已选课程
+            </div>
+            <CourseList style="height: 100%" />
           </div>
-          <CourseList />
-        </el-aside>
-        <el-main>
-          <CourseInfo />
-          <div class="rating-container">
-            <RatingComponent />
-          </div>
-        </el-main>
+        </el-scrollbar>
+        <div class="main-container">
+          <CourseInfo class="courseInfo" />
+          <RatingComponent class="rating-container" />
+        </div>
       </el-container>
     </el-container>
   </div>
 </template>
 
-<style scoped>
+<style scoped lang="scss">
+@import "@/style/mixin.scss";
 body,
 html {
   height: 100%;
@@ -45,22 +46,38 @@ html {
   line-height: 80px;
 }
 
-.el-aside {
-  background-color: #d3dce6;
-  color: #333;
+.el-scrollbar {
+  //background-color: #d3dce6;
+  //color: #333;
+  @include block_bg_color();
 }
 
-.el-main {
-  background-color: #e9eef3;
-  color: #333;
-  line-height: 160px;
-}
-
-.rating-container {
+.main-container {
+  //background-color: #e9eef3;
+  //color: #333;
+  //line-height: 160px;
+  // 使子元素水平居中
+  height: 100%;
+  padding: 16px;
+  width: calc(100% - 220px);
   display: flex;
+  flex-direction: column; /* 垂直排列子元素 */
+  align-items: center; /* 水平居中子元素 */
   justify-content: center;
-  align-items: center;
-  height: 70%; /* 或者根据需要调整高度 */
+
+  .courseInfo {
+    width: 80%;
+    @include block_bg_color();
+  }
+
+  .rating-container {
+    @include block_bg_color();
+    width: 80%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 70%; /* 或者根据需要调整高度 */
+  }
 }
 </style>
 

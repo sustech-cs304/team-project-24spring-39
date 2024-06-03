@@ -1,6 +1,6 @@
 <template>
   <div class="forum">
-    <el-scrollbar height="690px">
+    <el-scrollbar height="69vh">
       <Post v-for="post in paginatedPosts" :key="post.id" :post="post" />
     </el-scrollbar>
     <el-pagination
@@ -40,10 +40,10 @@ const handlePageChange = async (page) => {
 };
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .forum {
-  max-width: 800px;
+  max-width: 700px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 16px;
 }
 </style>
