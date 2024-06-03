@@ -18,8 +18,11 @@ D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\exam
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\service\CourseService.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\dto\MessageDTO.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\service\ReservationService.java
+D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\configuration\WebConfig.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Professor.java
+D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\dto\ReservationRequest.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Reply.java
+D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\filter\CORSFilter.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Room.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Admin.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\response\Response.java
@@ -32,13 +35,12 @@ D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\exam
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Department.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\repository\ReplyRepository.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\converter\AliasToEntityLinkedMapTransformer.java
-D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\SelectedCourse.java
+D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\dto\Location.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\repository\PostRepository.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\StudentReservation.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\configuration\SpringSecurityConfig.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Post.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\repository\ProfessorRepository.java
-D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Like.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\File.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Major.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\repository\BuildingRepository.java
@@ -51,7 +53,6 @@ D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\exam
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\service\AdminService.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\repository\ReservationRepository.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\dto\CourseDTO.java
-D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\ReservationRequest.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\filter\JwtAuthenticationFilter.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Reservation.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\controller\ReservationController.java
@@ -63,7 +64,6 @@ D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\exam
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\controller\CourseController.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\repository\RateRepository.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Course.java
-D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\SecondaryReply.java
-D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Location.java
+D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\dto\SelectedCourse.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\entity\Message.java
 D:\SUSTech\Spring 2024\Software Engineer\CS304\se_backend\src\main\java\com\example\cs304\repository\StudentRepository.java

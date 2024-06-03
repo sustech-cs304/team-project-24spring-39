@@ -20,6 +20,7 @@ import java.util.Map;
 import java.util.Optional;
 
 @RestController
+@CrossOrigin
 @RequestMapping("/forum")
 
 public class ForumController {

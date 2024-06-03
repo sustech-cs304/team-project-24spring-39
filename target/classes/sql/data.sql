@@ -38,7 +38,6 @@ INSERT INTO course (id, name, CID, semester, type, department, credit, hours, ca
 INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (2, '大学物理', 'PH001', '秋季学期', '通识必修课', '电子工程', 3, 48, 150, 0, '实验楼B201', '大学物理课程描述', '["Tuesday 08:00-09:50 odd", "Thursday 08:00-09:50 odd"]');
 INSERT INTO course (id, name, CID, semester, type, department, credit, hours, capacity, selected, location, description, time) VALUES (4, '有机化学', 'CH001', '秋季学期', '专业必修课', '化学工程', 4, 64, 100, 0, '化学楼C201', '有机化学基础课程，涵盖有机化合物的基本概念和反应机理', '["Monday 14:00-15:50 both", "Wednesday 08:00-09:50 odd"]');
 
-
 -- course_student
 INSERT INTO course_student (id, course_id, student_id, score, valid) VALUES (1, 'CS001', '12345678', 0, false);
 INSERT INTO course_student (id, course_id, student_id, score, valid) VALUES (2, 'PH001', '87654321', 0, false);
@@ -60,10 +59,6 @@ INSERT INTO room (id, place, name, capacity) VALUES (2, '一丹图书馆', '会�
 INSERT INTO room (id, place, name, capacity) VALUES (3, '涵泳图书馆', '图书馆研讨室', 30);
 
 
--- file
-INSERT INTO file (id, name, filetype, filepath) VALUES (1, '报告.pdf', 'document', '/uploads/12345678/report.pdf');
-INSERT INTO file (id, name, filetype, filepath) VALUES (2, '照片.jpg', 'image', '/uploads/87654321/photo.jpg');
-INSERT INTO file (id, name, filetype, filepath) VALUES (3, '演讲.mp4', 'video', '/uploads/23456789/presentation.mp4');
 
 -- post
 INSERT INTO post (id, author_id, title, content,  major_category, course_category) VALUES (1, '12345678', '软件工程求助', 'project写不完了怎么办', '计算机科学与技术', '软件工程');

@@ -24,6 +24,8 @@ import java.util.Map;
 
 @RestController
 @AllArgsConstructor
+@CrossOrigin
+
 @RequestMapping("/reservation")
 public class ReservationController {
     @PersistenceContext

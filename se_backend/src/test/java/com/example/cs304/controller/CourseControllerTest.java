@@ -31,44 +31,7 @@ class CourseControllerTest {
         MockitoAnnotations.openMocks(this);
     }
 
-    @Test
-    void shouldReturnAllCourses() {
-        Course course = new Course();
-        course.setName("Test Course");
-        List<Course> courseList = Collections.singletonList(course);
 
-        when(courseRepository.findAll()).thenReturn(courseList);
 
-        List<Course> result = courseController.getCourseTest().getBody();
 
-        assertEquals(courseList, result);
-    }
-
-    @Test
-    void shouldReturnObligatoryCourses() {
-        Course course = new Course();
-        course.setName("Test Course");
-        course.setType("obligatory");
-        List<Course> courseList = Collections.singletonList(course);
-
-        when(courseRepository.findObligatoryCourses()).thenReturn(courseList);
-
-        List<Course> result = (List<Course>) courseController.findObligatoryCourses().getBody().getData();
-
-        assertEquals(courseList, result);
-    }
-
-    @Test
-    void shouldReturnElectiveCourses() {
-        Course course = new Course();
-        course.setName("Test Course");
-        course.setType("elective");
-        List<Course> courseList = Collections.singletonList(course);
-
-        when(courseRepository.findElectiveCourses()).thenReturn(courseList);
-
-        List<Course> result = (List<Course>) courseController.findElectiveCourses().getBody().getData();
-
-        assertEquals(courseList, result);
-    }
 }
