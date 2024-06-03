@@ -1,10 +1,15 @@
+import { getTranslation } from "@/locales";
+
 export default [
   {
     path: "/reservation-locations",
     name: "reservationLocations",
     meta: {
-      title: "地点管理",
-      breadcrumb: ["自习室预约", "地点管理"],
+      title: getTranslation("breadcrumbs.locationManagement"),
+      breadcrumb: [
+        getTranslation("breadcrumbs.reservation"),
+        getTranslation("breadcrumbs.locationManagement"),
+      ],
     },
     component: () => import("@/views/LocationsManagement.vue"),
   },
@@ -12,8 +17,11 @@ export default [
     path: "/reservation-records",
     name: "reservationRecords",
     meta: {
-      title: "记录管理",
-      breadcrumb: ["自习室预约", "记录管理"],
+      title: getTranslation("breadcrumbs.recordManagement"),
+      breadcrumb: [
+        getTranslation("breadcrumbs.reservation"),
+        getTranslation("breadcrumbs.recordManagement"),
+      ],
     },
     component: () => import("@/views/RecordsManagement.vue"),
   },

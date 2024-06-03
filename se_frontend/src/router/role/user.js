@@ -1,10 +1,12 @@
+import { getTranslation } from "@/locales";
+
 export default [
   {
     path: "/",
     name: "Home",
     meta: {
-      title: "首页",
-      breadcrumb: ["首页"],
+      title: getTranslation("breadcrumbs.home"),
+      breadcrumb: [getTranslation("breadcrumbs.home")],
     },
     component: () => import("@/views/Home.vue"),
   },
@@ -12,8 +14,11 @@ export default [
     path: "/selection",
     name: "courseSelection",
     meta: {
-      title: "我要选课",
-      breadcrumb: ["选课", "我要选课"],
+      title: getTranslation("breadcrumbs.selectCourse"),
+      breadcrumb: [
+        getTranslation("breadcrumbs.courseSelection"),
+        getTranslation("breadcrumbs.selectCourse"),
+      ],
     },
     component: () => import("@/views/courseSelect.vue"),
   },
@@ -21,8 +26,8 @@ export default [
     path: "/evaluation",
     name: "courseEvaluation",
     meta: {
-      title: "评教",
-      breadcrumb: ["评教"],
+      title: getTranslation("breadcrumbs.evaluate"),
+      breadcrumb: [getTranslation("breadcrumbs.courseEvaluation")],
     },
     component: () => import("@/views/courseEvaluate.vue"),
   },
@@ -30,8 +35,8 @@ export default [
     path: "/forum",
     name: "forum",
     meta: {
-      title: "课程论坛",
-      breadcrumb: ["课程论坛"],
+      title: getTranslation("breadcrumbs.courseForum"),
+      breadcrumb: [getTranslation("breadcrumbs.courseForum")],
     },
     component: () => import("@/views/forum.vue"),
   },
@@ -45,8 +50,8 @@ export default [
     path: "/reservation",
     name: "reservation",
     meta: {
-      title: "自习室预约",
-      breadcrumb: ["自习室预约"],
+      title: getTranslation("breadcrumbs.reservation"),
+      breadcrumb: [getTranslation("breadcrumbs.reservation")],
     },
     component: () => import("@/views/Reservation.vue"),
   },

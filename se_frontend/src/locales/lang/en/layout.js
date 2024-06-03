@@ -10,6 +10,19 @@ export default {
   locationManagement: "Location Management",
   recordManagement: "Record Management",
 
+  breadcrumbs: {
+    home: "Home",
+    courseSelection: "Course Selection",
+    courseEvaluation: "Course Evaluation",
+    forum: "Forum",
+    reservation: "Reservation",
+    selectCourse: "Select Course",
+    evaluate: "Evaluate",
+    courseForum: "Course Forum",
+    locationManagement: "Location Management",
+    recordManagement: "Record Management",
+  },
+
   // 全屏
   fullScreen: "Full Screen",
   exitFullScreen: "Exit Full Screen",
@@ -21,6 +34,9 @@ export default {
   // i18n
   changeLang: "Change Language",
 
+  // UserDropdown.vue
+  personalCenter: "Center",
   changeAvatar: "Change Avatar",
   logout: "Logout",
+  changeAvatarSuccess: "Change avatar success",
 };

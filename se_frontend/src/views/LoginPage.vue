@@ -223,7 +223,7 @@
 import { ref, reactive, toRaw } from "vue";
 import { Avatar, Lock } from "@element-plus/icons-vue";
 import { useStore } from "vuex";
-// import { login } from "@/api/user";
+import { register } from "@/api/user";
 import useMessage from "@/hooks/useMessage";
 import Language from "@/layout/components/Header/component/Language.vue";
 import { useI18n } from "vue-i18n";
@@ -295,9 +295,9 @@ async function handleLogin() {
 const registerFormRef = ref(null);
 // 注册表单数据
 const registerForm = reactive({
-  username: "",
-  password: "",
-  confirmPassword: "",
+  username: "admin",
+  password: "123456",
+  confirmPassword: "123456",
 });
 
 // 注册按钮的加载loading
@@ -330,8 +330,11 @@ async function handleRegister() {
   await registerFormRef.value.validate(async (valid, fields) => {
     if (valid) {
       try {
+        // console.log(registerForm);
+        // console.log(toRaw(registerForm));
         // 在此添加你的注册逻辑，例如通过vuex发送网络请求
-        const res = await store.dispatch("handleRegister", toRaw(registerForm));
+        // const res = await store.dispatch("handleRegister", toRaw(registerForm));
+        const res = await register(toRaw(registerForm));
         console.log("注册成功: " + res);
       } catch (error) {
         console.log("注册失败: ", error);

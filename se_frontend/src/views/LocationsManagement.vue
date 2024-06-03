@@ -22,76 +22,76 @@ const searchLibrary = ref("");
 const searchMin = ref(null);
 const searchMax = ref(null);
 
-// const tableData = ref([
-//   {
-//     id: 1,
-//     name: "一丹图书馆",
-//     createTime: "2021-09-01",
-//     capacity: 5,
-//     children: [
-//       {
-//         id: 11,
-//         name: "一楼",
-//         createTime: "2021-09-01",
-//         capacity: 5,
-//       },
-//       {
-//         id: 12,
-//         name: "二楼",
-//         createTime: "2021-09-01",
-//         capacity: 5,
-//       },
-//     ],
-//   },
-//   {
-//     id: 2,
-//     name: "琳恩图书馆",
-//     createTime: "2021-09-02",
-//     capacity: 5,
-//     children: [
-//       {
-//         id: 21,
-//         name: "一楼",
-//         createTime: "2021-09-02",
-//         capacity: 5,
-//       },
-//       {
-//         id: 22,
-//         name: "二楼",
-//         createTime: "2021-09-02",
-//         capacity: 5,
-//       },
-//     ],
-//   },
-//   {
-//     id: 3,
-//     name: "涵泳图书馆",
-//     createTime: "2021-09-03",
-//     capacity: 5,
-//     children: [
-//       {
-//         id: 31,
-//         name: "一楼",
-//         createTime: "2021-09-03",
-//         capacity: 6,
-//       },
-//       {
-//         id: 32,
-//         name: "二楼",
-//         createTime: "2021-09-03",
-//         capacity: 9,
-//       },
-//       {
-//         id: 33,
-//         name: "三楼",
-//         createTime: "2021-09-03",
-//         capacity: 1,
-//       },
-//     ],
-//   },
-// ]);
+const tableData = ref([
+  {
+    id: 1,
+    name: "一丹图书馆",
+    createTime: "2021-09-01",
+    capacity: 5,
+    children: [
+      {
+        id: 11,
+        name: "一楼",
+        createTime: "2021-09-01",
+        capacity: 5,
+      },
+      {
+        id: 12,
+        name: "二楼",
+        createTime: "2021-09-01",
+        capacity: 5,
+      },
+    ],
+  },
+  {
+    id: 2,
+    name: "琳恩图书馆",
+    createTime: "2021-09-02",
+    capacity: 5,
+    children: [
+      {
+        id: 21,
+        name: "一楼",
+        createTime: "2021-09-02",
+        capacity: 5,
+      },
+      {
+        id: 22,
+        name: "二楼",
+        createTime: "2021-09-02",
+        capacity: 5,
+      },
+    ],
+  },
+  {
+    id: 3,
+    name: "涵泳图书馆",
+    createTime: "2021-09-03",
+    capacity: 5,
+    children: [
+      {
+        id: 31,
+        name: "一楼",
+        createTime: "2021-09-03",
+        capacity: 6,
+      },
+      {
+        id: 32,
+        name: "二楼",
+        createTime: "2021-09-03",
+        capacity: 9,
+      },
+      {
+        id: 33,
+        name: "三楼",
+        createTime: "2021-09-03",
+        capacity: 1,
+      },
+    ],
+  },
+]);
 
-const tableData = ref([]);
+// const tableData = ref([]);
 
 const displayData = ref([...tableData.value]);
 
@@ -165,11 +165,13 @@ const openDialog = (place = {}) => {
   } else {
     currentEditting.value = {
       type: "library",
+      library: "",
       name: "",
       state: "开放",
       capacity: 0,
     };
     isEditing.value = false;
+    console.log(displayData.value);
   }
   dialogVisible.value = true;
 };
@@ -240,7 +242,10 @@ const saveLocation = async () => {
       }
       if (newLocation.type === "room") {
         await submitRoom({
-          place: newLocation.name,
+          place: newLocation.library,
+          name: newLocation.name,
+          status: newLocation.state,
+          capacity: newLocation.capacity,
         });
       }
       ElMessage.success(t("submitSuccess"));
@@ -350,13 +355,13 @@ const saveLocation = async () => {
     </div>
 
     <div class="footer">
-      <el-pagination
-        v-model:current-page="currentPage"
-        v-model:page-size="pageSize"
-        :page-sizes="[10, 25, 50, 100]"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="400"
-      />
+      <!--      <el-pagination-->
+      <!--        v-model:current-page="currentPage"-->
+      <!--        v-model:page-size="pageSize"-->
+      <!--        :page-sizes="[10, 25, 50, 100]"-->
+      <!--        layout="total, sizes, prev, pager, next, jumper"-->
+      <!--        :total="400"-->
+      <!--      />-->
     </div>
   </div>
 
@@ -381,6 +386,16 @@ const saveLocation = async () => {
             >{{ $t("dialog.room") }}
           </el-button>
         </el-button-group>
+      </el-form-item>
+      <el-form-item v-if="currentEditting.type === 'room'" label="图书馆">
+        <el-select v-model="currentEditting.library" placeholder="选择图书馆">
+          <el-option
+            v-for="library in displayData"
+            :key="library.id"
+            :label="library.name"
+            :value="library.name"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item :label="$t('dialog.locationName')">
         <el-input v-model="currentEditting.name"></el-input>

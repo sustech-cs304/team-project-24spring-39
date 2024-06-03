@@ -284,6 +284,23 @@ watch(
     selectedLibraryRooms.value = library ? library.children : [];
   }
 );
+
+const currentPage = ref(1);
+const pageSize = ref(10);
+
+const paginatedData = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return displayData.value.slice(start, end);
+});
+
+const handleCurrentChange = (page) => {
+  currentPage.value = page;
+};
+
+const handleSizeChange = (size) => {
+  pageSize.value = size;
+};
 </script>
 
 <template>
@@ -326,7 +343,7 @@ watch(
 
       <div class="table-wrapper">
         <el-table
-          :data="displayData"
+          :data="paginatedData"
           style="margin-bottom: 20px; width: 100%"
           stripe
           row-key="id"
@@ -372,7 +389,9 @@ watch(
           v-model:page-size="pageSize"
           :page-sizes="[10, 25, 50, 100]"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="400"
+          :total="displayData.value.length"
+          @current-change="handleCurrentChange"
+          @size-change="handleSizeChange"
         />
       </div>
     </div>
