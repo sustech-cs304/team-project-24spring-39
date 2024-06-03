@@ -1,0 +1,202 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>CourseController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CS304</a> &gt; <a href="index.source.html" class="el_package">com.example.cs304.controller</a> &gt; <span class="el_source">CourseController.java</span></div><h1>CourseController.java</h1><pre class="source lang-java linenums">package com.example.cs304.controller;
+
+
+import com.example.cs304.entity.*;
+import com.example.cs304.repository.*;
+import com.example.cs304.response.Response;
+import com.example.cs304.service.CourseService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+@RestController
+@RequestMapping(&quot;/course&quot;)
+public class CourseController {
+
+
+    private final CourseRepository courseRepository;
+    private final ProfessorRepository professorRepository;
+    private final RateRepository rateRepository;
+    @Autowired
+    private final CSrepository csRepository;
+    @PersistenceContext
+    private EntityManager entityManager;
+    @Autowired
+    private CourseService courseService;
+    private CPrepository cpRepository;
+
+<span class="fc" id="L46">    public CourseController(CourseRepository courseRepository, ProfessorRepository professorRepository, RateRepository rateRepository, CSrepository csRepository, CPrepository cpRepository) {</span>
+<span class="fc" id="L47">        this.courseRepository = courseRepository;</span>
+<span class="fc" id="L48">        this.professorRepository = professorRepository;</span>
+<span class="fc" id="L49">        this.rateRepository = rateRepository;</span>
+<span class="fc" id="L50">        this.csRepository = csRepository;</span>
+<span class="fc" id="L51">        this.cpRepository = cpRepository;</span>
+<span class="fc" id="L52">    }</span>
+
+    @PostMapping(&quot;/admin_add_course&quot;)
+    public Response addCourse(@RequestParam(&quot;name&quot;) String name, @RequestParam(&quot;CID&quot;) String CID, @RequestParam(&quot;semester&quot;) String semester,
+                              @RequestParam(&quot;type&quot;) String type, @RequestParam(&quot;department&quot;) String department, @RequestParam(&quot;credit&quot;) Integer credit,
+                              @RequestParam(&quot;hours&quot;) Integer hours, @RequestParam(&quot;capacity&quot;) Integer capacity,
+                              @RequestParam(&quot;location&quot;) String location, @RequestParam(&quot;description&quot;) String description, @RequestParam(&quot;time&quot;) List&lt;String&gt; time,
+                              @RequestParam(&quot;professorIds&quot;) List&lt;String&gt; professorIds) throws JsonProcessingException {
+<span class="nc" id="L60">        ObjectMapper objectMapper = new ObjectMapper();</span>
+<span class="nc" id="L61">        String timeJson = objectMapper.writeValueAsString(time);</span>
+<span class="nc" id="L62">        courseRepository.addCourse(name, CID, semester, type, department, credit, hours, capacity, location, description, timeJson);</span>
+<span class="nc" id="L63">        String courseId = CID;</span>
+<span class="nc bnc" id="L64" title="All 2 branches missed.">        for (String professorId : professorIds) {</span>
+<span class="nc" id="L65">            cpRepository.addCourseProfessor(courseId, professorId);</span>
+<span class="nc" id="L66">        }</span>
+<span class="nc" id="L67">        return Response.success(null);</span>
+        //        Set&lt;Professor&gt; professors = professorIds.stream()
+//                .map(id -&gt; professorRepository.findById(id).orElseThrow(() -&gt; new RuntimeException(&quot;Professor not found&quot;)))
+//                .collect(Collectors.toSet());
+////        course.setProfessors(professors);
+//        for (Professor professor : professors) {
+////            professor.getCourses().add(course);
+//        }
+//        Course savedCourse = courseRepository.save(course);
+//        URI location = ServletUriComponentsBuilder.fromCurrentRequest().path(&quot;/{id}&quot;)
+//                .buildAndExpand(savedCourse.getId()).toUri();
+//        return ResponseEntity.created(location).body(savedCourse);
+    }
+
+    @DeleteMapping(&quot;/admin_delete_course&quot;)
+    public Response deleteCourse(@RequestParam(&quot;CID&quot;) String CID) {
+<span class="nc" id="L83">        String course_id = CID;</span>
+<span class="nc" id="L84">        cpRepository.deleteCourseProfessor(course_id);</span>
+<span class="nc" id="L85">        courseRepository.deleteCourse(CID);</span>
+<span class="nc" id="L86">        return Response.success(null);</span>
+    }
+
+
+    @DeleteMapping(&quot;/{id}&quot;)
+    public void deleteCourse(@PathVariable Integer id) {
+<span class="nc" id="L92">        courseRepository.deleteById(id);</span>
+<span class="nc" id="L93">    }</span>
+
+
+//    @GetMapping(&quot;/get_course/all&quot;)
+//    public ResponseEntity&lt;List&lt;Map&lt;String, Object&gt;&gt;&gt; getCourse() {
+//        List&lt;Map&lt;String, Object&gt;&gt; courses = courseRepository.findAllCoursesProfessors();
+//        return ResponseEntity.ok(courses);
+//    }
+
+    @GetMapping(&quot;/get_course/all&quot;)
+    public ResponseEntity&lt;List&lt;Course&gt;&gt; getCourseTest() {
+<span class="fc" id="L104">        List&lt;Course&gt; courses = courseRepository.findAll();</span>
+<span class="fc" id="L105">        return ResponseEntity.ok(courses);</span>
+    }
+
+    @PostMapping(&quot;/add_course&quot;)
+    public ResponseEntity&lt;Response&gt; selectCourse(@RequestParam String course_id, @RequestParam String student_id, @RequestParam int score) {
+        try {
+<span class="nc" id="L111">            courseRepository.selectCourse(course_id, student_id, score);</span>
+<span class="nc" id="L112">            courseRepository.addCourseSelected(course_id);</span>
+<span class="nc" id="L113">            return ResponseEntity.ok(Response.success(null));</span>
+<span class="nc" id="L114">        } catch (Exception e) {</span>
+            // Log the exception
+<span class="nc" id="L116">            e.printStackTrace();</span>
+            // Return an appropriate error response
+<span class="nc" id="L118">            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();</span>
+        }
+    }
+
+    @Modifying
+    @DeleteMapping(&quot;/delete_selected_course&quot;)
+    public ResponseEntity&lt;Response&gt; dropCourse(@RequestParam String course_id, @RequestParam String student_id) {
+        try {
+<span class="nc" id="L126">            courseService.dropCourse(course_id, student_id);</span>
+<span class="nc" id="L127">            return ResponseEntity.ok(Response.success(null));</span>
+<span class="nc" id="L128">        } catch (Exception e) {</span>
+            // Log the exception
+<span class="nc" id="L130">            e.printStackTrace();</span>
+            // Return an appropriate error response
+<span class="nc" id="L132">            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();</span>
+        }
+    }
+
+    //    @GetMapping(&quot;/selected_students&quot;)
+    @GetMapping(&quot;/show_selected_students&quot;)
+    public Response findStudentsInCourse(@RequestParam(&quot;CID&quot;) String CID) {
+<span class="nc" id="L139">        List&lt;Map&lt;String, Object&gt;&gt; students = courseRepository.findStudentsInCourse(CID);</span>
+<span class="nc" id="L140">        return Response.success(students);</span>
+    }
+
+    @GetMapping(&quot;/get_course/bixiu&quot;)
+    public ResponseEntity&lt;Response&gt; findObligatoryCourses() {
+<span class="fc" id="L145">        List&lt;Course&gt; courses = courseRepository.findObligatoryCourses();</span>
+<span class="fc" id="L146">        return ResponseEntity.ok(Response.success(courses));</span>
+    }
+
+    @GetMapping(&quot;/get_course/xuanxiu&quot;)
+    public ResponseEntity&lt;Response&gt; findElectiveCourses() {
+<span class="fc" id="L151">        List&lt;Course&gt; courses = courseRepository.findElectiveCourses();</span>
+<span class="fc" id="L152">        return ResponseEntity.ok(Response.success(courses));</span>
+    }
+
+    @GetMapping(&quot;/show_selected_course&quot;)
+    public ResponseEntity&lt;Response&gt; findTakenCourses(@RequestParam(&quot;SID&quot;) String SID) {
+<span class="nc" id="L157">        List&lt;CourseStudent&gt; courseStudents = csRepository.findTakenCourses(SID);</span>
+<span class="nc" id="L158">        List&lt;SelectedCourse&gt; selectedCourses = new ArrayList&lt;&gt;();</span>
+<span class="nc bnc" id="L159" title="All 2 branches missed.">        for (CourseStudent courseStudent : courseStudents) {</span>
+<span class="nc" id="L160">            Course course = courseStudent.getCourse();</span>
+<span class="nc" id="L161">            SelectedCourse selectedCourse = new SelectedCourse();</span>
+<span class="nc" id="L162">            selectedCourse.setId(course.getId());</span>
+<span class="nc" id="L163">            selectedCourse.setName(course.getName());</span>
+<span class="nc" id="L164">            selectedCourse.setCid(course.getCid());</span>
+<span class="nc" id="L165">            selectedCourse.setType(course.getType());</span>
+<span class="nc" id="L166">            selectedCourse.setDepartment(course.getDepartment());</span>
+<span class="nc" id="L167">            selectedCourse.setCredit(course.getCredit());</span>
+<span class="nc" id="L168">            selectedCourse.setSemester(course.getSemester());</span>
+<span class="nc" id="L169">            selectedCourse.setHours(course.getHours());</span>
+<span class="nc" id="L170">            selectedCourse.setCapacity(course.getCapacity());</span>
+<span class="nc" id="L171">            selectedCourse.setSelected(course.getSelected());</span>
+<span class="nc" id="L172">            selectedCourse.setLocation(course.getLocation());</span>
+<span class="nc" id="L173">            selectedCourse.setDescription(course.getDescription());</span>
+<span class="nc" id="L174">            selectedCourse.setProfessors(course.getProfessors());</span>
+<span class="nc" id="L175">            selectedCourse.setTime(course.getTime());</span>
+<span class="nc" id="L176">            int score = courseStudent.getScore();</span>
+<span class="nc" id="L177">            selectedCourse.setScore(score);</span>
+<span class="nc" id="L178">            selectedCourses.add(selectedCourse);</span>
+<span class="nc" id="L179">        }</span>
+
+<span class="nc" id="L181">        return ResponseEntity.ok(Response.success(selectedCourses));</span>
+    }
+
+
+//    @PostMapping(&quot;/evaluation&quot;)
+//    public Response evaluateCourse(@RequestParam(&quot;course_id&quot;) String course_id, @RequestParam(&quot;student_id&quot;) String student_id,
+//                                   @RequestParam(&quot;rate&quot;) int rate, @RequestParam(&quot;difficulty&quot;) String difficulty,
+//                                   @RequestParam(&quot;workload&quot;) String workload, @RequestParam(&quot;grading&quot;) String grading,
+//                                   @RequestParam(&quot;gain&quot;) String gain, @RequestParam(&quot;description&quot;) String description) {
+//        System.out.println(&quot;test2&quot;);
+//        rateRepository.evaluateCourse(course_id, student_id, rate, difficulty, workload, grading, gain, description);
+//        csRepository.changeJudged(course_id, student_id);
+//        return Response.success(null);
+//    }
+
+    @GetMapping(&quot;/taken&quot;)
+    public ResponseEntity&lt;Response&gt; findSelectedCourses(@RequestParam(&quot;SID&quot;) String SID) {
+<span class="nc" id="L198">        List&lt;Course&gt; courses = courseRepository.findSelectedCourses(SID);</span>
+<span class="nc" id="L199">        return ResponseEntity.ok(Response.success(courses));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

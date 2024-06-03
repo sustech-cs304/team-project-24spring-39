@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Student.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CS304</a> &gt; <a href="index.source.html" class="el_package">com.example.cs304.entity</a> &gt; <span class="el_source">Student.java</span></div><h1>Student.java</h1><pre class="source lang-java linenums">package com.example.cs304.entity;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.util.HashMap;
+import java.util.Map;
+
+@Entity
+@Getter
+<span class="nc" id="L13">@Setter</span>
+@Table(name = &quot;student&quot;)
+<span class="nc" id="L15">public class Student {</span>
+    @Id
+    @Column(name = &quot;id&quot;, nullable = false)
+<span class="nc" id="L18">    private Integer id;</span>
+
+    @Column(name = &quot;name&quot;, nullable = false, length = 50)
+<span class="nc" id="L21">    private String name;</span>
+
+    @Column(name = &quot;SID&quot;, nullable = false, length = 8)
+<span class="nc" id="L24">    private String sid;</span>
+
+    @ColumnDefault(&quot;000000&quot;)
+    @Column(name = &quot;password&quot;, nullable = false, length = 50)
+<span class="nc" id="L28">    private String password;</span>
+
+    @Column(name = &quot;class&quot;, nullable = false, length = 50)
+<span class="nc" id="L31">    private String classField;</span>
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = &quot;major&quot;, nullable = false, referencedColumnName = &quot;name&quot;)
+<span class="nc" id="L35">    private Major major;</span>
+
+    @ColumnDefault(&quot;100&quot;)
+    @Column(name = &quot;score&quot;, nullable = false)
+<span class="nc" id="L39">    private Integer score;</span>
+
+    @Column(name = &quot;avatar&quot;)
+<span class="nc" id="L42">    private String avatar;</span>
+
+    public Map&lt;String, Object&gt; convertStudentToMap() {
+<span class="nc" id="L45">        Map&lt;String, Object&gt; map = new HashMap&lt;&gt;();</span>
+<span class="nc" id="L46">        map.put(&quot;name&quot;, getName());</span>
+<span class="nc" id="L47">        map.put(&quot;SID&quot;, getSid());</span>
+<span class="nc" id="L48">        map.put(&quot;class&quot;, getClassField());</span>
+<span class="nc" id="L49">        map.put(&quot;major&quot;, getMajor().getName());</span>
+<span class="nc" id="L50">        map.put(&quot;score&quot;, getScore());</span>
+<span class="nc" id="L51">        map.put(&quot;avatar&quot;, getAvatar());</span>
+<span class="nc" id="L52">        return map;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

@@ -1,0 +1,28 @@
+-------------------------------------------------------------------------------
+Test set: com.example.cs304.controller.AuthControllerTest
+-------------------------------------------------------------------------------
+Tests run: 3, Failures: 0, Errors: 3, Skipped: 0, Time elapsed: 22.08 s <<< FAILURE! -- in com.example.cs304.controller.AuthControllerTest
+com.example.cs304.controller.AuthControllerTest.shouldAuthenticateWhenCredentialsAreValid -- Time elapsed: 0.462 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because "token" is null
+	at com.example.cs304.controller.AuthController.authenticate(AuthController.java:34)
+	at com.example.cs304.controller.AuthControllerTest.shouldAuthenticateWhenCredentialsAreValid(AuthControllerTest.java:48)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.example.cs304.controller.AuthControllerTest.shouldAuthenticateAsAdminWhenUserDoesNotExistInStudentService -- Time elapsed: 0.023 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because "token" is null
+	at com.example.cs304.controller.AuthController.authenticate(AuthController.java:34)
+	at com.example.cs304.controller.AuthControllerTest.shouldAuthenticateAsAdminWhenUserDoesNotExistInStudentService(AuthControllerTest.java:77)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+
+com.example.cs304.controller.AuthControllerTest.shouldNotAuthenticateWhenCredentialsAreInvalid -- Time elapsed: 0.020 s <<< ERROR!
+java.lang.NullPointerException: Cannot invoke "String.equals(Object)" because "token" is null
+	at com.example.cs304.controller.AuthController.authenticate(AuthController.java:34)
+	at com.example.cs304.controller.AuthControllerTest.shouldNotAuthenticateWhenCredentialsAreInvalid(AuthControllerTest.java:62)
+	at java.base/java.lang.reflect.Method.invoke(Method.java:568)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+	at java.base/java.util.ArrayList.forEach(ArrayList.java:1511)
+

@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SecondaryReply.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CS304</a> &gt; <a href="index.source.html" class="el_package">com.example.cs304.entity</a> &gt; <span class="el_source">SecondaryReply.java</span></div><h1>SecondaryReply.java</h1><pre class="source lang-java linenums">package com.example.cs304.entity;
+
+import jakarta.persistence.*;
+import org.hibernate.annotations.ColumnDefault;
+
+import java.time.Instant;
+
+@Entity
+@Table(name = &quot;secondary_reply&quot;)
+<span class="nc" id="L10">public class SecondaryReply {</span>
+    @Id
+    @Column(name = &quot;id&quot;, nullable = false)
+    private Integer id;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = &quot;reply_id&quot;, nullable = false)
+    private Reply reply;
+
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = &quot;author_id&quot;, nullable = false, referencedColumnName = &quot;SID&quot;)
+    private Student author;
+
+    @Column(name = &quot;content&quot;, nullable = false, length = 1000)
+    private String content;
+
+    @ColumnDefault(&quot;CURRENT_TIMESTAMP&quot;)
+    @Column(name = &quot;time&quot;, nullable = false)
+    private Instant time;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = &quot;file_id&quot;)
+    private File file;
+
+    public Integer getId() {
+<span class="nc" id="L35">        return id;</span>
+    }
+
+    public void setId(Integer id) {
+<span class="nc" id="L39">        this.id = id;</span>
+<span class="nc" id="L40">    }</span>
+
+    public Reply getReply() {
+<span class="nc" id="L43">        return reply;</span>
+    }
+
+    public void setReply(Reply reply) {
+<span class="nc" id="L47">        this.reply = reply;</span>
+<span class="nc" id="L48">    }</span>
+
+    public Student getAuthor() {
+<span class="nc" id="L51">        return author;</span>
+    }
+
+    public void setAuthor(Student author) {
+<span class="nc" id="L55">        this.author = author;</span>
+<span class="nc" id="L56">    }</span>
+
+    public String getContent() {
+<span class="nc" id="L59">        return content;</span>
+    }
+
+    public void setContent(String content) {
+<span class="nc" id="L63">        this.content = content;</span>
+<span class="nc" id="L64">    }</span>
+
+    public Instant getTime() {
+<span class="nc" id="L67">        return time;</span>
+    }
+
+    public void setTime(Instant time) {
+<span class="nc" id="L71">        this.time = time;</span>
+<span class="nc" id="L72">    }</span>
+
+    public File getFile() {
+<span class="nc" id="L75">        return file;</span>
+    }
+
+    public void setFile(File file) {
+<span class="nc" id="L79">        this.file = file;</span>
+<span class="nc" id="L80">    }</span>
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

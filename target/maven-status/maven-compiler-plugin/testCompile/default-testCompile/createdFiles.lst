@@ -1,1 +1,6 @@
+com\example\cs304\controller\CourseControllerTest.class
+com\example\cs304\controller\ForumControllerTest.class
+com\example\cs304\controller\AuthControllerTest.class
+com\example\cs304\controller\MessageControllerTest.class
 com\example\cs304\Cs304ApplicationTests.class
+com\example\cs304\controller\HelloControllerTest.class

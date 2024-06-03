@@ -4,30 +4,45 @@ import com.example.cs304.converter.JwtTokenProvider;
 import com.example.cs304.entity.*;
 import com.example.cs304.repository.*;
 import com.example.cs304.response.Response;
-import lombok.AllArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.FileSystemResource;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.util.UriComponentsBuilder;
 
 import java.io.IOException;
+import java.net.URI;
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
 @RestController
-@AllArgsConstructor
 @RequestMapping("/forum")
+
 public class ForumController {
 
     private final PostRepository postRepository;
     private final StudentRepository studentRepository;
     private final FileRepository fileRepository;
     private final ReplyRepository replyRepository;
-    private final MajorRepository majorRepository;
     private final DepartmentRepository departmentRepository;
-    private JwtTokenProvider jwtTokenProvider;
+    private final JwtTokenProvider jwtTokenProvider;
+    @Value("${file.storage-path}")
+    private String storagePath;
+    @Value("${file.server-url}")
+    private String serverUrl;
 
+    public ForumController(PostRepository postRepository, StudentRepository studentRepository, FileRepository fileRepository, ReplyRepository replyRepository, MajorRepository majorRepository, DepartmentRepository departmentRepository, JwtTokenProvider jwtTokenProvider) {
+        this.postRepository = postRepository;
+        this.studentRepository = studentRepository;
+        this.fileRepository = fileRepository;
+        this.replyRepository = replyRepository;
+        this.departmentRepository = departmentRepository;
+        this.jwtTokenProvider = jwtTokenProvider;
+    }
 
     @GetMapping("/get_post_count")
     public Response<?> getPostCount() {
@@ -51,19 +66,20 @@ public class ForumController {
 //    public Response<?> getPostsTest() {
 //        return new Response<>(200, "Get posts successfully", postRepository.findAllPostsReplies());
 //    }
-    @PostMapping("/posting")//暂时用一下，后续要改
-    public Post createPost(@RequestHeader String Authorization ,
-                           @RequestBody Map<String, Object> requestBody) throws IOException {
-        String title = (String) requestBody.get("title");
-        String content = (String) requestBody.get("content");
-        String majorTag = (String) requestBody.get("majorTag");
-        String courseTag = (String) requestBody.get("courseTag");
-        MultipartFile multipartFile = (MultipartFile) requestBody.get("file");
+    @PostMapping(value = "/create_post", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+public Response<?> createPost(@RequestHeader String Authorization,
+                       @RequestPart("file") Optional<MultipartFile> multipartFile,
+                       @RequestPart("title") String title,
+                       @RequestPart("content") String content,
+                       @RequestPart("majorTag") String majorTag,
+                       @RequestPart("courseTag") String courseTag) throws IOException {
+
         Post post = new Post();
         post.setTitle(title);
         post.setContent(content);
         post.setMajorCategory(majorTag);
         post.setCourseCategory(courseTag);
+        post.setPostingTime(Instant.now());
 
         Student student = studentRepository.findBySid(jwtTokenProvider.getUsername(Authorization));
         if (student != null) {
@@ -71,21 +87,28 @@ public class ForumController {
         } else {
             throw new IllegalArgumentException("No student found" );
         }
+        postRepository.save(post);
+//        for(MultipartFile multipartFile: multipartFiles) {
+            if (multipartFile.isPresent()) {
+                File file = new File();
+                String name = multipartFile.get().getOriginalFilename();
+                String path = storagePath + post.getId() + name;
+                file.setName(name);
+                file.setPost(post);
+                URI uri = UriComponentsBuilder.fromHttpUrl(serverUrl)
+                        .path("/forum/get_file")
+                        .queryParam("filePath", path)
+                        .build()
+                        .toUri();
+                file.setFilepath(uri.toString()); // replace with your actual storage location
+                file.setUploadTime(Instant.now());
+                fileRepository.save(file);
+                java.io.File fileToSave = new java.io.File(path);
+                multipartFile.get().transferTo(fileToSave);
+            }
+//        }
 
-        if (multipartFile != null) {
-            File file = new File();
-            String name = multipartFile.getOriginalFilename();
-            String path = "storage/" +post.getId()+"/"+ name;
-            file.setName(name);
-            file.setFiletype(multipartFile.getContentType());
-            file.setFilepath(path); // replace with your actual storage location
-            file.setUploadTime(Instant.now());
-            fileRepository.save(file);
-            java.io.File fileToSave = new java.io.File(path);
-            multipartFile.transferTo(fileToSave);
-        }
-
-        return postRepository.save(post);
+        return Response.success(post);
     }
     //删除帖子
     @DeleteMapping("/delete_post/{postID}")
@@ -107,9 +130,9 @@ public class ForumController {
 
         Reply reply = new Reply();
         reply.setContent(content);
-
         Student student = studentRepository.findBySid(jwtTokenProvider.getUsername(Authorization));
         reply.setAuthor(student);
+        reply.setTime(Instant.now());
         Post post = postRepository.findById(postId).orElse(null);
         if (post != null) {
             reply.setPost(post);
@@ -118,5 +141,22 @@ public class ForumController {
         }
 
         return new Response<>(200, "Comment created successfully", replyRepository.save(reply));
+    }
+
+    @GetMapping("/get_file")
+//    public Response<?> getFile(@RequestParam String filepath) {
+//
+//    }
+    public ResponseEntity<FileSystemResource> downloadFile(@RequestParam String filePath) {
+         // 替换为文件的实际路径
+        java.io.File file = new java.io.File(filePath);
+        FileSystemResource resource =  new FileSystemResource(file);
+        if (resource.exists()) {
+            return ResponseEntity.ok()
+                    .header("Content-Disposition", "attachment; filename=\"" + resource.getFilename() + "\"")
+                    .body(resource);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
 }

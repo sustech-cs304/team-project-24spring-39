@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ReservationController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CS304</a> &gt; <a href="index.source.html" class="el_package">com.example.cs304.controller</a> &gt; <span class="el_source">ReservationController.java</span></div><h1>ReservationController.java</h1><pre class="source lang-java linenums">package com.example.cs304.controller;
+
+import com.example.cs304.entity.*;
+import com.example.cs304.repository.*;
+import com.example.cs304.response.Response;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.repository.Modifying;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.web.bind.annotation.RequestParam;
+import java.time.LocalDate;
+import java.time.LocalTime;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+@RestController
+@RequestMapping(&quot;/reservation&quot;)
+public class ReservationController {
+    @PersistenceContext
+    private EntityManager entityManager;
+    private final ReservationRepository reservationRepository;
+    private final RoomRepository roomRepository;
+    private final StudentRepository studentRepository;
+    private final BuildingRepository buildingRepository;
+    private final SRrepository SRrepository;
+
+<span class="fc" id="L34">    public ReservationController(ReservationRepository reservationRepository, RoomRepository roomRepository, StudentRepository studentRepository, BuildingRepository buildingRepository, SRrepository SRrepository) {</span>
+<span class="fc" id="L35">        this.reservationRepository = reservationRepository;</span>
+<span class="fc" id="L36">        this.roomRepository = roomRepository;</span>
+<span class="fc" id="L37">        this.studentRepository = studentRepository;</span>
+<span class="fc" id="L38">        this.buildingRepository = buildingRepository;</span>
+<span class="fc" id="L39">        this.SRrepository = SRrepository;</span>
+<span class="fc" id="L40">    }</span>
+
+//    @GetMapping(&quot;/{student_id}&quot;)
+//    public ResponseEntity&lt;List&lt;Reservation&gt;&gt; getReservations(@PathVariable(&quot;student_id&quot;) String student_id) {
+//        List&lt;Reservation&gt; reservations = reservationRepository.findBysid(student_id);
+//        return ResponseEntity.ok(reservations);
+//    }
+    @GetMapping(&quot;/{student_id}&quot;)
+    public Response getReservations(@PathVariable(&quot;student_id&quot;) String student_id) {
+<span class="nc" id="L49">        List&lt;Map&lt;String, Object&gt;&gt; students = studentRepository.findnameBysid(student_id);</span>
+<span class="nc" id="L50">        return Response.success(students);</span>
+    }
+
+//    @GetMapping(&quot;/room/{room}&quot;)
+//    public ResponseEntity&lt;List&lt;Reservation&gt;&gt; getReservationsByRoom(@PathVariable(&quot;room&quot;) String room) {
+//        List&lt;Reservation&gt; reservations = reservationRepository.findByroom(room);
+//        return ResponseEntity.ok(reservations);
+//    }
+
+    @GetMapping(&quot;/locations&quot;)
+    public ResponseEntity&lt;Response&gt; findLocations() {
+<span class="nc" id="L61">        System.out.println(&quot;test&quot;);</span>
+<span class="nc" id="L62">        List&lt;Building&gt; buildings = buildingRepository.findAll();</span>
+<span class="nc" id="L63">        List&lt;Location&gt; locations = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L65" title="All 2 branches missed.">        for (Building building : buildings) {</span>
+<span class="nc" id="L66">            Location location = new Location();</span>
+<span class="nc" id="L67">            location.setId(building.getId());</span>
+<span class="nc" id="L68">            location.setName(building.getName());</span>
+<span class="nc" id="L69">            location.setCapacity(building.getCapacity());</span>
+<span class="nc" id="L70">            location.setStatus(building.getStatus());</span>
+<span class="nc" id="L71">            List&lt;Room&gt; rooms = roomRepository.findRoomsByBuilding(building.getName());</span>
+<span class="nc" id="L72">            location.setRooms(rooms);</span>
+<span class="nc" id="L73">            locations.add(location);</span>
+<span class="nc" id="L74">        }</span>
+
+<span class="nc" id="L76">        return ResponseEntity.ok(Response.success(locations));</span>
+    }
+
+//    @GetMapping(&quot;/bookings&quot;)
+//    public ResponseEntity&lt;List&lt;Reservation&gt;&gt; getReservations() {
+//        List&lt;Reservation&gt; reservations = reservationRepository.findAll();
+//        return ResponseEntity.ok(reservations);
+//    }
+    @GetMapping(&quot;/bookings&quot;)
+    public Response getReservations(@RequestParam(value = &quot;room_id&quot;,required = false) Integer room_id,
+                                    @RequestParam(value = &quot;date&quot;,required = false) String date){
+<span class="nc" id="L87">        List&lt;Reservation&gt; reservations = reservationRepository.findAll();</span>
+<span class="nc bnc" id="L88" title="All 4 branches missed.">        if (date == null &amp;&amp; room_id != null) {</span>
+<span class="nc" id="L89">            reservations = reservationRepository.findByRoom(room_id);</span>
+<span class="nc bnc" id="L90" title="All 4 branches missed.">        } else if (date != null &amp;&amp; room_id == null) {</span>
+<span class="nc" id="L91">            reservations = reservationRepository.findByDate(date);</span>
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        } else if (date != null) {</span>
+<span class="nc" id="L93">            reservations = reservationRepository.findByRoomAndDate(date, room_id);</span>
+        }
+
+//        List&lt;ReservationRequest&gt; reservations = reservationRepository.findAllReservations();
+<span class="nc" id="L97">        List&lt;ReservationRequest&gt; reservationRequests = new ArrayList&lt;&gt;();</span>
+
+<span class="nc bnc" id="L99" title="All 2 branches missed.">        for (Reservation reservation : reservations) {</span>
+<span class="nc" id="L100">            ReservationRequest reservationRequest = new ReservationRequest();</span>
+<span class="nc" id="L101">            reservationRequest.setId(reservation.getId());</span>
+<span class="nc" id="L102">            reservationRequest.setRoom(reservation.getRoom());</span>
+<span class="nc" id="L103">            int ReservationID = reservation.getId();</span>
+<span class="nc" id="L104">            List&lt;Student&gt; students = studentRepository.findReservationStudent(ReservationID);</span>
+<span class="nc" id="L105">            reservationRequest.setStudents(students);</span>
+<span class="nc" id="L106">            reservationRequest.setDate(reservation.getDate());</span>
+<span class="nc" id="L107">            reservationRequest.setStartTime(reservation.getStartTime());</span>
+<span class="nc" id="L108">            reservationRequest.setEndTime(reservation.getEndTime());</span>
+<span class="nc" id="L109">            reservationRequest.setCreateTime(reservation.getCreateTime());</span>
+<span class="nc" id="L110">            reservationRequest.setStatus(reservation.getStatus());</span>
+<span class="nc" id="L111">            reservationRequests.add(reservationRequest);</span>
+<span class="nc" id="L112">        }</span>
+<span class="nc" id="L113">        return Response.success(reservationRequests);</span>
+    }
+
+//    @Modifying
+//    @Query(value = &quot;insert into reservation (student_id, room_id, date, start_time, end_time, purpose) values (:student_id, :room_id, :date, :start_time, :end_time, :purpose);&quot;, nativeQuery = true)
+//    void addReservation(String student_id, int room_id, String date, String start_time, String end_time, String purpose);
+    @Transactional
+    @PostMapping(&quot;/submit&quot;)
+    public Response addReservation(@RequestParam(&quot;persons&quot;) List&lt;String&gt; student,
+                               @RequestParam(&quot;room_id&quot;) int room_id,
+                               @RequestParam(&quot;date&quot;) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate date,
+                               @RequestParam(&quot;start_time&quot;) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime start_time,
+                               @RequestParam(&quot;end_time&quot;) @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime end_time
+                               ) {
+<span class="nc" id="L127">        reservationRepository.addReservation(room_id, date, start_time, end_time);</span>
+<span class="nc" id="L128">        int reservation_id = reservationRepository.getLastInsertId();</span>
+<span class="nc bnc" id="L129" title="All 2 branches missed.">        for (String student_id : student) {</span>
+<span class="nc" id="L130">            SRrepository.insertStudentReservation(student_id, reservation_id);</span>
+<span class="nc" id="L131">        }</span>
+<span class="nc" id="L132">        return Response.success(null);</span>
+    }
+
+    @DeleteMapping(&quot;/delete&quot;)
+    public Response deleteReservation(@RequestParam(&quot;reservation_id&quot;) int reservation_id) {
+<span class="nc" id="L137">        SRrepository.deleteStudentReservation(reservation_id);</span>
+<span class="nc" id="L138">        reservationRepository.deleteById(reservation_id);</span>
+<span class="nc" id="L139">        return Response.success(null);</span>
+
+    }
+
+    @PostMapping(&quot;/add_building&quot;)
+    public Response addBuilding(@RequestParam(&quot;name&quot;) String name,
+                                @RequestParam(&quot;status&quot;) String status) {
+<span class="nc" id="L146">        buildingRepository.addBuilding(name, status);</span>
+<span class="nc" id="L147">        return Response.success(null);</span>
+    }
+
+    @PostMapping(&quot;/add_room&quot;)
+    public Response addRoom(@RequestParam(&quot;place&quot;) String place,
+                            @RequestParam(&quot;room_name&quot;) String room_name,
+                            @RequestParam(&quot;capacity&quot;) int capacity,
+                            @RequestParam(&quot;status&quot;) String status) {
+<span class="nc" id="L155">        roomRepository.addRoom(place, room_name, capacity, status);</span>
+<span class="nc" id="L156">        buildingRepository.addBuidingCapacity(capacity, place);</span>
+<span class="nc" id="L157">        return Response.success(null);</span>
+    }
+
+    @DeleteMapping(&quot;/delete_building&quot;)
+    public Response deleteBuilding(@RequestParam(&quot;name&quot;) String name) {
+<span class="nc" id="L162">        buildingRepository.deleteBuilding(name);</span>
+<span class="nc" id="L163">        roomRepository.deleteRoomByBuilding(name);</span>
+<span class="nc" id="L164">        return Response.success(null);</span>
+    }
+
+    @DeleteMapping(&quot;/delete_room&quot;)
+    public Response deleteRoom(@RequestParam(&quot;room_id&quot;) int room_id) {
+<span class="nc" id="L169">        Room room = roomRepository.findById(room_id).get();</span>
+<span class="nc" id="L170">        roomRepository.deleteRoom(room_id);</span>
+<span class="nc" id="L171">        String place = room.getPlace();</span>
+<span class="nc" id="L172">        buildingRepository.addBuidingCapacity(-room.getCapacity(), place);</span>
+<span class="nc" id="L173">        return Response.success(null);</span>
+    }
+
+    @PostMapping(&quot;/update_building_status&quot;)
+    public Response updateBuildingStatus(@RequestParam(&quot;name&quot;) String name,
+                                         @RequestParam(&quot;status&quot;) String status) {
+<span class="nc" id="L179">        buildingRepository.updateBuildingStatus(name, status);</span>
+<span class="nc" id="L180">        return Response.success(null);</span>
+    }
+
+    @PostMapping(&quot;/update_room_status&quot;)
+    public Response updateRoomStatus(@RequestParam(&quot;room_id&quot;) int room_id,
+                                     @RequestParam(&quot;status&quot;) String status) {
+<span class="nc" id="L186">        Room room = roomRepository.findById(room_id).get();</span>
+<span class="nc" id="L187">        room.setStatus(status);</span>
+<span class="nc" id="L188">        roomRepository.save(room);</span>
+<span class="nc" id="L189">        return Response.success(null);</span>
+    }
+
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

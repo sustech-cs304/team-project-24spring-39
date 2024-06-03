@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ForumController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CS304</a> &gt; <a href="index.source.html" class="el_package">com.example.cs304.controller</a> &gt; <span class="el_source">ForumController.java</span></div><h1>ForumController.java</h1><pre class="source lang-java linenums">package com.example.cs304.controller;
+
+import com.example.cs304.converter.JwtTokenProvider;
+import com.example.cs304.entity.*;
+import com.example.cs304.repository.*;
+import com.example.cs304.response.Response;
+import lombok.AllArgsConstructor;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+@RestController
+<span class="fc" id="L19">@AllArgsConstructor</span>
+@RequestMapping(&quot;/forum&quot;)
+public class ForumController {
+
+    private final PostRepository postRepository;
+    private final StudentRepository studentRepository;
+    private final FileRepository fileRepository;
+    private final ReplyRepository replyRepository;
+    private final MajorRepository majorRepository;
+    private final DepartmentRepository departmentRepository;
+    private JwtTokenProvider jwtTokenProvider;
+
+
+    @GetMapping(&quot;/get_post_count&quot;)
+    public Response&lt;?&gt; getPostCount() {
+<span class="fc" id="L34">        return new Response&lt;&gt;(200, &quot;Get post count successfully&quot;, postRepository.count()/8 +1);</span>
+    }
+    @GetMapping(&quot;/get_department&quot;)
+    public Response&lt;?&gt; getDepartments(){
+<span class="fc" id="L38">        System.out.println(departmentRepository.findAll());</span>
+<span class="fc" id="L39">        return Response.success(departmentRepository.findAll());</span>
+    }
+//    @GetMapping(&quot;/get_course_department&quot;)
+//    public List&lt;Course&gt; getCoursesByDepartment(@RequestParam(required = false) String departmentId) {
+
+//    }
+    @GetMapping(&quot;/get_post_by_condition&quot;)
+    public Response&lt;?&gt; getPosts(@RequestParam(required = false) String authorId, @RequestParam(required = false) String majorTag, @RequestParam(required = false) String courseTag) {
+<span class="fc" id="L47">        System.out.println(&quot;authorId: &quot; + authorId);</span>
+<span class="fc" id="L48">        return new Response&lt;&gt;(200, &quot;Get posts successfully&quot;, postRepository.findByCondition(authorId, majorTag, courseTag));</span>
+    }
+//    @GetMapping(&quot;/get_post_test&quot;)
+//    public Response&lt;?&gt; getPostsTest() {
+//        return new Response&lt;&gt;(200, &quot;Get posts successfully&quot;, postRepository.findAllPostsReplies());
+//    }
+    @PostMapping(&quot;/posting&quot;)//暂时用一下，后续要改
+    public Post createPost(@RequestHeader String Authorization ,
+                           @RequestBody Map&lt;String, Object&gt; requestBody) throws IOException {
+<span class="fc" id="L57">        String title = (String) requestBody.get(&quot;title&quot;);</span>
+<span class="fc" id="L58">        String content = (String) requestBody.get(&quot;content&quot;);</span>
+<span class="fc" id="L59">        String majorTag = (String) requestBody.get(&quot;majorTag&quot;);</span>
+<span class="fc" id="L60">        String courseTag = (String) requestBody.get(&quot;courseTag&quot;);</span>
+<span class="fc" id="L61">        MultipartFile multipartFile = (MultipartFile) requestBody.get(&quot;file&quot;);</span>
+<span class="fc" id="L62">        Post post = new Post();</span>
+<span class="fc" id="L63">        post.setTitle(title);</span>
+<span class="fc" id="L64">        post.setContent(content);</span>
+<span class="fc" id="L65">        post.setMajorCategory(majorTag);</span>
+<span class="fc" id="L66">        post.setCourseCategory(courseTag);</span>
+<span class="fc" id="L67">        post.setPostingTime(Instant.now());</span>
+
+<span class="nc" id="L69">        Student student = studentRepository.findBySid(jwtTokenProvider.getUsername(Authorization));</span>
+<span class="nc bnc" id="L70" title="All 2 branches missed.">        if (student != null) {</span>
+<span class="nc" id="L71">            post.setAuthor(student);</span>
+        } else {
+<span class="nc" id="L73">            throw new IllegalArgumentException(&quot;No student found&quot; );</span>
+        }
+
+<span class="nc bnc" id="L76" title="All 2 branches missed.">        if (multipartFile != null) {</span>
+<span class="nc" id="L77">            File file = new File();</span>
+<span class="nc" id="L78">            String name = multipartFile.getOriginalFilename();</span>
+<span class="nc" id="L79">            String path = &quot;storage/&quot; +post.getId()+&quot;/&quot;+ name;</span>
+<span class="nc" id="L80">            file.setName(name);</span>
+<span class="nc" id="L81">            file.setFiletype(multipartFile.getContentType());</span>
+<span class="nc" id="L82">            file.setFilepath(path); // replace with your actual storage location</span>
+<span class="nc" id="L83">            file.setUploadTime(Instant.now());</span>
+<span class="nc" id="L84">            fileRepository.save(file);</span>
+<span class="nc" id="L85">            java.io.File fileToSave = new java.io.File(path);</span>
+<span class="nc" id="L86">            multipartFile.transferTo(fileToSave);</span>
+        }
+
+<span class="nc" id="L89">        return postRepository.save(post);</span>
+    }
+    //删除帖子
+    @DeleteMapping(&quot;/delete_post/{postID}&quot;)
+    public Response&lt;?&gt; deletePost(@PathVariable(&quot;postID&quot;) int id) {
+        try {
+<span class="fc" id="L95">            postRepository.deleteById(id);</span>
+<span class="fc" id="L96">            return new Response&lt;&gt;(200, &quot;Post deleted successfully&quot;, null);</span>
+<span class="nc" id="L97">        } catch (EmptyResultDataAccessException e) {</span>
+<span class="nc" id="L98">            return new Response&lt;&gt;(404, &quot;Post not found&quot;, null);</span>
+        }
+    }
+    //发评论
+    @PostMapping(&quot;/comment&quot;)
+    public Response&lt;?&gt; createComment(@RequestHeader String Authorization, @RequestBody Map&lt;String, Object&gt; requestBody) {
+<span class="nc" id="L104">        int postId = (int) requestBody.get(&quot;postId&quot;);</span>
+<span class="nc" id="L105">        System.out.println(postId);</span>
+<span class="nc" id="L106">        String content = (String) requestBody.get(&quot;content&quot;);</span>
+<span class="nc" id="L107">        System.out.println(content);</span>
+
+<span class="nc" id="L109">        Reply reply = new Reply();</span>
+<span class="nc" id="L110">        reply.setContent(content);</span>
+<span class="nc" id="L111">        Student student = studentRepository.findBySid(jwtTokenProvider.getUsername(Authorization));</span>
+<span class="nc" id="L112">        reply.setAuthor(student);</span>
+<span class="nc" id="L113">        reply.setTime(Instant.now());</span>
+<span class="nc" id="L114">        Post post = postRepository.findById(postId).orElse(null);</span>
+<span class="nc bnc" id="L115" title="All 2 branches missed.">        if (post != null) {</span>
+<span class="nc" id="L116">            reply.setPost(post);</span>
+        } else {
+<span class="nc" id="L118">            throw new IllegalArgumentException(&quot;No post found with ID: &quot; + postId);</span>
+        }
+
+<span class="nc" id="L121">        return new Response&lt;&gt;(200, &quot;Comment created successfully&quot;, replyRepository.save(reply));</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

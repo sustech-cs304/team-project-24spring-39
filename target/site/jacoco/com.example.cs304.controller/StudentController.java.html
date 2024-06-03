@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="zh"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentController.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">CS304</a> &gt; <a href="index.source.html" class="el_package">com.example.cs304.controller</a> &gt; <span class="el_source">StudentController.java</span></div><h1>StudentController.java</h1><pre class="source lang-java linenums">package com.example.cs304.controller;
+
+import com.example.cs304.converter.JwtTokenProvider;
+import com.example.cs304.entity.Student;
+import com.example.cs304.repository.StudentRepository;
+import com.example.cs304.response.Response;
+import com.example.cs304.service.StudentService;
+import lombok.AllArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
+import java.util.Map;
+
+@RestController
+<span class="fc" id="L17">@AllArgsConstructor</span>
+@RequestMapping(&quot;/student&quot;)
+public class StudentController {
+
+    private final StudentService studentService;
+    private final StudentRepository studentRepository;
+    private final JwtTokenProvider jwtTokenProvider;
+    @GetMapping(&quot;/{SID}&quot;)
+    public ResponseEntity&lt;List&lt;Map&lt;String, Object&gt;&gt;&gt; getStudents(@PathVariable(&quot;SID&quot;) String SID) {
+<span class="nc" id="L26">        List&lt;Map&lt;String, Object&gt;&gt; courses = studentRepository.findCourses(SID);</span>
+<span class="nc" id="L27">        return ResponseEntity.ok(courses);</span>
+    }
+
+    @GetMapping(&quot;/{SID}/info&quot;)
+    public ResponseEntity&lt;List&lt;Map&lt;String, Object&gt;&gt;&gt; studentInfo(@PathVariable(&quot;SID&quot;) String SID) {
+<span class="nc" id="L32">        List&lt;Map&lt;String, Object&gt;&gt; studentInfo = studentRepository.studentInfo(SID);</span>
+<span class="nc" id="L33">        return ResponseEntity.ok(studentInfo);</span>
+    }
+
+    @PostMapping(&quot;/update_avatar&quot;)
+    public Response&lt;?&gt; updateAvatar(@RequestHeader String Authorization, @RequestBody String avatar) {
+<span class="nc" id="L38">        Student student = studentRepository.findBySid(jwtTokenProvider.getUsername(Authorization));</span>
+<span class="nc" id="L39">        student.setAvatar(avatar);</span>
+<span class="nc" id="L40">        studentRepository.save(student);</span>
+<span class="nc" id="L41">        return Response.success(student);</span>
+    }
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.9.202303310957</span></div></body></html>

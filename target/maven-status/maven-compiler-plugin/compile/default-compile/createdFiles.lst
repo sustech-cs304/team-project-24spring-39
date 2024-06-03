@@ -1,7 +1,6 @@
 com\example\cs304\entity\Rate.class
 com\example\cs304\entity\Post.class
 com\example\cs304\response\Response.class
-com\example\cs304\controller\User.class
 com\example\cs304\entity\CourseProfessor.class
 com\example\cs304\repository\AdminRepository.class
 com\example\cs304\entity\Department.class
@@ -19,7 +18,6 @@ com\example\cs304\entity\Major.class
 com\example\cs304\entity\Reservation.class
 com\example\cs304\entity\Reply.class
 com\example\cs304\entity\Course.class
-com\example\cs304\controller\LoginController.class
 com\example\cs304\entity\Student.class
 com\example\cs304\entity\SecondaryReply.class
 com\example\cs304\entity\Message.class

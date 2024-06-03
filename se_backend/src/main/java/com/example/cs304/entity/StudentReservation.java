@@ -19,9 +19,6 @@ public class StudentReservation {
     @JoinColumn(name = "student_id", nullable = false, referencedColumnName = "SID")
     private Student student;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "reservation_id", nullable = false)
-    private Reservation reservation;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "room_id", nullable = false)
@@ -107,14 +104,6 @@ public class StudentReservation {
 
     public void setStudent(Student student) {
         this.student = student;
-    }
-
-    public Reservation getReservation() {
-        return reservation;
-    }
-
-    public void setReservation(Reservation reservation) {
-        this.reservation = reservation;
     }
 
 }
