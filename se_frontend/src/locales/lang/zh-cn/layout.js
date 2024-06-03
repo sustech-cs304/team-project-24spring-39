@@ -9,6 +9,8 @@ export default {
   reservation: "预约",
   locationManagement: "地点管理",
   recordManagement: "记录管理",
+  selectionManagement: "选课管理",
+  reservationManagement: "预约管理",
 
   breadcrumbs: {
     home: "首页",

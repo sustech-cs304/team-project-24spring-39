@@ -3,7 +3,7 @@ import request from "@/utils/request";
 export function register(data) {
   return request({
     method: "post",
-    url: "/register",
+    url: "/update_password",
     data,
   });
 }

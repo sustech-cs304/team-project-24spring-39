@@ -295,9 +295,9 @@ async function handleLogin() {
 const registerFormRef = ref(null);
 // 注册表单数据
 const registerForm = reactive({
-  username: "admin",
-  password: "123456",
-  confirmPassword: "123456",
+  username: "",
+  oldPassword: "",
+  newPassword: "",
 });
 
 // 注册按钮的加载loading
@@ -318,7 +318,7 @@ const registerRules = reactive({
 
 // 自定义校验器
 function validateConfirmPassword(rule, value, callback) {
-  if (value !== registerForm.password) {
+  if (value === registerForm.password) {
     callback(new Error(t("confirmPWError")));
   } else {
     callback();
@@ -380,6 +380,11 @@ async function handleRegister() {
       transition: transform 0.5s ease;
       z-index: 2;
       transform: translateX(0);
+
+      &:hover {
+        box-shadow: 10px 0 20px 5px rgba(0, 0, 0, 0.4);
+        transform: translateX(-15px);
+      }
     }
 
     &.show-register .banner-img {

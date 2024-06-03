@@ -9,6 +9,8 @@ const service = axios.create({
   baseURL: process.env.VUE_APP_URL,
   // 请求超时时间
   timeout: 1000 * 60 * 5,
+  // 设置withCredentials以发送跨域请求时的凭据
+  // withCredentials: true,
 });
 
 // 请求拦截器
@@ -41,6 +43,9 @@ service.interceptors.response.use(
       ElMessage.error("登录过期，请重新登录");
       store.dispatch("logout");
       return Promise.reject(new Error("登录过期，请重新登录"));
+    } else if (response.data.status === 400) {
+      ElMessage.error("更改失败，学号或密码错误");
+      return Promise.reject(new Error(response.data.message));
     } else {
       ElMessage.error(
         response.data.message || "服务器给的响应码为：" + response.data.status

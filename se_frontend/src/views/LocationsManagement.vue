@@ -236,6 +236,7 @@ const saveLocation = async () => {
       await updateRoom({
         room_id: currentEditting.value.id,
         status: currentEditting.value.state,
+        capacity: currentEditting.value.capacity,
       });
     }
   } else {

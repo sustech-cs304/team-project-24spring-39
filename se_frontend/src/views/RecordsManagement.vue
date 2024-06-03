@@ -1,11 +1,12 @@
 <script setup>
 import { computed, onMounted, ref, watch } from "vue";
 import { ElMessage, ElTree } from "element-plus";
-import { Delete, Edit } from "@element-plus/icons-vue";
+import { Delete } from "@element-plus/icons-vue";
 import { useStore } from "vuex";
 import {
   deleteReservation,
   fetchBookings,
+  searchStudentBySid,
   submitReservation,
 } from "@/api/reservation";
 
@@ -219,14 +220,15 @@ const currentEditing = ref({
   date: "",
   startTime: "",
   endTime: "",
-  persons: "",
+  persons: [],
   remark: "",
+  searchState: "",
 });
 const isEditing = ref(false);
 
 const openDialog = (record = {}) => {
   if (record.id) {
-    currentEditing.value = { ...record };
+    currentEditing.value = { ...record, searchState: "" };
     isEditing.value = true;
   } else {
     currentEditing.value = {
@@ -237,12 +239,35 @@ const openDialog = (record = {}) => {
       date: "",
       startTime: "",
       endTime: "",
-      persons: "",
+      persons: [],
       remark: "",
+      searchState: "",
     };
     isEditing.value = false;
   }
   dialogVisible.value = true;
+};
+
+const querySearchAsync = async (studentId, cb) => {
+  if (studentId.length !== 8) {
+    //学号长度不符合要求，取消请求
+    cb([]); // 传递空数组，无需进一步处理
+    return; // 提前返回，不执行后续代码
+  }
+  try {
+    const response = await searchStudentBySid(studentId);
+    console.log(response.data.name);
+    const result = response.data.sid + " " + response.data.name;
+    cb([{ value: result }]);
+  } catch (error) {
+    console.error("搜索学生信息请求失败:", error);
+    cb([]); // 在错误情况下传递空数组或适当的错误处理
+  }
+};
+
+const addSelectedPerson = (person) => {
+  currentEditing.value.persons.push(person.value);
+  currentEditing.value.searchState = "";
 };
 
 const handleDelete = async (record) => {
@@ -338,13 +363,16 @@ const handleSizeChange = (size) => {
           type="date"
           placeholder="Pick a day"
           size="default"
+          value-format="YYYY-MM-DD"
         />
         <!-- 自动扩展的空白元素 -->
         <div class="spacer"></div>
-        <el-button type="primary" plain @click="handleSearch">查询</el-button>
-        <el-button type="primary" plain @click="() => openDialog()"
-          >添加记录</el-button
-        >
+        <el-button type="primary" plain @click="handleSearch">{{
+          $t("search")
+        }}</el-button>
+        <el-button type="primary" plain @click="() => openDialog()">{{
+          $t("addRecord")
+        }}</el-button>
       </div>
 
       <div class="table-wrapper">
@@ -355,29 +383,54 @@ const handleSizeChange = (size) => {
           row-key="id"
           border
         >
-          <el-table-column fixed prop="id" label="预约编号" sortable />
+          <el-table-column
+            fixed
+            prop="id"
+            :label="$t('table.reservationId')"
+            sortable
+          />
           <el-table-column
             fixed
             prop="createTime"
-            label="创建时间"
+            :label="$t('table.createTime')"
             width="180"
             sortable
           />
-          <el-table-column prop="library" label="图书馆" width="120" sortable />
-          <el-table-column prop="room" label="讨论间" sortable />
-          <el-table-column prop="date" label="预约日期" width="120" sortable />
-          <el-table-column prop="startTime" label="起始时间" sortable />
-          <el-table-column prop="endTime" label="结束时间" sortable />
-          <el-table-column prop="persons" label="预约人" width="180" />
-          <el-table-column prop="remark" label="备注" />
-          <el-table-column fixed="right" label="操作" width="120">
+          <el-table-column
+            prop="library"
+            :label="$t('table.library')"
+            width="120"
+            sortable
+          />
+          <el-table-column prop="room" :label="$t('table.room')" sortable />
+          <el-table-column
+            prop="date"
+            :label="$t('table.reservationDate')"
+            width="120"
+            sortable
+          />
+          <el-table-column
+            prop="startTime"
+            :label="$t('table.startTime')"
+            sortable
+          />
+          <el-table-column
+            prop="endTime"
+            :label="$t('table.endTime')"
+            sortable
+          />
+          <el-table-column
+            prop="persons"
+            :label="$t('table.persons')"
+            width="180"
+          />
+          <el-table-column prop="remark" :label="$t('table.remark')" />
+          <el-table-column
+            fixed="right"
+            :label="$t('table.action')"
+            width="120"
+          >
             <template #default="scope">
-              <el-button
-                type="primary"
-                :icon="Edit"
-                circle
-                @click="() => openDialog(scope.row)"
-              />
               <el-button
                 type="danger"
                 :icon="Delete"
@@ -405,22 +458,25 @@ const handleSizeChange = (size) => {
 
   <el-dialog
     v-model="dialogVisible"
-    :title="isEditing.valueOf() ? '编辑预约' : '添加预约'"
+    :title="isEditing ? $t('editReservation') : $t('addReservation')"
     :before-close="handleClose"
   >
     <el-form :model="currentEditing" label-width="120px">
-      <el-form-item label="预约编号">
+      <el-form-item :label="$t('reservationId')">
         <el-input v-model="currentEditing.id" disabled></el-input>
       </el-form-item>
-      <el-form-item label="创建时间">
+      <el-form-item :label="$t('createTime')">
         <el-date-picker
           type="datetime"
           v-model="currentEditing.createTime"
           disabled
         />
       </el-form-item>
-      <el-form-item label="图书馆">
-        <el-select v-model="currentEditing.library" placeholder="选择图书馆">
+      <el-form-item :label="$t('library')">
+        <el-select
+          v-model="currentEditing.library"
+          :placeholder="$t('selectLibrary')"
+        >
           <el-option
             v-for="library in placeData"
             :key="library.id"
@@ -429,8 +485,11 @@ const handleSizeChange = (size) => {
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="讨论间名称">
-        <el-select v-model="currentEditing.room" placeholder="选择讨论间">
+      <el-form-item :label="$t('roomName')">
+        <el-select
+          v-model="currentEditing.room"
+          :placeholder="$t('selectRoom')"
+        >
           <el-option
             v-for="room in selectedLibraryRooms"
             :key="room.id"
@@ -439,46 +498,62 @@ const handleSizeChange = (size) => {
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="预约日期">
+      <el-form-item :label="$t('reservationDate')">
         <el-date-picker
           v-model="currentEditing.date"
           type="date"
-          placeholder="选择日期"
+          :placeholder="$t('selectDate')"
         ></el-date-picker>
       </el-form-item>
-      <el-form-item label="起始时间">
+      <el-form-item :label="$t('startTime')">
         <el-time-select
           v-model="currentEditing.startTime"
           style="width: 240px"
           :max-time="currentEditing.endTime"
-          placeholder="选择起始时间"
+          :placeholder="$t('selectStartTime')"
           start="08:00"
           step="00:30"
           end="22:00"
         ></el-time-select>
       </el-form-item>
-      <el-form-item label="结束时间">
+      <el-form-item :label="$t('endTime')">
         <el-time-select
           v-model="currentEditing.endTime"
           style="width: 240px"
           :min-time="currentEditing.startTime"
-          placeholder="选择结束时间"
+          :placeholder="$t('selectEndTime')"
           start="08:00"
           step="00:30"
           end="22:00"
         ></el-time-select>
       </el-form-item>
-      <el-form-item label="预约人">
-        <el-input v-model="currentEditing.persons"></el-input>
+      <el-form-item :label="$t('addPersonLabel')" required>
+        <el-autocomplete
+          v-model="currentEditing.searchState"
+          :fetch-suggestions="querySearchAsync"
+          :placeholder="$t('addPeople')"
+          @select="addSelectedPerson"
+        ></el-autocomplete>
       </el-form-item>
-      <el-form-item label="备注">
+      <el-form-item :label="$t('addedPerson')" prop="addedPersons">
+        <div v-if="currentEditing.persons.length > 0">
+          <ul>
+            <li v-for="person in currentEditing.persons" :key="person.id">
+              {{ person }}
+            </li>
+          </ul>
+        </div>
+      </el-form-item>
+      <el-form-item :label="$t('remark')">
         <el-input v-model="currentEditing.remark"></el-input>
       </el-form-item>
     </el-form>
     <template #footer>
       <div class="dialog-footer">
-        <el-button @click="handleClose">取消</el-button>
-        <el-button type="primary" @click="saveRecord">保存</el-button>
+        <el-button @click="handleClose">{{ $t("cancel") }}</el-button>
+        <el-button type="primary" @click="saveRecord">{{
+          $t("save")
+        }}</el-button>
       </div>
     </template>
   </el-dialog>

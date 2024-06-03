@@ -9,6 +9,8 @@ export default {
   reservation: "Reservation",
   locationManagement: "Location Management",
   recordManagement: "Record Management",
+  selectionManagement: "Selection Admin",
+  reservationManagement: "Reservation Admin",
 
   breadcrumbs: {
     home: "Home",

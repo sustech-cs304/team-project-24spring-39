@@ -1,9 +1,9 @@
 export default {
-  registerTitle: "注册账号",
-  userPlaceholder: "请输入用户名",
-  PWPlaceholder: "请输入密码",
-  confirmPWPlaceholder: "请再次输入密码",
-  register: "注册",
+  registerTitle: "更改密码",
+  userPlaceholder: "请输入学号",
+  PWPlaceholder: "请输入旧密码",
+  confirmPWPlaceholder: "请输入新密码",
+  register: "提交",
 
   loginTitle: "登录账号",
   login: "登录",
@@ -14,6 +14,6 @@ export default {
   captchaError: "请点击验证码进行校验",
   loginError: "登录失败, 请稍后重试",
   checkError: "用户名或密码错误",
-  confirmPW: "请确认密码",
-  confirmPWError: "两次输入的密码不一致",
+  confirmPW: "请输入新密码",
+  confirmPWError: "新密码不能与旧密码相同",
 };

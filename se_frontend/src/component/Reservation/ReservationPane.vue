@@ -19,7 +19,7 @@ onMounted(async () => {
   locations.value = store.state.reservationStore.locations;
 
   if (props.placeId) {
-    console.log("props.placeId: ", props.placeId);
+    // console.log("props.placeId: ", props.placeId);
     await fetchData(props.placeId);
   }
 });
@@ -32,7 +32,7 @@ const fetchData = async (placeId) => {
     console.error(`Location with id ${placeId} not found`);
     return;
   }
-  console.log("selectedLocation: ", selectedLocation);
+  // console.log("selectedLocation: ", selectedLocation);
 
   childrenRooms.value = selectedLocation.children;
   const currentDate = format(new Date(), "yyyy-MM-dd"); // 获取当前日期并格式化
@@ -55,7 +55,6 @@ const selectedDay = ref("");
 
 const disabledDate = (time) => {
   return (
-    time.getTime() < Date.now() - 8.64e7 ||
     time.getTime() > Date.now() + 2 * 8.64e7 // 3 days
   );
 };
@@ -159,7 +158,6 @@ const querySearchAsync = async (studentId, cb) => {
     cb([]); // 传递空数组，无需进一步处理
     return; // 提前返回，不执行后续代码
   }
-
   try {
     const response = await searchStudentBySid(studentId);
     console.log(response.data.name);
@@ -228,18 +226,29 @@ const submitForm = () => {
         const selectedDate = selectedDay.value || currentDate;
         const newStartTime = new Date(`${selectedDate}T${form.startTime}:00`);
         const newEndTime = new Date(`${selectedDate}T${form.endTime}:00`);
+        // console.log("newStartTime");
+        // console.log(newStartTime);
+        // console.log("newEndTime");
+        // console.log(newEndTime);
 
         // 获取当前房间的所有预约记录
         const roomBookings = bookings[currentBooking.value.id] || [];
 
+        // console.log(roomBookings);
+
         // 检查新预约时间是否与现有预约时间冲突
         const isConflict = roomBookings.some((booking) => {
+          // console.log(booking);
+          // console.log(booking.value);
           const bookingStartTime = new Date(
-            `${selectedDate}T${booking.start_time}`
+            `${selectedDate}T${booking.startTime}`
           );
-          const bookingEndTime = new Date(
-            `${selectedDate}T${booking.end_time}`
-          );
+          // console.log(selectedDate);
+          // console.log(booking);
+          // console.log(booking.value.startTime);
+          // console.log(bookingStartTime);
+          const bookingEndTime = new Date(`${selectedDate}T${booking.endTime}`);
+          // console.log(bookingEndTime);
           return (
             (newStartTime >= bookingStartTime &&
               newStartTime < bookingEndTime) ||
@@ -373,7 +382,7 @@ const resetForm = (showMessage = false) => {
           />
         </el-form-item>
       </el-form-item>
-      <el-form-item :label="$t('appointmentTime')" required>
+      <el-form-item :label="$t('addPersonLabel')" required>
         <el-autocomplete
           v-model="form.searchState"
           :fetch-suggestions="querySearchAsync"

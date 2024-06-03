@@ -36,24 +36,7 @@ export default {
         title: "选课",
         icon: "House",
         url: "/selection",
-        children: [
-          {
-            id: 6,
-            pid: 1,
-            title: "我要选课",
-            icon: "House",
-            url: "/selection",
-            children: null,
-          },
-          {
-            id: 7,
-            pid: 1,
-            title: "选课2",
-            icon: "House",
-            url: "/selection2",
-            children: null,
-          },
-        ],
+        children: null,
       },
       {
         id: 2,
@@ -182,24 +165,7 @@ export default {
             title: t("courseSelection"),
             icon: "Grid",
             url: "/selection",
-            children: [
-              {
-                id: 6,
-                pid: 1,
-                title: "我要选课",
-                icon: "",
-                url: "/selection",
-                children: null,
-              },
-              {
-                id: 7,
-                pid: 1,
-                title: "选课2",
-                icon: "House",
-                url: "/selection2",
-                children: null,
-              },
-            ],
+            children: null,
           },
           {
             id: 2,
@@ -254,8 +220,47 @@ export default {
       } else {
         // 如果是管理员
         menuList = [
-          { name: "管理首页", link: "/admin/home" },
-          { name: "用户管理", link: "/admin/users" },
+          {
+            id: 0,
+            pid: 0,
+            title: t("home"),
+            icon: "House",
+            url: "/",
+            children: null,
+          },
+          {
+            id: 1,
+            pid: 0,
+            title: t("selectionManagement"),
+            icon: "Grid",
+            url: "/selectionManagement",
+            children: null,
+          },
+          {
+            id: 4,
+            pid: 0,
+            title: t("reservationManagement"),
+            icon: "Clock",
+            url: "",
+            children: [
+              {
+                id: 9,
+                pid: 4,
+                title: t("locationManagement"),
+                icon: "",
+                url: "/reservation-locations",
+                children: null,
+              },
+              {
+                id: 10,
+                pid: 4,
+                title: t("recordManagement"),
+                icon: "",
+                url: "/reservation-records",
+                children: null,
+              },
+            ],
+          },
         ];
       }
       commit("setMenuList", menuList); // 更新菜单列表
