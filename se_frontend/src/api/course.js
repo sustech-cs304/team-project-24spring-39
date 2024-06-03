@@ -70,3 +70,9 @@ export function queryCourse(data) {
     },
   });
 }
+export function queryStopState() {
+  return request({
+    method: "get",
+    url: `/course/query-stop-state`, // 根据你的实际API端点修改
+  });
+}

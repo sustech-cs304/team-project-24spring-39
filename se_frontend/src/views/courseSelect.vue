@@ -214,27 +214,33 @@ const fetchData = async (type) => {
   tableData.value = cachedData.value[type] || [];
 };
 
+const queryTableData = ref([]);
 const queryCourses = async () => {
-  console.log("Querying for data:", params.value);
-  const response = await queryCourse(params.value);
-  console.log("response:", response.data);
-  tableData.value = response.data.map((item) => {
-    const formattedProfessor = item.professors
-      .map((prof) => prof.name)
-      .join(", ");
-    return {
-      courseCid: item.cid,
-      courseType: item.type,
-      courseName: `${item.name}`,
-      courseCreditPeriod: `${item.credit}/${item.hours}`,
-      courseTimeLocation: `${item.time}; ${item.location}`,
-      courseDepartment: item.department.name,
-      courseInformationRate: `教师：${formattedProfessor}; 评分：${item.rate}`,
-      capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
-    };
-  });
-  totalItems.value = tableData.value.length;
-  handleCurrentChange(1); // 初始化或刷新数据后显示第一页
+  try {
+    console.log("Querying for data:", params.value);
+    const response = await queryCourse(params.value);
+    console.log("response:", response.data);
+    queryTableData.value = response.data.map((item) => {
+      const formattedProfessor = item.professors
+        .map((prof) => prof.name)
+        .join(", ");
+      return {
+        courseCid: item.cid,
+        courseType: item.type,
+        courseName: `${item.name}`,
+        courseCreditPeriod: `${item.credit}/${item.hours}`,
+        courseTimeLocation: `${item.time}; ${item.location}`,
+        courseDepartment: item.department.name,
+        courseInformationRate: `教师：${formattedProfessor}; 评分：${item.rate}`,
+        capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
+      };
+    });
+    totalItems.value = tableData.value.length;
+    handleCurrentChange(1); // 初始化或刷新数据后显示第一页
+  } catch (error) {
+    console.error("Failed to query data:", error);
+  }
+  tableData.value = queryTableData.value || [];
 };
 
 const store = useStore();
@@ -272,8 +278,8 @@ function handleSizeChange(val) {
 
 function handleCurrentChange(newPage) {
   console.log(`current page: ${newPage}`);
-  const type = titles.find((title) => title.name === activeTab.value)?.type;
-  const allData = cachedData.value[type] || [];
+  // const type = titles.find((title) => title.name === activeTab.value)?.type;
+  const allData = tableData.value;
   const startIndex = (newPage - 1) * pageSize4.value;
   tableData.value = allData.slice(startIndex, startIndex + pageSize4.value);
 }
@@ -288,10 +294,28 @@ async function HandleQuery() {
   ) {
     ElMessage.error("请选择具体时间段");
   } else {
+    const timeComponents = [
+      formInline.value.day,
+      formInline.value.time,
+      formInline.value.weektype,
+    ];
+    const filledComponents = timeComponents.filter(Boolean); // 过滤掉空字符串
+
+    formInline.value.courseType = formInline.value.courseType || "";
+    formInline.value.day = formInline.value.day || "";
+    formInline.value.time = formInline.value.time || "";
+    formInline.value.weektype = formInline.value.weektype || "";
+    formInline.value.coursename = formInline.value.coursename || "";
+
+    // 使用空格连接非空组件
+    const timeString = filledComponents.join(" ");
+
+    // 设置查询参数
     params.value.department = formInline.value.courseType;
-    params.value.time =
-      formInline.value.day + formInline.value.time + formInline.value.weektype;
+    params.value.time = timeString;
     params.value.name = formInline.value.coursename;
+
+    // 执行查询
     await queryCourses(params);
   }
 }
