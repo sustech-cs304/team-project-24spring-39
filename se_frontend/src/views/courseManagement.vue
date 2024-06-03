@@ -60,32 +60,28 @@
   </div>
 
   <!-- 默认表格 -->
-  <div v-if="!isQueried">
-    <el-table :data="activeData" style="width: 100%" max-height="550">
-      <el-table-column
-        v-for="column in defaultTableColumns"
-        :key="column.prop"
-        :prop="column.prop"
-        :label="column.label"
-        :width="column.width"
-      />
-      <el-table-column fixed="right" label="Operations">
-        <template #default="scope">
-          <el-button type="primary" @click="handleQuery(scope.row)"
-            >查询</el-button
-          >
-          <el-button
-            type="danger"
-            @click="handleDelete(scope.row.courseCid)"
-            width="30px"
-            >Delete
-          </el-button>
-        </template>
-      </el-table-column>
-    </el-table>
-  </div>
-  <!-- 查询后的表格 -->
-  <div v-else></div>
+  <el-table :data="defaultTableData" style="width: 100%" max-height="550">
+    <el-table-column
+      v-for="column in defaultTableColumns"
+      :key="column.prop"
+      :prop="column.prop"
+      :label="column.label"
+      :width="column.width"
+    />
+    <el-table-column fixed="right" label="Operations">
+      <template #default="scope">
+        <el-button type="primary" @click="handleQuery(scope.row)"
+          >查询</el-button
+        >
+        <el-button
+          type="danger"
+          @click="handleDelete(scope.row.courseCid)"
+          width="30px"
+          >Delete
+        </el-button>
+      </template>
+    </el-table-column>
+  </el-table>
   <div class="demo-pagination-block">
     <el-pagination
       v-model:current-page="currentPage4"
@@ -105,15 +101,17 @@
       <el-form ref="formRef" :model="formData" :rules="rules">
         <el-form-item label="课程类型" required>
           <el-select v-model="formData.type" placeholder="请选择">
-            <el-option label="必修" value="必修"></el-option>
-            <el-option label="选修" value="选修"></el-option>
+            <el-option label="通识必修课" value="通识必修课"></el-option>
+            <el-option label="通识选修课" value="通识选修课"></el-option>
+            <!--            <el-option label="通识必修课" value="TongShiBiXiu"></el-option>-->
+            <!--            <el-option label="通识选修课" value="TongShiBiXiu"></el-option>-->
           </el-select>
         </el-form-item>
         <el-form-item label="课程名称" required>
           <el-input v-model="formData.name"></el-input>
         </el-form-item>
         <el-form-item label="课程编码(CID)" required>
-          <el-input v-model.number="formData.CID" type="number"></el-input>
+          <el-input v-model.number="formData.CID"></el-input>
         </el-form-item>
         <el-form-item label="学分" required>
           <el-select v-model="formData.credit" placeholder="请选择">
@@ -141,27 +139,25 @@
           </el-select>
         </el-form-item>
         <el-form-item label="教授姓名" required>
-          <el-autocomplete
-            v-model="formData.searchState"
-            :fetch-suggestions="querySearchAsync"
-            placeholder="添加老师"
-            @select="addSelectedPerson"
-          ></el-autocomplete>
-        </el-form-item>
-        <el-form-item label="已添加的老师：" prop="addedPersons">
-          <div v-if="formData.addedPersons.length > 0">
-            <ul>
-              <li v-for="person in formData.addedPersons" :key="person.id">
-                {{ person }}
-              </li>
-            </ul>
+          <div v-for="(item, index) in formData.professor" :key="index">
+            <el-input
+              v-model="item.professor_name"
+              placeholder="请输入教授姓名"
+              style="width: 70%"
+            ></el-input>
+            <el-button @click="removeTeacher(index)">删除</el-button>
           </div>
+          <el-button @click="addTeacher">添加老师</el-button>
         </el-form-item>
         <el-form-item label="上课地点" required>
           <el-input v-model="formData.location"></el-input>
         </el-form-item>
         <el-form-item label="上课时间" required>
-          <el-select v-model="formData.weekType" placeholder="选择单双周">
+          <el-select
+            v-model="formData.weekType"
+            placeholder="选择单双周"
+            style="width: 70%"
+          >
             <el-option label="单周" value="odd"></el-option>
             <el-option label="双周" value="even"></el-option>
             <el-option label="每周" value="both"></el-option>
@@ -205,8 +201,13 @@
     </el-dialog>
   </div>
   <div>
-    <el-dialog :title="stuDialogCourse" v-model="isQueried">
-      <el-table :data="activeData" style="width: 100%" max-height="550">
+    <el-dialog
+      :title="stuDialogCourse"
+      width="80%"
+      v-model="isQueried"
+      :visible="isQueried"
+    >
+      <el-table :data="queriedTableData" style="width: 100%" max-height="550">
         <el-table-column
           v-for="column in queriedTableColumns"
           :key="column.prop"
@@ -224,7 +225,6 @@ import { onMounted, reactive, ref } from "vue";
 import {
   endSelection,
   fetchDataByType,
-  searchTeacherBySid,
   submitCourse,
   fetchDataByCourseId,
   adminDeleteCourse,
@@ -253,10 +253,28 @@ async function HandleQuery() {
   ) {
     ElMessage.error("请选择具体时间段");
   } else {
+    const timeComponents = [
+      formInline.value.day,
+      formInline.value.time,
+      formInline.value.weektype,
+    ];
+    const filledComponents = timeComponents.filter(Boolean); // 过滤掉空字符串
+
+    formInline.value.courseType = formInline.value.courseType || "";
+    formInline.value.day = formInline.value.day || "";
+    formInline.value.time = formInline.value.time || "";
+    formInline.value.weektype = formInline.value.weektype || "";
+    formInline.value.coursename = formInline.value.coursename || "";
+
+    // 使用空格连接非空组件
+    const timeString = filledComponents.join(" ");
+
+    // 设置查询参数
     params.value.department = formInline.value.courseType;
-    params.value.time =
-      formInline.value.day + formInline.value.time + formInline.value.weektype;
+    params.value.time = timeString;
     params.value.name = formInline.value.coursename;
+
+    // 执行查询
     await queryCourses(params);
   }
 }
@@ -275,7 +293,7 @@ const queryCourses = async () => {
       courseName: `${item.name}`,
       courseCreditPeriod: `${item.credit}/${item.hours}`,
       courseTimeLocation: `${item.time}; ${item.location}`,
-      courseDepartment: item.department.name,
+      courseDepartment: item.department,
       courseInformationRate: `教师：${formattedProfessor}; 评分：${item.rate}`,
       capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
     };
@@ -283,8 +301,6 @@ const queryCourses = async () => {
   totalItems.value = defaultTableData.value.length;
   handleCurrentChange(1); // 初始化或刷新数据后显示第一页
 };
-
-const activeData = ref([]);
 
 const totalItems = ref(0);
 const defaultTableData = ref([]);
@@ -306,7 +322,7 @@ const queriedTableColumns = [
   { prop: "courseName", label: "课程名称", width: "120" },
   { prop: "StudentID", label: "学生id", width: "120" },
   { prop: "StudentName", label: "学生姓名", width: "120" },
-  { prop: "Department", label: "专业", width: "120" },
+  { prop: "Department", label: "学生专业", width: "120" },
   { prop: "points", label: "投入分数", width: "120" },
   { prop: "capacitySelectedNumber", label: "容量/已选", width: "120" },
 ];
@@ -326,7 +342,7 @@ async function fetchData() {
         courseName: `${item.name}`,
         courseCreditPeriod: `${item.credit}/${item.hours}`,
         courseTimeLocation: `${item.time}; ${item.location}`,
-        courseDepartment: item.department.name,
+        courseDepartment: item.department,
         courseInformationRate: `教师：${formattedProfessor}; 评分：${item.rate}`,
         capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
       };
@@ -341,23 +357,21 @@ const fetchQueryData = async (id) => {
   try {
     const response = await fetchDataByCourseId(id);
     console.log("response:", response.data);
-    const courseData = response.data.course;
-    console.log("response.data.course:", courseData);
     console.log("response.data.students:", response.data.students);
     queriedTableData.value = response.data.students.map((item) => ({
-      Department: item.department,
+      Department: item.major.name,
       StudentID: item.sid,
       StudentName: item.name,
-      points: item.points,
+      points: item.score,
     }));
     totalItems.value = queriedTableData.value.length;
     //将表格课程部分数据
     for (let i = 0; i < totalItems.value; i++) {
-      queriedTableData.value[i].courseName = courseData.name;
-      queriedTableData.value[i].courseID = courseData.id;
+      queriedTableData.value[i].courseName = response.data.courseName;
+      queriedTableData.value[i].courseCid = response.data.cid;
       queriedTableData.value[
         i
-      ].capacitySelectedNumber = `${courseData.capacity}; ${courseData.selected}`;
+      ].capacitySelectedNumber = `${response.data.capacity}; ${response.data.selected}`;
     }
     handleCurrentChange(1); // 初始化或刷新数据后显示第一页
   } catch (error) {
@@ -378,8 +392,11 @@ function handleCurrentChange(newPage) {
   console.log(`current page: ${newPage}`);
   const startIndex = (newPage - 1) * pageSize4.value;
   const endIndex = startIndex + pageSize4.value;
-  const fullData = isQueried.value ? queriedTableData : defaultTableData;
-  activeData.value = fullData.value.slice(startIndex, endIndex);
+  if (isQueried.value === false) {
+    defaultTableData.value = defaultTableData.value.slice(startIndex, endIndex);
+  } else {
+    queriedTableData.value = queriedTableData.value.slice(startIndex, endIndex);
+  }
 }
 
 // 处理查询逻辑
@@ -396,20 +413,20 @@ async function handleQuery(row) {
   // 这里可以加入你的查询逻辑
   isQueried.value = true;
   stuDialogCourse.value = row.courseName;
-  await fetchQueryData(row.courseID);
+  await fetchQueryData(row.courseCid);
 }
 
 const dialogFormVisible = ref(false);
 
 const formRef = ref(null);
 const formData = reactive({
-  type: "必修",
-  name: "大学物理",
-  CID: "101",
+  type: "通识必修课",
+  name: "",
+  CID: "GH101",
   credit: "3",
   hours: "32",
   department: "计算机科学与工程系",
-  professor_name: [],
+  professor: [],
   location: "理学院101",
   weekType: "",
   times: [],
@@ -433,30 +450,18 @@ const addTime = () => {
     period: "",
   });
 };
-
+const addTeacher = () => {
+  formData.professor.push({
+    professor_name: "",
+  });
+};
+const removeTeacher = (index) => {
+  formData.professor.splice(index, 1);
+};
 const removeTime = (index) => {
   formData.times.splice(index, 1);
 };
-const addSelectedPerson = (person) => {
-  formData.addedPersons.push(person.value);
-  formData.searchState = "";
-};
 
-const querySearchAsync = async (id, cb) => {
-  if (id.length < 3) {
-    cb([]);
-    return;
-  }
-  try {
-    const response = await searchTeacherBySid(id);
-    console.log(response.data.name);
-    const result = response.data.sid + " " + response.data.name;
-    cb([{ value: result }]);
-  } catch (error) {
-    console.error("搜索老师信息请求失败:", error);
-    cb([]);
-  }
-};
 async function handleAdd() {
   dialogFormVisible.value = true;
   console.log(dialogFormVisible, "add!");
@@ -476,9 +481,7 @@ const submitForm = () => {
           credit: formData.credit,
           hours: formData.hours,
           department: formData.department,
-          professorIds: formData.addedPersons.map((teacher) =>
-            teacher.slice(0, 8)
-          ),
+          professorName: formData.professor.map((prof) => prof.professor_name),
           location: formData.location,
           time: formattedTimes, // 使用格式化后的时间数据
           capacity: formData.capacity,
@@ -532,6 +535,7 @@ async function handleDelete(courseCid) {
 async function handleEnd() {
   try {
     await endSelection();
+    ElMessage.success("选课已截止");
   } catch (error) {
     ElMessage.error("操作失败，请稍后重试");
   }

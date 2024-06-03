@@ -58,7 +58,46 @@
       <el-button type="primary" @click="HandleQuery">查询</el-button>
     </div>
     <div class="showSelectedCourse">
-      <selected-course :state="state" />
+      <div class="selectedCourse">
+        <el-row style="margin-top: 10px" gutter="20px">
+          <!--      <el-col :span="6">-->
+          <!--        <el-text>已选学分：{{ totalCredits }}</el-text>-->
+          <!--      </el-col>-->
+          <el-col :span="6">
+            <el-text>剩余分数：{{ remainingPoints.value }}</el-text>
+          </el-col>
+          <el-col :span="6">
+            <el-button plain @click="OpenDialog">查看已选课程</el-button>
+          </el-col>
+        </el-row>
+      </div>
+      <el-dialog
+        title="已选课程"
+        v-model="dialogVisible"
+        width="80%"
+        height="80%"
+      >
+        <!-- 对话框内容 -->
+        <el-table :data="SelectTableData" style="width: 100%" max-height="400">
+          <el-table-column
+            v-for="column in SelectTableColumns"
+            :key="column.prop"
+            :prop="column.prop"
+            :label="column.label"
+            :width="column.width"
+          />
+          <el-table-column fixed="right" label="Operations">
+            <template #default="scope">
+              <el-button
+                type="danger"
+                @click="DeleteCourse(scope.row.courseCid)"
+                width="30px"
+                >Delete
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-dialog>
     </div>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
       <el-tab-pane
@@ -122,31 +161,30 @@
 
 <script setup>
 import { ElMessage } from "element-plus";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted } from "vue";
 import {
   fetchDataByType,
   submitSelectedCourse,
   queryCourse,
   queryStopState,
 } from "@/api/course";
-import { useStore } from "vuex";
-let state = ref(0);
+
+let remainingPoints = ref(100);
+let state = ref();
 async function queryState() {
   const response = await queryStopState();
-  console.log("response:", response.data);
   return response.data;
 }
-
+//////////////////////////////////tab
 const titles = [
   { id: 1, label: "全部", name: "AllCourses", type: "all" },
   { id: 2, label: "通识必修", name: "BiXiuCourses", type: "bixiu" },
   { id: 3, label: "通识选修", name: "XuanXiuCourses", type: "xuanxiu" },
   { id: 4, label: "课程推荐", name: "RecommendCourses", type: "high_score" },
 ];
-
 const activeTab = ref(titles[0].name); // 默认选中第一个标签页
-const tableData = ref([]);
 
+const tableData = ref([]);
 const tableColumns = [
   { prop: "courseCid", label: "课程编号", width: "150" },
   { prop: "courseType", label: "课程类型", width: "150" },
@@ -157,23 +195,10 @@ const tableColumns = [
   { prop: "courseInformationRate", label: "课程信息/评分", width: "120" },
   { prop: "capacitySelectedNumber", label: "容量/已选", width: "120" },
 ];
-
 const cachedData = ref({});
 const totalItems = ref(0);
 
-const params = ref({
-  department: "",
-  time: "",
-  name: "",
-});
-const formInline = ref({
-  courseType: "",
-  day: "",
-  time: "",
-  weektype: "",
-  coursename: "",
-});
-
+//处理点击tab跳转
 async function handleTabClick(tab) {
   const tabName = tab.props.name;
   const type = titles.find((title) => title.name === tabName)?.type;
@@ -189,13 +214,16 @@ async function handleTabClick(tab) {
 }
 
 onMounted(async () => {
-  state = await queryState();
-  if (state.value === 1) {
+  state.value = await queryState();
+  console.log("state.value:", state.value);
+  console.log("state:", state);
+  if (state.value === true) {
     ElMessage.error("选课已结束");
   }
   await handleTabClick({ props: { name: "AllCourses" } });
 });
 
+//获取tab页面数据
 const fetchData = async (type) => {
   if (type !== undefined && !cachedData.value[type]) {
     try {
@@ -211,7 +239,7 @@ const fetchData = async (type) => {
           courseName: `${item.name}`,
           courseCreditPeriod: `${item.credit}/${item.hours}`,
           courseTimeLocation: `${item.time}; ${item.location}`,
-          courseDepartment: item.department.name,
+          courseDepartment: item.department,
           courseInformationRate: `教师：${formattedProfessor}; 评分：${item.rate}`,
           capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
         };
@@ -225,7 +253,21 @@ const fetchData = async (type) => {
   tableData.value = cachedData.value[type] || [];
 };
 
+/////////////////////////////////////筛选
 const queryTableData = ref([]);
+const params = ref({
+  department: "",
+  time: "",
+  name: "",
+});
+const formInline = ref({
+  courseType: "",
+  day: "",
+  time: "",
+  weektype: "",
+  coursename: "",
+});
+//筛选课程
 const queryCourses = async () => {
   try {
     console.log("Querying for data:", params.value);
@@ -241,7 +283,7 @@ const queryCourses = async () => {
         courseName: `${item.name}`,
         courseCreditPeriod: `${item.credit}/${item.hours}`,
         courseTimeLocation: `${item.time}; ${item.location}`,
-        courseDepartment: item.department.name,
+        courseDepartment: item.department,
         courseInformationRate: `教师：${formattedProfessor}; 评分：${item.rate}`,
         capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
       };
@@ -253,54 +295,7 @@ const queryCourses = async () => {
   }
   tableData.value = queryTableData.value || [];
 };
-
-const store = useStore();
-
-async function HandleAdd(row) {
-  if (state.value === 1) {
-    ElMessage.error("选课已结束");
-  } else {
-    const remainingPoints = computed(() => store.getters.getRemainingPoints);
-    console.log("remainingPoints:", remainingPoints.value);
-    if (remainingPoints.value < row.score) {
-      console.log("Not enough points!");
-      ElMessage.error("Not enough points!");
-      return;
-    }
-    try {
-      // 调用 API 函数
-      const response = await submitSelectedCourse(row.courseCid, row.score);
-      console.log("Submitted successfully", response);
-      ElMessage.success("Course added successfully!");
-      row.score = ""; // 清空输入框
-    } catch (error) {
-      console.error("Failed to submit course", error);
-      ElMessage.error("Failed to add course!");
-    }
-  }
-}
-
-// 分页
-const currentPage4 = ref(1);
-const pageSize4 = ref(25);
-const small = ref(false);
-const background = ref(false);
-const disabled = ref(false);
-
-function handleSizeChange(val) {
-  console.log(`${val} items per page`);
-}
-
-function handleCurrentChange(newPage) {
-  console.log(`current page: ${newPage}`);
-  // const type = titles.find((title) => title.name === activeTab.value)?.type;
-  const allData = tableData.value;
-  const startIndex = (newPage - 1) * pageSize4.value;
-  tableData.value = allData.slice(startIndex, startIndex + pageSize4.value);
-}
-
-import SelectedCourse from "@/component/courseShow/selectedCourse.vue";
-
+//筛选课程数据
 async function HandleQuery() {
   if (
     formInline.value.day !== "" &&
@@ -334,6 +329,133 @@ async function HandleQuery() {
     await queryCourses(params);
   }
 }
+
+// 添加已选课程
+async function HandleAdd(row) {
+  console.log("Adding course:", state);
+  if (state.value === true) {
+    ElMessage.error("选课已结束");
+  } else {
+    console.log("remainingPoints:", remainingPoints.value);
+    if (remainingPoints.value < row.score) {
+      console.log("Not enough points!");
+      ElMessage.error("Not enough points!");
+      return;
+    }
+    try {
+      // 调用 API 函数
+      const response = await submitSelectedCourse(row.courseCid, row.score);
+      remainingPoints.value = response.data.data;
+      console.log("Submitted successfully", remainingPoints.value);
+      console.log("Submitted successfully", response);
+      ElMessage.success("Course added successfully!");
+      row.score = ""; // 清空输入框
+    } catch (error) {
+      console.error("Failed to submit course", error);
+      ElMessage.error("Failed to add course!");
+    }
+  }
+}
+
+/////////////////////////////////////分页
+const currentPage4 = ref(1);
+const pageSize4 = ref(25);
+const small = ref(false);
+const background = ref(false);
+const disabled = ref(false);
+
+function handleSizeChange(val) {
+  console.log(`${val} items per page`);
+}
+
+function handleCurrentChange(newPage) {
+  console.log(`current page: ${newPage}`);
+  const allData = tableData.value;
+  const startIndex = (newPage - 1) * pageSize4.value;
+  tableData.value = allData.slice(startIndex, startIndex + pageSize4.value);
+}
+
+/////////////////////////////////////////////////////////
+import {
+  DeleteSelectedCourseByCourseId,
+  QuerySelectedCourseFinal,
+  ReturnSelectedCourse,
+} from "@/api/course";
+
+const SelectTableData = ref([]);
+const SelectTableColumns = [
+  { prop: "courseCid", label: "课程编号", width: "120" },
+  { prop: "courseType", label: "课程类型", width: "150" },
+  { prop: "courseName", label: "课程名称", width: "120" },
+  { prop: "courseDepartment", label: "课程部门", width: "120" },
+  { prop: "courseCredit", label: "学分", width: "120" },
+  { prop: "capacitySelectedNumber", label: "容量/已选", width: "120" },
+  { prop: "points", label: "投入分数", width: "120" },
+];
+
+// const totalCredits = computed(() => {
+//   if (props.state === false) {
+//     return tableData.value.reduce(
+//       (acc, course) => acc + course.courseCredit,
+//       0
+//     );
+//   } else {
+//     return 0;
+//   }
+// });
+
+const dialogVisible = ref(false);
+
+//获取已选课程数据
+const fetchSelectData = async () => {
+  if (dialogVisible.value) {
+    try {
+      if (state.value === true) {
+        const response = await QuerySelectedCourseFinal();
+        console.log("response:", response.data);
+      }
+      const response = await ReturnSelectedCourse();
+      console.log("response:", response.data);
+      SelectTableData.value = response.data.map((item) => ({
+        courseCid: item.cid,
+        courseType: item.type,
+        courseName: `${item.name}`,
+        courseCredit: item.credit,
+        courseDepartment: item.department,
+        capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
+        points: item.score,
+      }));
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
+  }
+};
+
+async function OpenDialog() {
+  dialogVisible.value = true;
+  await fetchSelectData();
+}
+
+//删除选课
+async function DeleteCourse(courseCid) {
+  try {
+    if (state.value === true) {
+      ElMessage.error("选课已截至，无法操作");
+    } else {
+      console.log("Deleting course:", courseCid);
+      const response = await DeleteSelectedCourseByCourseId(courseCid);
+      SelectTableData.value = SelectTableData.value.filter(
+        (course) => course.courseCid !== courseCid
+      );
+      ElMessage.success("Course deleted successfully!");
+      remainingPoints.value = response.data.data;
+      console.log("remainingPoints:", remainingPoints.value);
+    }
+  } catch (error) {
+    console.error("Failed to delete course:", error);
+    ElMessage.error("Failed to delete course!");
+  }
+}
 </script>
 
 <style scoped lang="scss">
@@ -364,5 +486,6 @@ async function HandleQuery() {
 }
 .showSelectedCourse {
   margin-top: 16px;
+  padding: 8px;
 }
 </style>
