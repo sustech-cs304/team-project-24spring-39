@@ -8,6 +8,12 @@ export function fetchDataByType(type) {
 }
 
 // 更新 Vuex state
+export function fetchCourse() {
+  return request({
+    method: "get",
+    url: "/course/get_course_test",
+  });
+}
 
 export function ReturnSelectedCourse() {
   return request({
@@ -19,7 +25,8 @@ export function ReturnSelectedCourse() {
 export function fetchDataByCourseId(id) {
   return request({
     method: "get",
-    url: `/course/show_selected_students/${id}`,
+    url: `/course/show_selected_students`,
+    params: { CID: id },
   });
 }
 export function submitSelectedCourse(courseCid, score) {
@@ -45,11 +52,11 @@ export function searchTeacherBySid(Id) {
   });
 }
 
-export function submitCourse(data) {
+export function submitCourse(params) {
+  const queryParams = new URLSearchParams(params).toString();
   return request({
     method: "post",
-    url: "/course/submit",
-    data,
+    url: `/course/admin_add_course?${queryParams}`,
   });
 }
 
@@ -64,9 +71,18 @@ export function queryCourse(data) {
     },
   });
 }
-export function queryStopState() {
+
+export function endSelection() {
   return request({
     method: "get",
-    url: `/course/query-stop-state`, // 根据你的实际API端点修改
+    url: "/course/end-course-selection",
+  });
+}
+
+export function adminDeleteCourse(params) {
+  return request({
+    method: "delete",
+    url: "/course/admin_delete_course",
+    params,
   });
 }
