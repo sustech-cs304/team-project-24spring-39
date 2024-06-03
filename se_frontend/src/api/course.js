@@ -7,25 +7,42 @@ export function fetchDataByType(type) {
   });
 }
 
+// 更新 Vuex state
+export function fetchCourse() {
+  return request({
+    method: "get",
+    url: "/course/get_course_test",
+  });
+}
+
 export function ReturnSelectedCourse() {
   return request({
     method: "get",
-    url: `/course/showSelectedCourse`,
+    url: `/course/show_selected_course`,
+    params: { SID: "12345678" },
   });
 }
 export function fetchDataByCourseId(id) {
   return request({
     method: "get",
-    url: `/course/showSelectedStudents/${id}`,
+    url: `/course/show_selected_students/${id}`,
   });
 }
-export function submitSelectedCourse(data) {
+export function submitSelectedCourse(courseCid, score) {
   return request({
     method: "post",
-    url: `/course/addCourse`,
-    data,
+    url: `/course/add_course`,
+    params: { course_id: courseCid, student_id: 12345678, score: score },
   });
 }
+export function DeleteSelectedCourseByCourseId(courseCid) {
+  return request({
+    method: "delete",
+    url: `/course/delete_selected_course`, // 根据你的实际API端点修改
+    params: { course_id: courseCid, student_id: 12345678 },
+  });
+}
+
 export function searchTeacherBySid(Id) {
   return request({
     method: "get",
@@ -33,10 +50,23 @@ export function searchTeacherBySid(Id) {
     params: { sid: Id }, // 假设后端API使用'sid'作为查询学号的参数
   });
 }
+
 export function submitCourse(data) {
   return request({
     method: "post",
     url: "/course/submit",
     data,
+  });
+}
+
+export function queryCourse(data) {
+  return request({
+    method: "get",
+    url: `/course/query`, // 根据你的实际API端点修改
+    params: {
+      department: data.department,
+      time: data.time,
+      name: data.name,
+    },
   });
 }

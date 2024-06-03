@@ -55,6 +55,7 @@ service.interceptors.response.use(
     //   message: error.message || "网络错误或服务器问题",
     //   type: "error",
     // });
+    console.log(error);
     return Promise.reject(error);
   }
 );

@@ -128,8 +128,8 @@
         </el-form-item>
         <el-form-item label="上课时间" required>
           <el-select v-model="formData.weekType" placeholder="选择单双周">
-            <el-option label="单周" value="single"></el-option>
-            <el-option label="双周" value="double"></el-option>
+            <el-option label="单周" value="odd"></el-option>
+            <el-option label="双周" value="even"></el-option>
             <el-option label="每周" value="both"></el-option>
           </el-select>
           <!-- 添加时间按钮 -->
@@ -194,46 +194,51 @@ const queriedTableData = ref([]);
 const isQueried = ref(false);
 
 const defaultTableColumns = [
-  { prop: "courseID", label: "课程编码", width: "150" },
+  { prop: "courseCid", label: "课程编号", width: "120" },
   { prop: "courseType", label: "课程类型", width: "150" },
   { prop: "courseName", label: "课程名称", width: "120" },
-  { prop: "courseCID", label: "课程代码", width: "120" },
-  { prop: "courseCredit", label: "学分", width: "120" },
-  { prop: "coursePeriod", label: "学时", width: "120" },
+  { prop: "courseCreditPeriod", label: "学分/学时", width: "120" },
+  { prop: "courseTimeLocation", label: "时间/地点", width: "120" },
   { prop: "courseDepartment", label: "课程部门", width: "120" },
-  { prop: "courseInformation", label: "课程信息", width: "120" },
+  { prop: "courseInformationRate", label: "课程信息/评分", width: "120" },
   { prop: "capacitySelectedNumber", label: "容量/已选", width: "120" },
 ];
 const queriedTableColumns = [
-  { prop: "courseName", label: "课程名称", width: "150" },
-  { prop: "courseID", label: "课程编码", width: "120" },
+  { prop: "courseCid", label: "课程编码", width: "120" },
+  { prop: "courseName", label: "课程名称", width: "120" },
   { prop: "StudentID", label: "学生id", width: "120" },
   { prop: "StudentName", label: "学生姓名", width: "120" },
   { prop: "Department", label: "专业", width: "120" },
   { prop: "points", label: "投入分数", width: "120" },
   { prop: "capacitySelectedNumber", label: "容量/已选", width: "120" },
 ];
-const fetchData = async () => {
+async function fetchData() {
+  console.log("fetching data");
   try {
-    const response = await fetchDataByType("All");
+    console.log("fetching data111");
+    const response = await fetchDataByType("all");
     console.log("response:", response.data);
-    defaultTableData.value = response.data.map((item) => ({
-      courseType: item.type,
-      courseName: item.name,
-      courseID: item.id,
-      courseCID: item.CID,
-      courseCredit: item.credit,
-      coursePeriod: item.hours,
-      courseDepartment: item.department,
-      courseInformation: `${item.professor_name}; ${item.location}; ${item.time}`,
-      capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
-    }));
+    defaultTableData.value = response.data.map((item) => {
+      const formattedProfessor = item.professors
+        .map((prof) => prof.name)
+        .join(", ");
+      return {
+        courseCid: item.cid,
+        courseType: item.type,
+        courseName: `${item.name}`,
+        courseCreditPeriod: `${item.credit}/${item.hours}`,
+        courseTimeLocation: `${item.time}; ${item.location}`,
+        courseDepartment: item.department.name,
+        courseInformationRate: `教师：${formattedProfessor}; 评分：${item.rate}`,
+        capacitySelectedNumber: `${item.capacity}; ${item.selected}`,
+      };
+    });
     totalItems.value = defaultTableData.value.length;
     handleCurrentChange(1); // 初始化或刷新数据后显示第一页
   } catch (error) {
     console.error("Failed to fetch data:", error);
   }
-};
+}
 const fetchQueryData = async (id) => {
   try {
     const response = await fetchDataByCourseId(id);
@@ -281,7 +286,12 @@ function handleCurrentChange(newPage) {
 
 // 处理查询逻辑
 onMounted(async () => {
-  await fetchData(); // 组件加载时获取默认数据
+  console.log("mounted");
+  try {
+    await fetchData(); // 确保 fetchData 正确处理了所有可能的错误
+  } catch (error) {
+    console.error("Error during fetchData:", error);
+  }
 });
 async function handleQuery() {
   // 这里可以加入你的查询逻辑
@@ -410,6 +420,13 @@ async function handleDelete() {
 }
 </script>
 
-<style scoped>
-/* 样式可以根据需要进行调整 */
+<style scoped lang="scss">
+@import "@/style/mixin.scss";
+.demo-pagination-block {
+  display: flex;
+  justify-content: flex-end;
+  padding: 6px;
+  //background-color: white;
+  @include block_bg_color();
+}
 </style>
