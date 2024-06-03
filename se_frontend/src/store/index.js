@@ -10,6 +10,7 @@ import courseStore from "@/store/modules/course";
 import reservationStore from "@/store/modules/reservation";
 
 import evalStore from "@/store/modules/eval_store";
+import forumStore from "@/store/modules/forum_store";
 export default createStore({
   state: {},
   getters: {},
@@ -19,6 +20,7 @@ export default createStore({
     userStore,
     layoutStore,
     evalStore,
+    forumStore,
     reservationStore,
     courseStore,
   },

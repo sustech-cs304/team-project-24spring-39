@@ -1,15 +1,34 @@
 <template>
   <el-form :inline="true" :model="formInline" class="demo-form-inline">
     <el-form-item label="专业：">
-      <el-select v-model="formInline.region" placeholder="选择" clearable>
-        <el-option label="Zone one" value="shanghai" />
-        <el-option label="Zone two" value="beijing" />
+      <el-select
+        v-model="formInline.major"
+        placeholder="选择"
+        clearable
+        @change="onMajorChange"
+        @clear="onMajorClear"
+      >
+        <el-option
+          v-for="major in majors"
+          :key="major.name"
+          :label="major.name"
+          :value="major.name"
+        />
       </el-select>
     </el-form-item>
     <el-form-item label="课程：">
-      <el-select v-model="formInline.region" placeholder="选择" clearable>
-        <el-option label="Zone one" value="shanghai" />
-        <el-option label="Zone two" value="beijing" />
+      <el-select
+        v-model="formInline.course"
+        placeholder="选择"
+        clearable
+        @change="onCourseChange"
+      >
+        <el-option
+          v-for="course in filteredCourses"
+          :key="course.id"
+          :label="course.name"
+          :value="course.name"
+        />
       </el-select>
     </el-form-item>
     <el-form-item>
@@ -19,16 +38,43 @@
 </template>
 
 <script setup>
-import { reactive } from "vue";
-
-const formInline = reactive({
-  user: "",
-  region: "",
-  date: "",
+import { ref, computed } from "vue";
+import { useStore } from "vuex";
+const store = useStore();
+const majors = computed(() => store.state.forumStore.major_courses);
+const formInline = ref({
+  major: "",
+  course: "",
 });
 
-const onSubmit = () => {
-  console.log("submit!");
+const filteredCourses = computed(() => {
+  const selectedMajor = majors.value.find(
+    (major) => major.name === formInline.value.major
+  );
+  return selectedMajor ? selectedMajor.courses : [];
+});
+
+const onMajorChange = () => {
+  formInline.value.course = ""; // Reset the course selection when the major changes
+  console.log("form", store.state.forumStore.filter_info);
+};
+
+// const onMajorClear = () => {
+//   formInline.value.course = "";
+// };
+const onCourseChange = () => {
+  console.log("form", store.state.forumStore.filter_info);
+};
+
+const onSubmit = async () => {
+  console.log("Selected Major:", formInline.value.major);
+  console.log("Selected Course:", formInline.value.course);
+  console.log("form", store.state.forumStore.filter_info);
+  store.commit("setMajorCourses", formInline.value);
+  console.log("form", store.state.forumStore.filter_info);
+  console.log("Selected Major:", formInline.value.major);
+  console.log("Selected Course:", formInline.value.course);
+  await store.dispatch("applyFilter", store.state.forumStore.filter_info);
 };
 </script>
 

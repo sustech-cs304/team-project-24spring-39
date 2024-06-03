@@ -14,6 +14,12 @@
 import postFilter from "../component/forum/postFilter.vue";
 import postList from "../component/forum/postList.vue";
 import myPost from "../component/forum/myPost.vue";
+import { onMounted } from "vue";
+import { useStore } from "vuex";
+const store = useStore();
+onMounted(async () => {
+  await store.dispatch("fetchForum");
+});
 </script>
 
 <style scoped>

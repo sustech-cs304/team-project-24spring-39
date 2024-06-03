@@ -1,49 +1,43 @@
 <template>
   <div class="forum">
-    <el-scrollbar height="90%">
-      <Post v-for="post in posts" :key="post.id" :post="post" />
+    <el-scrollbar height="690px">
+      <Post v-for="post in paginatedPosts" :key="post.id" :post="post" />
     </el-scrollbar>
-    <el-pagination background layout="prev, pager, next" :total="1000" />
+    <el-pagination
+      background
+      layout="prev, pager, next"
+      :total="totalPosts"
+      :page-size="pageSize"
+      :current-page="currentPage"
+      @current-change="handlePageChange"
+    />
   </div>
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import Post from "./postElement.vue";
+import { useStore } from "vuex";
 import "element-plus/theme-chalk/el-card.css";
 import "element-plus/theme-chalk/el-divider.css";
+const store = useStore();
 
-const posts = ref([
-  {
-    id: 1,
-    title: "帖子标题1",
-    content: "这是第一个帖子内容。",
-    author: "用户1",
-    date: "2024-05-22",
-  },
-  {
-    id: 2,
-    title: "帖子标题2",
-    content: "这是第二个帖子内容。",
-    author: "用户2",
-    date: "2024-05-21",
-  },
-  {
-    id: 3,
-    title: "帖子标题2",
-    content: "这是第二个帖子内容。",
-    author: "用户2",
-    date: "2024-05-21",
-  },
-  {
-    id: 4,
-    title: "帖子标题2",
-    content: "这是第二个帖子内容。",
-    author: "用户2",
-    date: "2024-05-21",
-  },
-  // 更多帖子...
-]);
+const pageSize = ref(8);
+const currentPage = ref(1);
+
+const allPosts = computed(() => store.state.forumStore.all_posts);
+
+const totalPosts = computed(() => allPosts.value.length);
+
+const paginatedPosts = computed(() => {
+  const start = (currentPage.value - 1) * pageSize.value;
+  const end = start + pageSize.value;
+  return allPosts.value.slice(start, end);
+});
+
+const handlePageChange = async (page) => {
+  currentPage.value = page;
+};
 </script>
 
 <style scoped>

@@ -15,18 +15,51 @@
         <h3 class="card-title">{{ post.title }}</h3>
         <el-button
           type="danger"
-          icon="el-icon-delete"
+          icon="Delete"
           circle
           size="small"
           @click.stop="confirmDelete(post.id)"
         ></el-button>
       </div>
-      <p class="card-content">{{ post.description }}</p>
+      <p class="card-content">{{ post.content }}</p>
     </el-card>
   </el-scrollbar>
 
   <el-dialog v-model="dialogVisible" title="创建新帖子">
     <el-form ref="postForm" :model="form" label-width="80px">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="专业：">
+          <el-select
+            v-model="formInline.major"
+            placeholder="选择"
+            clearable
+            @change="onMajorChange"
+            @clear="onMajorClear"
+          >
+            <el-option
+              v-for="major in majors"
+              :key="major.name"
+              :label="major.name"
+              :value="major.name"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="课程：">
+          <el-select
+            v-model="formInline.course"
+            placeholder="选择"
+            clearable
+            @change="onCourseChange"
+          >
+            <el-option
+              v-for="course in filteredCourses"
+              :key="course.id"
+              :label="course.name"
+              :value="course.name"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
       <el-form-item label="标题">
         <el-input v-model="form.title"></el-input>
       </el-form-item>
@@ -35,12 +68,10 @@
       </el-form-item>
       <el-form-item label="附件">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action=""
           list-type="text"
-          :on-success="handleUploadSuccess"
-          :file-list="form.attachments"
-          :on-remove="handleRemove"
-          multiple
+          :on-change="handleFileChange"
+          :auto-upload="false"
         >
           <el-button type="primary">点击上传</el-button>
           <template #tip>
@@ -59,68 +90,70 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import axios from "axios";
+import { useStore } from "vuex";
 import { ElMessageBox } from "element-plus";
-const posts = ref([
-  {
-    id: 1,
-    title: "Post Title 1",
-    description: "This is a brief description of post 1",
-  },
-  {
-    id: 2,
-    title: "Post Title 2",
-    description: "This is a brief description of post 2",
-  },
-  {
-    id: 3,
-    title: "Post Title 3",
-    description: "This is a brief description of post 3",
-  },
-  // 添加更多的帖子
-]);
+import { createPostInside } from "@/api/forum_api";
+const store = useStore();
+const posts = computed(() => store.state.forumStore.my_posts);
 const router = useRouter();
 const goToPost = (postId) => {
+  store.commit("setSelectedPost", postId);
   router.push({ name: "postShow", params: { id: postId } });
 };
-
+const majors = computed(() => store.state.forumStore.major_courses);
+const formInline = ref({
+  major: "",
+  course: "",
+});
 const dialogVisible = ref(false);
 const form = ref({
   title: "",
   content: "",
-  attachments: [],
+  file: null,
+});
+const filteredCourses = computed(() => {
+  const selectedMajor = majors.value.find(
+    (major) => major.name === formInline.value.major
+  );
+  return selectedMajor ? selectedMajor.courses : [];
 });
 
-const handleUploadSuccess = (response, file, fileList) => {
-  console.log("Upload success:", response, file, fileList);
-  form.value.attachments = fileList;
+const handleFileChange = (file) => {
+  form.value.file = file.raw;
 };
 
-const handleRemove = (file, fileList) => {
-  form.value.attachments = fileList;
-};
+const submitPost = async () => {
+  const formData = new FormData();
+  formData.append("title", form.value.title);
+  formData.append("content", form.value.content);
+  formData.append("majorTag", "aaa");
+  formData.append("courseTag", formInline.value.course);
+  formData.append("file", form.value.file);
 
-const submitPost = () => {
-  console.log("提交帖子:", form.value);
-  // 在这里添加将表单数据上传到服务器的逻辑
-  // 例如：通过 axios 发送 POST 请求
-  // axios.post('/api/posts', form.value)
-  //   .then(response => {
-  //     console.log('Post created:', response.data);
-  //     dialogVisible.value = false;
-  //   })
-  //   .catch(error => {
-  //     console.error('Error creating post:', error);
-  //   });
-
+  // 打印 FormData 内容
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ":", pair[1]);
+  }
+  try {
+    await createPostInside(formData);
+    console.log("Upload successful:");
+  } catch (error) {
+    // console.error("Error:", error);
+    ElMessageBox.alert("发帖失败", "错误", {
+      confirmButtonText: "确定",
+      type: "error",
+    });
+    // console.error("Upload failed:", error);
+  }
   dialogVisible.value = false;
   // 清空表单数据
   form.value.title = "";
   form.value.content = "";
-  form.value.attachments = [];
+  form.value.file = null;
 };
+
 const confirmDelete = async (postId) => {
   try {
     await ElMessageBox.confirm("此操作将永久删除该帖子, 是否继续?", "提示", {
@@ -128,20 +161,25 @@ const confirmDelete = async (postId) => {
       cancelButtonText: "取消",
       type: "warning",
     });
-    await deletePost(postId);
+    await store.dispatch("deletePost", postId);
   } catch (error) {
     if (error !== "cancel") {
       console.error("Failed to delete post:", error);
     }
   }
 };
-const deletePost = async (postId) => {
-  try {
-    await axios.delete(`/api/posts/${postId}`);
-    posts.value = posts.value.filter((post) => post.id !== postId);
-  } catch (error) {
-    console.error("Failed to delete post:", error);
-  }
+
+const onMajorChange = () => {
+  formInline.value.course = ""; // Reset the course selection when the major changes
+  console.log("form", store.state.forumStore.filter_info);
+};
+
+const onMajorClear = () => {
+  formInline.value.course = "";
+};
+
+const onCourseChange = () => {
+  console.log("form", store.state.forumStore.filter_info);
 };
 </script>
 
@@ -172,6 +210,7 @@ const deletePost = async (postId) => {
 
 .card-header {
   display: flex;
+  width: 250px;
   /* justify-content: space-between; */
 }
 .card-title {
@@ -182,6 +221,7 @@ const deletePost = async (postId) => {
   overflow: hidden;
   text-overflow: ellipsis;
   text-align: left; /* 确保标题靠左对齐 */
+  width: 150px;
 }
 .card-content {
   text-align: left; /* 确保内容靠左对齐 */
