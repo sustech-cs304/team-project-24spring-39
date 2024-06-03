@@ -37,7 +37,7 @@ import Main from "./components/Main.vue";
       height: 60px;
       line-height: 60px;
       color: #fff;
-      font-size: 26px;
+      font-size: 18px;
       font-weight: bold;
       text-align: center;
     }

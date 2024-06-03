@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, computed } from "vue";
+import { ref, reactive, computed, onMounted } from "vue";
 import { useStore } from "vuex";
 import HorizonTimeLine from "@/component/Home/HorizonTimeLine.vue";
 import { format } from "date-fns";
@@ -8,6 +8,16 @@ import { ElMessage, ElMessageBox } from "element-plus";
 import { fetchTodoList, submitTodo } from "@/api/home";
 
 const store = useStore();
+
+// onMounted(async () => {
+//   await fetchAvatar(userInfo.value.SID).then((response) => {
+//     circleUrl.value = response.data;
+//   });
+// });
+onMounted(() => {
+  circleUrl.value = JSON.parse(userInfo.value.avatar);
+  console.log(circleUrl.value);
+});
 
 const circleUrl = ref(
   "https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png"
