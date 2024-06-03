@@ -43,7 +43,6 @@ const fetchData = async (placeId) => {
         room_id: room.id,
       });
       bookings[room.id] = res.data;
-      // console.log("bookings: ", bookings); // Debugging line
     } catch (error) {
       console.error("查询失败，请稍后重试");
     }
@@ -300,10 +299,11 @@ const resetForm = (showMessage = false) => {
       :placeholder="$t('pickADay')"
       size="default"
       :disabledDate="disabledDate"
+      value-format="YYYY-MM-DD"
     />
     <!-- 自动扩展的空白元素 -->
     <div class="spacer"></div>
-    <el-button type="primary" plain @click="fetchBookings">{{
+    <el-button type="primary" plain @click="fetchData(props.placeId)">{{
       $t("query")
     }}</el-button>
   </div>
