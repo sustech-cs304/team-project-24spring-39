@@ -35,7 +35,7 @@ async function handleSelect(index) {
   // console.log(index);
   if (index == "/evaluation") {
     console.log("enter handel select976");
-    await store.dispatch("fetchCourses", "00000001");
+    await store.dispatch("fetchCourses");
   }
   // console.log("menuList: ", menuList);
 }

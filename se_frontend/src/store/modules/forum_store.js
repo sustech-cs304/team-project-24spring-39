@@ -33,7 +33,7 @@ export default {
         id: 1,
         title: "帖子标题",
         content: "这是第一个帖子内容。",
-        name: "用户1",
+        author: "用户1",
         date: "2024-05-22",
         attachments: [
           { name: "Attachment 1", url: "path/to/attachment1.pdf" },
@@ -49,7 +49,7 @@ export default {
         id: 2,
         title: "帖子标题2",
         content: "这是第二个帖子内容。",
-        name: "用户2",
+        author: "用户2",
         date: "2024-05-21",
         attachments: [
           { name: "Attachment 1", url: "path/to/attachment1.pdf" },
@@ -165,8 +165,13 @@ export default {
           // 解析回复内容
           const replies = JSON.parse(post.replies).map((reply, index) => ({
             id: index + 1,
-            user: reply.reply_author || "匿名用户",
-            content: reply.reply_content || "无内容",
+            user: reply.reply_author || "",
+            content: reply.reply_content || "",
+          }));
+
+          const files = JSON.parse(post.files).map((file) => ({
+            name: file.file_name || "",
+            url: file.file_path || "",
           }));
 
           // 构建新的帖子对象
@@ -176,7 +181,7 @@ export default {
             content: post.content,
             name: post.name,
             date: new Date(post.posting_time).toLocaleDateString("zh-CN"),
-            attachments: [], // 假设附件信息需要另外处理或添加
+            attachments: files, // 假设附件信息需要另外处理或添加
             comments: replies,
           };
         });
@@ -192,8 +197,8 @@ export default {
           // 解析回复内容
           const replies = JSON.parse(post.replies).map((reply, index) => ({
             id: index + 1,
-            user: reply.reply_author || "匿名用户",
-            content: reply.reply_content || "无内容",
+            user: reply.reply_author || "",
+            content: reply.reply_content || "",
           }));
 
           // 构建新的帖子对象

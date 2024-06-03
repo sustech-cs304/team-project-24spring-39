@@ -25,7 +25,7 @@ export function fetchMajorCoursesInside() {
 }
 
 export function createPostInside(payLoad) {
-  const url = "/forum/create";
+  const url = "/forum/create_post";
   return request({
     method: "post",
     url: url,

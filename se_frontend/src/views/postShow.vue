@@ -3,14 +3,16 @@
     <!-- 左侧内容 -->
     <el-col :span="16">
       <div class="background">
-        <p>{{ selectedPostAuthor }}</p>
-        <p>{{ selectedPostDate }}</p>
-        <h1>{{ selectedPostTitle }}</h1>
-        <p>{{ selectedPostContent }}</p>
-        <h3>附件</h3>
+        <p :style="{ margin: '10px' }">{{ selectedPostAuthor }}</p>
+        <p :style="{ margin: '10px' }">{{ selectedPostDate }}</p>
+        <h1 :style="{ margin: '10px', height: '50px' }">
+          {{ selectedPostTitle }}
+        </h1>
+        <p :style="{ margin: '10px' }">{{ selectedPostContent }}</p>
         <div
           v-for="attachment in selectedPostAttachments"
           :key="attachment.name"
+          :style="{ margin: '10px' }"
         >
           <el-link :href="attachment.url" target="_blank" download>
             {{ attachment.name }}
@@ -146,5 +148,6 @@ const submitComment = async () => {
 .background {
   background: white;
   margin: 20px;
+  height: 690px;
 }
 </style>

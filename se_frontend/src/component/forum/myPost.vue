@@ -27,6 +27,39 @@
 
   <el-dialog v-model="dialogVisible" title="创建新帖子">
     <el-form ref="postForm" :model="form" label-width="80px">
+      <el-form :inline="true" :model="formInline" class="demo-form-inline">
+        <el-form-item label="专业：">
+          <el-select
+            v-model="formInline.major"
+            placeholder="选择"
+            clearable
+            @change="onMajorChange"
+            @clear="onMajorClear"
+          >
+            <el-option
+              v-for="major in majors"
+              :key="major.name"
+              :label="major.name"
+              :value="major.name"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="课程：">
+          <el-select
+            v-model="formInline.course"
+            placeholder="选择"
+            clearable
+            @change="onCourseChange"
+          >
+            <el-option
+              v-for="course in filteredCourses"
+              :key="course.id"
+              :label="course.name"
+              :value="course.name"
+            />
+          </el-select>
+        </el-form-item>
+      </el-form>
       <el-form-item label="标题">
         <el-input v-model="form.title"></el-input>
       </el-form-item>
@@ -35,11 +68,10 @@
       </el-form-item>
       <el-form-item label="附件">
         <el-upload
-          action="https://jsonplaceholder.typicode.com/posts/"
-          :file-list="form.attachments"
-          :on-remove="handleRemove"
+          action=""
+          list-type="text"
+          :on-change="handleFileChange"
           :auto-upload="false"
-          multiple
         >
           <el-button type="primary">点击上传</el-button>
           <template #tip>
@@ -70,47 +102,56 @@ const goToPost = (postId) => {
   store.commit("setSelectedPost", postId);
   router.push({ name: "postShow", params: { id: postId } });
 };
-
+const majors = computed(() => store.state.forumStore.major_courses);
+const formInline = ref({
+  major: "",
+  course: "",
+});
 const dialogVisible = ref(false);
 const form = ref({
   title: "",
   content: "",
-  attachments: [],
+  file: null,
+});
+const filteredCourses = computed(() => {
+  const selectedMajor = majors.value.find(
+    (major) => major.name === formInline.value.major
+  );
+  return selectedMajor ? selectedMajor.courses : [];
 });
 
-// const handleUploadSuccess = (response, file, fileList) => {
-//   console.log("Upload success:", response, file, fileList);
-//   form.value.attachments = fileList;
-//   dialogVisible.value = false;
-// };
-
-const handleRemove = (file, fileList) => {
-  form.value.attachments = fileList;
+const handleFileChange = (file) => {
+  form.value.file = file.raw;
 };
 
 const submitPost = async () => {
   const formData = new FormData();
   formData.append("title", form.value.title);
   formData.append("content", form.value.content);
-  form.value.attachments.forEach((file) => {
-    formData.append("files", file.raw); // 将每个附件文件添加到 FormData 中
-  });
+  formData.append("majorTag", "aaa");
+  formData.append("courseTag", formInline.value.course);
+  formData.append("file", form.value.file);
+
+  // 打印 FormData 内容
+  for (let pair of formData.entries()) {
+    console.log(pair[0] + ":", pair[1]);
+  }
   try {
     await createPostInside(formData);
     console.log("Upload successful:");
   } catch (error) {
-    console.error("Error:", error);
+    // console.error("Error:", error);
     ElMessageBox.alert("发帖失败", "错误", {
       confirmButtonText: "确定",
       type: "error",
     });
-    console.error("Upload failed:", error);
+    // console.error("Upload failed:", error);
   }
   dialogVisible.value = false;
   // 清空表单数据
   form.value.title = "";
   form.value.content = "";
-  form.value.attachments = [];
+  form.value.file = null;
 };
 
 const confirmDelete = async (postId) => {
@@ -126,6 +167,19 @@ const confirmDelete = async (postId) => {
       console.error("Failed to delete post:", error);
     }
   }
+};
+
+const onMajorChange = () => {
+  formInline.value.course = ""; // Reset the course selection when the major changes
+  console.log("form", store.state.forumStore.filter_info);
+};
+
+const onMajorClear = () => {
+  formInline.value.course = "";
+};
+
+const onCourseChange = () => {
+  console.log("form", store.state.forumStore.filter_info);
 };
 </script>
 

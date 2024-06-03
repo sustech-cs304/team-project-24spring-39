@@ -1,9 +1,7 @@
 import request from "@/utils/request";
 
-export function fetchCoursesInside(studentNumber) {
-  String(studentNumber);
-  const url = "/course/taken/student_id?sid=" + String(studentNumber);
-  // const url = "/course/taken/12345678";
+export function fetchCoursesInside() {
+  const url = "/course/taken";
   return request({
     method: "get",
     url: url,

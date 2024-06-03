@@ -1,6 +1,6 @@
 <template>
   <div class="forum">
-    <el-scrollbar height="90%">
+    <el-scrollbar height="690px">
       <Post v-for="post in paginatedPosts" :key="post.id" :post="post" />
     </el-scrollbar>
     <el-pagination
