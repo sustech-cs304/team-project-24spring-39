@@ -8,12 +8,6 @@ export function fetchDataByType(type) {
 }
 
 // 更新 Vuex state
-export function fetchCourse() {
-  return request({
-    method: "get",
-    url: "/course/get_course_test",
-  });
-}
 
 export function ReturnSelectedCourse() {
   return request({

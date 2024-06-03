@@ -58,7 +58,7 @@
       <el-button type="primary" @click="HandleQuery">查询</el-button>
     </div>
     <div class="showSelectedCourse">
-      <selected-course />
+      <selected-course :state="state" />
     </div>
     <el-tabs v-model="activeTab" @tab-click="handleTabClick">
       <el-tab-pane
@@ -127,8 +127,15 @@ import {
   fetchDataByType,
   submitSelectedCourse,
   queryCourse,
+  queryStopState,
 } from "@/api/course";
 import { useStore } from "vuex";
+let state = ref(0);
+async function queryState() {
+  const response = await queryStopState();
+  console.log("response:", response.data);
+  return response.data;
+}
 
 const titles = [
   { id: 1, label: "全部", name: "AllCourses", type: "all" },
@@ -182,6 +189,10 @@ async function handleTabClick(tab) {
 }
 
 onMounted(async () => {
+  state = await queryState();
+  if (state.value === 1) {
+    ElMessage.error("选课已结束");
+  }
   await handleTabClick({ props: { name: "AllCourses" } });
 });
 
@@ -246,22 +257,26 @@ const queryCourses = async () => {
 const store = useStore();
 
 async function HandleAdd(row) {
-  const remainingPoints = computed(() => store.getters.getRemainingPoints);
-  console.log("remainingPoints:", remainingPoints.value);
-  if (remainingPoints.value < row.score) {
-    console.log("Not enough points!");
-    ElMessage.error("Not enough points!");
-    return;
-  }
-  try {
-    // 调用 API 函数
-    const response = await submitSelectedCourse(row.courseCid, row.score);
-    console.log("Submitted successfully", response);
-    ElMessage.success("Course added successfully!");
-    row.score = ""; // 清空输入框
-  } catch (error) {
-    console.error("Failed to submit course", error);
-    ElMessage.error("Failed to add course!");
+  if (state.value === 1) {
+    ElMessage.error("选课已结束");
+  } else {
+    const remainingPoints = computed(() => store.getters.getRemainingPoints);
+    console.log("remainingPoints:", remainingPoints.value);
+    if (remainingPoints.value < row.score) {
+      console.log("Not enough points!");
+      ElMessage.error("Not enough points!");
+      return;
+    }
+    try {
+      // 调用 API 函数
+      const response = await submitSelectedCourse(row.courseCid, row.score);
+      console.log("Submitted successfully", response);
+      ElMessage.success("Course added successfully!");
+      row.score = ""; // 清空输入框
+    } catch (error) {
+      console.error("Failed to submit course", error);
+      ElMessage.error("Failed to add course!");
+    }
   }
 }
 
