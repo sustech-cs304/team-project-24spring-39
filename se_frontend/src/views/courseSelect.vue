@@ -366,9 +366,11 @@ async function HandleQuery() {
 }
 
 .showSelectedCourse {
-  @include block_bg_color();
-  padding: 10px;
+  //@include block_bg_color();
+  //padding: 10px;
   margin-top: 16px;
+  margin-left: 10px;
+  font-weight: bold; /* 将字体加粗 */
 }
 
 .body {
