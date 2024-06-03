@@ -284,13 +284,13 @@ export default {
         adminRoutes.forEach((route) => {
           router.addRoute("layout", route);
         });
-        userRoutes.forEach((route) => {
-          router.addRoute("layout", route);
-        });
+        // userRoutes.forEach((route) => {
+        //   router.addRoute("layout", route);
+        // });
       } else {
-        adminRoutes.forEach((route) => {
-          router.addRoute("layout", route);
-        });
+        // adminRoutes.forEach((route) => {
+        //   router.addRoute("layout", route);
+        // });
         userRoutes.forEach((route) => {
           router.addRoute("layout", route);
         });
