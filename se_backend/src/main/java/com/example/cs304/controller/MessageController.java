@@ -52,4 +52,14 @@ public class MessageController {
             return new Response<>(200, "Add Successful", null);
         }
     }
+    @DeleteMapping("/delete_message/{mid}")
+    public Response<?> deleteMessage(@RequestHeader String Authorization, @PathVariable("mid") int mid) {
+        if (!jwtTokenProvider.validateToken(Authorization)) {
+            return new Response<>(401, "Invalid Token", null);
+        }
+        else {
+            messageRepository.deleteById(mid);
+            return new Response<>(200, "Delete Successful", null);
+        }
+    }
 }

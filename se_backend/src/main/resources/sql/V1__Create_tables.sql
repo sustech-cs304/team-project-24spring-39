@@ -66,6 +66,8 @@ create table if not exists course
     selected int not null default 0,
     location varchar(50) not null,
     description varchar(1000),
+    time json,
+    rate float,
     foreign key (department) references department(name),
     constraint check_CID check (CID REGEXP '[A-Z]{2}[0-9]{3}$')
 );
@@ -78,8 +80,8 @@ create table if not exists course_student
     score int not null default 0,
     valid boolean not null default false,
     judged boolean not null default false,
-    foreign key (course_id) references course(CID),
-    foreign key (student_id) references student(SID),
+    foreign key (course_id) references course(CID) on delete cascade,
+    foreign key (student_id) references student(SID) on delete cascade,
     unique (course_id, student_id)
 );
 
@@ -88,8 +90,8 @@ create table if not exists course_professor
     id int auto_increment primary key,
     course_id varchar(5) not null,
     professor_id varchar(8) not null,
-    foreign key (course_id) references course(CID),
-    foreign key (professor_id) references professor(PID),
+    foreign key (course_id) references course(CID) on delete cascade,
+    foreign key (professor_id) references professor(PID) on delete cascade,
     unique (course_id, professor_id)
 );
 
@@ -98,14 +100,14 @@ create table if not exists rate
     id int auto_increment primary key,
     course_id varchar(5) not null,
     student_id varchar(8) not null,
-    rate int not null default 0,
-    difficulty enum('easy', 'normal', 'hard') not null default 'normal',
-    workload enum('light', 'normal', 'heavy') not null default 'normal',
-    grading enum('lenient', 'normal', 'strict') not null default 'normal',
-    gain enum('low', 'normal', 'high') not null default 'normal',
+    rate int not null default 3,
+    difficulty int not null default 3,
+    workload int not null default 3,
+    grading int not null default 3,
+    gain int not null default 3,
     description varchar(1000),
-    foreign key (course_id) references course(CID),
-    foreign key (student_id) references student(SID),
+    foreign key (course_id) references course(CID) on delete cascade,
+    foreign key (student_id) references student(SID) on delete cascade,
     unique (course_id, student_id)
 );
 
@@ -124,24 +126,9 @@ create table if not exists room
     name varchar(50) not null unique,
     capacity int not null,
     status enum('空闲', '占用') not null default '空闲',
-    foreign key (place) references building(name)
+    foreign key (place) references building(name) on delete cascade,
+    unique (place, name)
 );
-
-create table if not exists student_reservation
-(
-    id int auto_increment primary key,
-    student_id varchar(8) not null,
-    room_id int not null,
-    date date not null,
-    start_time time not null,
-    end_time time not null,
-    create_time timestamp not null default now(),
-    status enum('预约','非开放预约时段') not null default '预约',
-    foreign key (student_id) references student(SID),
-    foreign key (room_id) references room(id),
-    unique (room_id, date, start_time, end_time)
-);
-
 create table if not exists reservation
 (
     id int auto_increment primary key,
@@ -154,6 +141,7 @@ create table if not exists reservation
     foreign key (room_id) references room(id),
     unique (room_id, date, start_time, end_time)
 );
+
 
 create table if not exists student_reservation
 (
@@ -198,54 +186,16 @@ create table if not exists reply
     unique (author_id, time)
 );
 
-create table if not exists secondary_reply
-(
-    id int auto_increment primary key,
-    reply_id int not null,
-    author_id varchar(8) not null,
-    content varchar(1000) not null,
-    time timestamp not null default now(),
-    file_id int,
-    foreign key (reply_id) references reply(id),
-    foreign key (author_id) references student(SID),
-    foreign key (file_id) references file(id),
-    unique (author_id, time)
-);
 
-create table if not exists `like`
-(
-    id int auto_increment primary key,
-    post_id int not null,
-    author_id varchar(8) not null,
-    foreign key (post_id) references post(id),
-    foreign key (author_id) references student(SID),
-    unique (post_id, author_id)
-);
+
 
 create table if not exists message
 (
     id int auto_increment primary key,
     receiver_id varchar(8) not null,
     content varchar(1000) not null,
-    time timestamp not null default now(),
+    type enum('selection','evaluation','reservation','forum','self') not null,
+    creat_time datetime not null default now(),
+    end_time datetime not null,
     foreign key (receiver_id) references student(SID)
-);
-
-create table if not exists timeslot
-(
-    id int auto_increment primary key,
-    day varchar(10) not null,
-    start_time time not null,
-    end_time time not null,
-    week enum ('odd', 'even', 'both') not null
-);
-
-create table if not exists course_timeslot
-(
-    id int auto_increment primary key,
-    course_id varchar(5) not null,
-    timeslot_id int not null,
-    foreign key (course_id) references course(CID),
-    foreign key (timeslot_id) references timeslot(id),
-    unique (course_id, timeslot_id)
 );
