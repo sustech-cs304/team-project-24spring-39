@@ -38,14 +38,6 @@ export function DeleteSelectedCourseByCourseId(courseCid) {
   });
 }
 
-export function searchTeacherBySid(Id) {
-  return request({
-    method: "get",
-    url: "/course/search-teacher", // 根据你的实际API端点修改
-    params: { sid: Id }, // 假设后端API使用'sid'作为查询学号的参数
-  });
-}
-
 export function submitCourse(params) {
   const queryParams = new URLSearchParams(params).toString();
   return request({
@@ -55,30 +47,46 @@ export function submitCourse(params) {
 }
 
 export function queryCourse(data) {
+  // 初始化请求参数对象
+  let queryParams = {
+    time: data.time, // 总是发送time参数
+  };
+
+  // 如果department存在且不为空，添加到queryParams
+  if (data.department) {
+    queryParams.department = data.department;
+  }
+
+  // 如果name存在且不为空，添加到queryParams
+  if (data.name) {
+    queryParams.name = data.name;
+  }
+
   return request({
     method: "get",
     url: `/course/query`, // 根据你的实际API端点修改
-    params: {
-      department: data.department,
-      time: data.time,
-      name: data.name,
-    },
-  });
-}
-export function queryStopState() {
-  return request({
-    method: "get",
-    url: `/course/query-stop-state`, // 根据你的实际API端点修改
+    params: queryParams,
   });
 }
 
 export function endSelection() {
   return request({
-    method: "get",
-    url: "/course/end-course-selection",
+    method: "post",
+    url: `/course/end_course_selection`, // 根据你的实际API端点修改
   });
 }
-
+export function queryStopState() {
+  return request({
+    method: "get",
+    url: `/course/get_course_selection`,
+  });
+}
+export function QuerySelectedCourseFinal() {
+  return request({
+    method: "post",
+    url: `/course/update_selection`,
+  });
+}
 export function adminDeleteCourse(params) {
   return request({
     method: "delete",

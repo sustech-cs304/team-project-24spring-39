@@ -1,3 +1,4 @@
+
 <template>
   <div class="selectedCourse">
     <el-row gutter="20px" class="center-vertical">
