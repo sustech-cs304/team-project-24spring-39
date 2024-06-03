@@ -39,4 +39,5 @@ export default {
   changeAvatar: "更换头像",
   logout: "退出登录",
   changeAvatarSuccess: "更换头像成功",
+  avatarPlaceHolder: "请输入图片链接",
 };

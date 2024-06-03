@@ -25,11 +25,12 @@ const handleClose = () => {
   dialogVisible.value = false;
 };
 const submit = async () => {
-  console.log(avatarUrl.value);
+  // console.log(avatarUrl.value);
   await submitAvatar(avatarUrl.value);
   store.commit("updateUserAvatar", avatarUrl.value);
   ElMessage.success(t("changeAvatarSuccess"));
   handleClose();
+  location.reload();
 };
 </script>
 
@@ -63,7 +64,7 @@ const submit = async () => {
     :title="$t('changeAvatar')"
     :before-close="handleClose"
   >
-    <el-input v-model="avatarUrl" />
+    <el-input v-model="avatarUrl" :placeholder="$t('avatarPlaceHolder')" />
     <template #footer>
       <el-button type="primary" @click="submit">{{ $t("confirm") }}</el-button>
     </template>

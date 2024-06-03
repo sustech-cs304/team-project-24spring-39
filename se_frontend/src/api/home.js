@@ -1,12 +1,12 @@
 import request from "@/utils/request";
 
-// export function fetchAvatar(sid) {
-//   return request({
-//     method: "get",
-//     url: "/user/get_avatar",
-//     params: { SID: sid },
-//   });
-// }
+export function fetchAvatar(sid) {
+  return request({
+    method: "get",
+    url: "/user/get_avatar",
+    params: { SID: sid },
+  });
+}
 
 export function submitAvatar(data) {
   return request({

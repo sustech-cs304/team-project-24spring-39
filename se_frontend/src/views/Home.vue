@@ -19,7 +19,7 @@ const store = useStore();
 //   });
 // });
 onMounted(() => {
-  circleUrl.value = JSON.parse(userInfo.value.avatar);
+  circleUrl.value = userInfo.value.avatar;
   console.log(circleUrl.value);
 });
 
