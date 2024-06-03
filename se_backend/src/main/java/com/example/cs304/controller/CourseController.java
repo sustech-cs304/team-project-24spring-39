@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/course")
 public class CourseController {
 
@@ -39,14 +41,9 @@ public class CourseController {
     private CourseService courseService;
     private CPrepository cpRepository;
     private JwtTokenProvider jwtTokenProvider;
+    @Autowired
+    private StudentRepository studentRepository;
 
-    public CourseController(CourseRepository courseRepository, ProfessorRepository professorRepository, RateRepository rateRepository, CSrepository csRepository, CPrepository cpRepository) {
-        this.courseRepository = courseRepository;
-        this.professorRepository = professorRepository;
-        this.rateRepository = rateRepository;
-        this.csRepository = csRepository;
-        this.cpRepository = cpRepository;
-    }
 
     @PostMapping("/admin_add_course")
     public Response<?> addCourse(@RequestParam("name") String name, @RequestParam("CID") String CID, @RequestParam("semester") String semester,
@@ -66,8 +63,6 @@ public class CourseController {
 
     @DeleteMapping("/admin_delete_course")
     public Response<?> deleteCourse(@RequestParam("CID") String CID) {
-        String course_id = CID;
-        cpRepository.deleteCourseProfessor(course_id);
         courseRepository.deleteCourse(CID);
         return Response.success(null);
     }
@@ -78,13 +73,6 @@ public class CourseController {
         courseRepository.deleteById(id);
     }
 
-
-//    @GetMapping("/get_course/all")
-//    public ResponseEntity<List<Map<String, Object>>> getCourse() {
-//        List<Map<String, Object>> courses = courseRepository.findAllCoursesProfessors();
-//        return ResponseEntity.ok(courses);
-//    }
-
     @GetMapping("/get_course/all")
     public Response<?> getCourseTest() {
         List<Course> courses = courseRepository.findAll();
@@ -93,16 +81,23 @@ public class CourseController {
 
     @PostMapping("/add_course")
     public Response<?> selectCourse(@RequestParam String course_id, @RequestParam String student_id, @RequestParam int score) {
+            int count = courseRepository.countCourseStudent(course_id, student_id);
+            if (count > 0) {
 
+                return Response.success(null);
+            }
             courseRepository.selectCourse(course_id, student_id, score);
             courseRepository.addCourseSelected(course_id);
+            Student student = studentRepository.findBySid(student_id);
+            student.setScore(student.getScore() - score);
             return Response.success(null);
     }
 
     @Modifying
     @DeleteMapping("/delete_selected_course")
-    public Response<?> dropCourse(@RequestParam String course_id, @RequestParam String student_id) {
-            courseService.dropCourse(course_id, student_id);
+    public Response<?> dropCourse(@RequestParam String course_id, @RequestHeader String Authorization) {
+        String student_id = jwtTokenProvider.getUsername(Authorization);
+        courseService.dropCourse(course_id, student_id);
             return Response.success(null);
     }
 
@@ -113,22 +108,24 @@ public class CourseController {
         return Response.success(students);
     }
 
-    @GetMapping("/get_course/bixiu")
-    public Response<?> findObligatoryCourses() {
-        List<Course> courses = courseRepository.findObligatoryCourses();
-        return Response.success(courses);
-    }
-
-    @GetMapping("/get_course/xuanxiu")
-    public Response<?> findElectiveCourses() {
-        List<Course> courses = courseRepository.findElectiveCourses();
-        return Response.success(courses);
-    }
+//    @GetMapping("/get_course/bixiu")
+//    public Response<?> findObligatoryCourses() {
+//        List<Course> courses = courseRepository.findObligatoryCourses();
+//        return Response.success(courses);
+//    }
+//
+//    @GetMapping("/get_course/xuanxiu")
+//    public Response<?> findElectiveCourses() {
+//        List<Course> courses = courseRepository.findElectiveCourses();
+//        return Response.success(courses);
+//    }
 
     @GetMapping("/show_selected_course")
-    public Response<?> findTakenCourses(@RequestHeader String Authorization, @RequestBody Map<String, Object> requestBody) {
+    public Response<?> findTakenCourses(@RequestHeader String Authorization) {
         String SID = jwtTokenProvider.getUsername(Authorization);
+        System.out.println(SID);
         List<CourseStudent> courseStudents = csRepository.findTakenCourses(SID);
+        System.out.println(courseStudents);
         List<SelectedCourse> selectedCourses = new ArrayList<>();
         for (CourseStudent courseStudent : courseStudents) {
             Course course = courseStudent.getCourse();
@@ -168,7 +165,7 @@ public class CourseController {
 //    }
 
     @GetMapping("/taken")
-    public Response<?> findSelectedCourses(@RequestHeader String Authorization, @RequestBody Map<String, Object> requestBody) {
+    public Response<?> findSelectedCourses(@RequestHeader String Authorization) {
         String SID = jwtTokenProvider.getUsername(Authorization);
         List<Course> courses = courseRepository.findSelectedCourses(SID);
         return Response.success(courses);
@@ -179,4 +176,28 @@ public class CourseController {
         List<Course> courses = courseRepository.findHighScoreCourses();
         return Response.success(courses);
     }
+
+    @GetMapping("/query")
+    public Response<?> queryCourse(@RequestParam(value = "department",required = false) String department,
+                                   @RequestParam(value = "time",required = false) String time,
+                                   @RequestParam(value = "name",required = false) String courseName) {
+        List<Course> courses = courseRepository.queryCourse(department, time, courseName);
+        return Response.success(courses);
+    }
+
+    @GetMapping("/get_course/{type}")
+    public Response<?> getCourse(@PathVariable("type") String type) {
+        List<Course> courses = new ArrayList<>();
+        if (type.equals("bixiu")) {
+            courses = courseRepository.findObligatoryCourses();
+            return Response.success(courses);
+        } else if (type.equals("xuanxiu")) {
+            courses = courseRepository.findElectiveCourses();
+            return Response.success(courses);
+        }
+        return Response.success(courses);
+    }
+
+//    @PostMapping("/end-course-selection")
+
 }

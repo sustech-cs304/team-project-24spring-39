@@ -9,6 +9,7 @@ import com.example.cs304.response.Response;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 import jakarta.transaction.Transactional;
+import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 
 @RestController
+@AllArgsConstructor
 @RequestMapping("/reservation")
 public class ReservationController {
     @PersistenceContext
@@ -33,21 +35,13 @@ public class ReservationController {
     private final SRrepository SRrepository;
     private JwtTokenProvider jwtTokenProvider;
 
-    public ReservationController(ReservationRepository reservationRepository, RoomRepository roomRepository, StudentRepository studentRepository, BuildingRepository buildingRepository, SRrepository SRrepository) {
-        this.reservationRepository = reservationRepository;
-        this.roomRepository = roomRepository;
-        this.studentRepository = studentRepository;
-        this.buildingRepository = buildingRepository;
-        this.SRrepository = SRrepository;
-    }
-
 //    @GetMapping("/{student_id}")
 //    public ResponseEntity<List<Reservation>> getReservations(@PathVariable("student_id") String student_id) {
 //        List<Reservation> reservations = reservationRepository.findBysid(student_id);
 //        return ResponseEntity.ok(reservations);
 //    }
     @GetMapping("/search-student")
-    public Response<?> getReservations(@RequestHeader String Authorization, @RequestBody Map<String, Object> requestBody) {
+    public Response<?> getReservations(@RequestHeader String Authorization) {
         String student_id = jwtTokenProvider.getUsername(Authorization);
         List<Map<String, Object>> students = studentRepository.findnameBysid(student_id);
         return Response.success(students);
@@ -79,11 +73,6 @@ public class ReservationController {
         return Response.success(locations);
     }
 
-//    @GetMapping("/bookings")
-//    public ResponseEntity<List<Reservation>> getReservations() {
-//        List<Reservation> reservations = reservationRepository.findAll();
-//        return ResponseEntity.ok(reservations);
-//    }
     @GetMapping("/bookings")
     public Response<?> getReservations(@RequestParam(value = "room_id",required = false) Integer room_id,
                                     @RequestParam(value = "date",required = false) String date){
@@ -96,7 +85,6 @@ public class ReservationController {
             reservations = reservationRepository.findByRoomAndDate(date, room_id);
         }
 
-//        List<ReservationRequest> reservations = reservationRepository.findAllReservations();
         List<ReservationRequest> reservationRequests = new ArrayList<>();
 
         for (Reservation reservation : reservations) {
@@ -116,10 +104,6 @@ public class ReservationController {
         return Response.success(reservationRequests);
     }
 
-//    @Modifying
-//    @Query(value = "insert into reservation (student_id, room_id, date, start_time, end_time, purpose) values (:student_id, :room_id, :date, :start_time, :end_time, :purpose);", nativeQuery = true)
-//    void addReservation(String student_id, int room_id, String date, String start_time, String end_time, String purpose);
-    @Transactional
     @PostMapping("/submit")
     public Response<?> addReservation(@RequestParam("persons") List<String> student,
                                @RequestParam("room_id") int room_id,

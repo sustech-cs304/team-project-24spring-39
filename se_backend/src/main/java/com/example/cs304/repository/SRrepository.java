@@ -10,6 +10,7 @@ import org.springframework.data.repository.query.Param;
 public interface SRrepository extends JpaRepository<StudentReservation,Integer> {
 
     @Modifying
+    @Transactional
     @Query(value = "insert into student_reservation (student_id, reservation_id) values (?1, ?2);", nativeQuery = true)
     void insertStudentReservation(String student_id, int reservation_id);
 

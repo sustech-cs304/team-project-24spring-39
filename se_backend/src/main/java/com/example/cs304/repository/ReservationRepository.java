@@ -2,6 +2,7 @@ package com.example.cs304.repository;
 
 import com.example.cs304.entity.Reservation;
 import com.example.cs304.dto.ReservationRequest;
+import jakarta.transaction.Transactional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -44,6 +45,7 @@ public interface ReservationRepository extends JpaRepository<Reservation, Intege
     List<ReservationRequest> findAllReservations();
 
     @Modifying
+    @Transactional
     @Query(value = "insert into reservation (room_id, date, start_time, end_time) values (:room_id, :date, :start_time, :end_time);", nativeQuery = true)
     void addReservation(int room_id, LocalDate date, LocalTime start_time, LocalTime end_time);
 
