@@ -1,7 +1,7 @@
 import { fetchCoursesInside } from "@/api/eval_api";
 function transformCourseData(data) {
   return data.map((course) => ({
-    id: course.id,
+    id: course.cid,
     name: course.name,
     intro: course.description,
   }));

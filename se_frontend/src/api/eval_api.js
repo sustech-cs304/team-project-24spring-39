@@ -11,7 +11,7 @@ export function fetchCoursesInside() {
 export function submitRatingInside(payLoad) {
   return request({
     method: "post",
-    url: "/evaluation",
-    payLoad,
+    url: "/evaluation/add_evaluation",
+    data: payLoad,
   });
 }

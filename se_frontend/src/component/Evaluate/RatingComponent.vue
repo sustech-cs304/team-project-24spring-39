@@ -25,7 +25,7 @@
       <el-radio :value="9">高</el-radio>
     </el-radio-group>
     <span>总体评价</span>
-    <el-rate v-model="value" allow-half />
+    <el-rate v-model="value" />
     <el-form :model="form" label-width="auto" style="max-width: 600px">
       <el-form-item label="留言">
         <el-input
@@ -51,7 +51,7 @@
 <script setup>
 import { ref } from "vue";
 import { reactive } from "vue";
-import { computed } from "vue";
+// import { computed } from "vue";
 import { useStore } from "vuex";
 import { submitRatingInside } from "@/api/eval_api";
 import { ElMessageBox } from "element-plus";
@@ -62,9 +62,9 @@ const radio4 = ref(3);
 const value = ref();
 const textarea = ref("");
 const store = useStore();
-const selectedCourseId = computed(
-  () => store.state.evalStore.selectedCourse.id
-);
+// const selectedCourseId = computed(
+//   () => store.state.evalStore.selectedCourse.id
+// );
 // do not use same name with ref
 const form = reactive({
   name: "",
@@ -79,7 +79,7 @@ const form = reactive({
 const submitData = async () => {
   console.log(store.state.evalStore.selectedCourse.id);
   const payload = {
-    course_id: selectedCourseId,
+    course_id: store.state.evalStore.selectedCourse.id,
     difficulty: radio1.value,
     grading: radio2.value,
     workload: radio3.value,
