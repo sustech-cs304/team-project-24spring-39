@@ -86,10 +86,10 @@ public class CourseController {
         String student_id = jwtTokenProvider.getUsername(Authorization);
         int count = courseRepository.countCourseStudent(course_id, student_id);
         if (count > 0) {
-            courseRepository.updateScore(course_id, student_id, score);
             int oldScore = courseRepository.findOldScore(course_id, student_id);
             Student student = studentRepository.findBySid(student_id);
             int newScore = student.getScore() - score + oldScore;
+            courseRepository.updateScore(course_id, student_id, score);
             student.setScore(newScore);
             studentRepository.save(student);
             return Response.success(newScore);
@@ -109,6 +109,7 @@ public class CourseController {
         String student_id = jwtTokenProvider.getUsername(Authorization);
         int oldScore = courseRepository.findOldScore(course_id, student_id);
         courseService.dropCourse(course_id, student_id);
+        courseRepository.dropCourseSelected(course_id);
         Student student = studentRepository.findBySid(student_id);
         int newScore = student.getScore() + oldScore;
         student.setScore(newScore);
@@ -230,8 +231,8 @@ public class CourseController {
 
     @GetMapping("/get_course_selection")
     public Response<?> getCourseSelection() {
-        Boolean courses = courseRepository.getCourseSelectionStatus();
-        return Response.success(courses);
+        Boolean status = courseRepository.getCourseSelectionStatus();
+        return Response.success(status);
     }
 
     @PostMapping("/update_selection")

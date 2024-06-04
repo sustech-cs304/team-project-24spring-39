@@ -64,6 +64,13 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "WHERE CID = :CID", nativeQuery = true)
     void addCourseSelected(String CID);
 
+    @Modifying(flushAutomatically = true, clearAutomatically = true)
+    @Transactional
+    @Query(value = "UPDATE course\n" +
+            "SET selected = selected - 1\n" +
+            "WHERE CID = :CID", nativeQuery = true)
+    void dropCourseSelected(String CID);
+
     @Transactional
     @Modifying
     @Query(value = "insert into course (name, CID, type, department, credit, hours, capacity, location, description, time) " +

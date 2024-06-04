@@ -18,6 +18,10 @@ public class Response<T> {
         }
     }
 
+    public static <E> Response<E> fail(String message) {
+        return new Response<>(400, message, null);
+    }
+
     public static <E> Response<E> fail(int status, String message) {
         return new Response<>(status, message, null);
     }

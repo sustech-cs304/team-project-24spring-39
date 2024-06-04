@@ -1,6 +1,7 @@
 package com.example.cs304.controller;
 
 import com.example.cs304.converter.JwtTokenProvider;
+import com.example.cs304.dto.DepartmentDTO;
 import com.example.cs304.entity.*;
 import com.example.cs304.repository.*;
 import com.example.cs304.response.Response;
@@ -16,6 +17,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.io.IOException;
 import java.net.URI;
 import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -51,8 +54,17 @@ public class ForumController {
     }
     @GetMapping("/get_department")
     public Response<?> getDepartments(){
-        System.out.println(departmentRepository.findAll());
-        return Response.success(departmentRepository.findAll());
+//        System.out.println(departmentRepository.findAll());
+        List<Department> departments = departmentRepository.findAll();
+        List<DepartmentDTO> departmentDTOS = new ArrayList<>();
+        for (Department department: departments) {
+            DepartmentDTO departmentDTO = new DepartmentDTO();
+            departmentDTO.setId(department.getId());
+            departmentDTO.setName(department.getName());
+            departmentDTO.setCourses(departmentRepository.getCourses(department.getName()));
+            departmentDTOS.add(departmentDTO);
+        }
+        return Response.success(departmentDTOS);
     }
 //    @GetMapping("/get_course_department")
 //    public List<Course> getCoursesByDepartment(@RequestParam(required = false) String departmentId) {

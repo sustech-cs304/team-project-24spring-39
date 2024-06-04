@@ -43,6 +43,7 @@ D:\IdeaProjects\team-project-24spring-39\se_backend\src\main\java\com\example\cs
 D:\IdeaProjects\team-project-24spring-39\se_backend\src\main\java\com\example\cs304\entity\Course.java
 D:\IdeaProjects\team-project-24spring-39\se_backend\src\main\java\com\example\cs304\repository\ReservationRepository.java
 D:\IdeaProjects\team-project-24spring-39\se_backend\src\main\java\com\example\cs304\controller\EvaluationController.java
+D:\IdeaProjects\team-project-24spring-39\se_backend\src\main\java\com\example\cs304\dto\DepartmentDTO.java
 D:\IdeaProjects\team-project-24spring-39\se_backend\src\main\java\com\example\cs304\entity\Rate.java
 D:\IdeaProjects\team-project-24spring-39\se_backend\src\main\java\com\example\cs304\service\StudentService.java
 D:\IdeaProjects\team-project-24spring-39\se_backend\src\main\java\com\example\cs304\dto\UserDTO.java

@@ -43,7 +43,7 @@ public class ReservationController {
 //        return ResponseEntity.ok(reservations);
 //    }
     @GetMapping("/search-student")
-    public Response<?> getReservations(@RequestParam String student_id) {
+    public Response<?> getReservations(@RequestParam("student_id") String student_id) {
         Student student = studentRepository.findBySid(student_id);
         return Response.success(student);
     }
@@ -112,12 +112,16 @@ public class ReservationController {
                                @RequestParam("start_time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime start_time,
                                @RequestParam("end_time") @DateTimeFormat(iso = DateTimeFormat.ISO.TIME) LocalTime end_time
                                ) {
-        reservationRepository.addReservation(room_id, date, start_time, end_time);
-        int reservation_id = reservationRepository.getLastInsertId();
-        for (String student_id : student) {
-            SRrepository.insertStudentReservation(student_id, reservation_id);
+        try {
+            reservationRepository.addReservation(room_id, date, start_time, end_time);
+            int reservation_id = reservationRepository.getLastInsertId();
+            for (String student_id : student) {
+                SRrepository.insertStudentReservation(student_id, reservation_id);
+            }
+            return Response.success(null);
+        } catch (Exception e) {
+            return Response.fail("Invalid Input");
         }
-        return Response.success(null);
     }
 
     @DeleteMapping("/delete")

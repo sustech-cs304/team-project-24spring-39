@@ -30,8 +30,8 @@ public class Message {
     private String type;
 
     @ColumnDefault("CURRENT_TIMESTAMP")
-    @Column(name = "creat_time", nullable = false)
-    private LocalDateTime creatTime;
+    @Column(name = "create_time", nullable = false)
+    private LocalDateTime createTime;
 
     @Column(name = "end_time", nullable = false)
     private LocalDateTime endTime;
