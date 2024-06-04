@@ -6,8 +6,10 @@
       clearable
       style="width: 180px; margin-right: 30px"
     >
-      <el-option label="电子工程" value="电子工程" />
-      <el-option label="化学工程" value="化学工程" />
+      <el-option label="电子系" value="电子系" />
+      <el-option label="化学系" value="化学系" />
+      <el-option label="计算机科学与工程系" value="计算机科学与工程系" />
+      <el-option label="数学系" value="数学系" />
     </el-select>
     <el-select
       v-model="formInline.day"
@@ -61,28 +63,28 @@
 
   <!-- 默认表格 -->
   <div class="body">
-  <el-table :data="defaultTableData" style="width: 100%" max-height="550">
-    <el-table-column
-      v-for="column in defaultTableColumns"
-      :key="column.prop"
-      :prop="column.prop"
-      :label="column.label"
-      :width="column.width"
-    />
-    <el-table-column fixed="right" label="Operations">
-      <template #default="scope">
-        <el-button type="primary" @click="handleQuery(scope.row)"
-          >查询</el-button
-        >
-        <el-button
-          type="danger"
-          @click="handleDelete(scope.row.courseCid)"
-          width="30px"
-          >Delete
-        </el-button>
-      </template>
-    </el-table-column>
-  </el-table>
+    <el-table :data="defaultTableData" style="width: 100%" max-height="550">
+      <el-table-column
+        v-for="column in defaultTableColumns"
+        :key="column.prop"
+        :prop="column.prop"
+        :label="column.label"
+        :width="column.width"
+      />
+      <el-table-column fixed="right" label="Operations">
+        <template #default="scope">
+          <el-button type="primary" @click="handleQuery(scope.row)"
+            >查询</el-button
+          >
+          <el-button
+            type="danger"
+            @click="handleDelete(scope.row.courseCid)"
+            width="30px"
+            >Delete
+          </el-button>
+        </template>
+      </el-table-column>
+    </el-table>
   </div>
   <div class="body">
     <el-table :data="activeData" style="width: 100%" max-height="550">
@@ -129,8 +131,7 @@
           <el-select v-model="formData.type" placeholder="请选择">
             <el-option label="通识必修课" value="通识必修课"></el-option>
             <el-option label="通识选修课" value="通识选修课"></el-option>
-            <!--            <el-option label="通识必修课" value="TongShiBiXiu"></el-option>-->
-            <!--            <el-option label="通识选修课" value="TongShiBiXiu"></el-option>-->
+            <el-option label="专业必修课" value="专业必修课"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="课程名称" required>
@@ -161,7 +162,9 @@
               label="计算机科学与技术"
               value="计算机科学与技术"
             ></el-option>
-            <el-option label="艺术中心" value="艺术中心"></el-option>
+            <el-option label="电子系" value="电子系"></el-option>
+            <el-option label="化学系" value="化学系"></el-option>
+            <el-option label="数学系" value="数学系"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="教授姓名" required>
@@ -447,16 +450,16 @@ const dialogFormVisible = ref(false);
 const formRef = ref(null);
 const formData = reactive({
   type: "通识必修课",
-  name: "小学物理",
+  name: "",
   CID: "GH101",
   credit: "3",
   hours: "32",
-  department: "计算机科学与技术",
+  department: "",
   professor: [],
   location: "理学院101",
   weekType: "",
   times: [],
-  capacity: "100",
+  capacity: "6",
 });
 const rules = reactive({
   addedPersons: [
@@ -552,6 +555,7 @@ async function handleDelete(courseCid) {
   console.log("delete!");
   try {
     await adminDeleteCourse({ CID: courseCid });
+    ElMessage.success("删除成功");
   } catch (error) {
     ElMessage.error("操作失败，请稍后重试");
   }

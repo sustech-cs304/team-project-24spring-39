@@ -48,10 +48,10 @@ export function submitCourse(params) {
 
 export function queryCourse(data) {
   // 初始化请求参数对象
-  let queryParams = {
-    time: data.time, // 总是发送time参数
-  };
-
+  let queryParams = {};
+  if (data.time) {
+    queryParams.time = data.time;
+  }
   // 如果department存在且不为空，添加到queryParams
   if (data.department) {
     queryParams.department = data.department;

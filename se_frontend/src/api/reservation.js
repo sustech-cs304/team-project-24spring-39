@@ -24,7 +24,7 @@ export function searchStudentBySid(studentId) {
   return request({
     method: "get",
     url: "/reservation/search-student", // 根据你的实际API端点修改
-    params: { sid: studentId }, // 假设后端API使用'sid'作为查询学号的参数
+    params: { student_id: studentId }, // 假设后端API使用'sid'作为查询学号的参数
   });
 }
 

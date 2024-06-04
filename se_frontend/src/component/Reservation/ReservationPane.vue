@@ -177,7 +177,7 @@ const form = reactive({
   startTime: "",
   endTime: "",
   searchState: "",
-  addedPersons: [12345678, 23456789],
+  addedPersons: [],
 });
 
 // 表单校验规则

@@ -40,7 +40,7 @@ service.interceptors.response.use(
     if (response.data.status === 200) {
       return response.data; // response.data 才是在apifox里定义的那些。response.data里包括status、message和data
     } else if (response.data.status === 401) {
-      ElMessage.error("登录过期，请重新登录");
+      // ElMessage.error("登录过期，请重新登录");
       store.dispatch("logout");
       return Promise.reject(new Error("登录过期，请重新登录"));
     } else if (response.data.status === 400) {

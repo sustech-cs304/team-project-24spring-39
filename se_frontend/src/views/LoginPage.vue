@@ -247,9 +247,9 @@ const { ElMessage } = useMessage();
 ///////////////////////////////////////////////////////////// 登录表单
 const loginFormRef = ref(null);
 const loginForm = reactive({
-  username: "12345678",
-  password: "password1",
-  captchaSuccess: true,
+  username: "",
+  password: "",
+  captchaSuccess: false,
 });
 // 登录按钮的加载loading
 const logBtnLoading = ref(false);

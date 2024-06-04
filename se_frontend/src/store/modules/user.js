@@ -8,7 +8,7 @@ export default {
   namespace: true,
   state: {
     // 是否是管理员
-    isAdmin: false,
+    isAdmin: localStorage.getItem("ISADMIN") || false,
     // 用户信息
     userInfo:
       JSON.parse(localStorage.getItem(process.env.VUE_APP_USER_INFO)) || [],

@@ -7,8 +7,10 @@
         clearable
         style="width: 180px; margin-right: 30px"
       >
-        <el-option label="电子工程" value="电子工程" />
-        <el-option label="化学工程" value="化学工程" />
+        <el-option label="电子系" value="电子系" />
+        <el-option label="化学系" value="化学系" />
+        <el-option label="计算机科学与工程系" value="计算机科学与工程系" />
+        <el-option label="数学系" value="数学系" />
       </el-select>
       <el-select
         v-model="formInline.day"
@@ -180,8 +182,8 @@ async function queryState() {
 //////////////////////////////////tab
 const titles = [
   { id: 1, label: "全部", name: "AllCourses", type: "all" },
-  { id: 2, label: "通识必修", name: "BiXiuCourses", type: "bixiu" },
-  { id: 3, label: "通识选修", name: "XuanXiuCourses", type: "xuanxiu" },
+  { id: 2, label: "必修", name: "BiXiuCourses", type: "bixiu" },
+  { id: 3, label: "选修", name: "XuanXiuCourses", type: "xuanxiu" },
   { id: 4, label: "课程推荐", name: "RecommendCourses", type: "high_score" },
 ];
 const activeTab = ref(titles[0].name); // 默认选中第一个标签页

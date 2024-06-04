@@ -2,6 +2,15 @@ import { getTranslation } from "@/locales";
 
 export default [
   {
+    path: "/selectionManagement",
+    name: "selectionManagement",
+    meta: {
+      title: getTranslation("selectionManagement"),
+      breadcrumb: [getTranslation("selectionManagement")],
+    },
+    component: () => import("@/views/courseManagement.vue"),
+  },
+  {
     path: "/reservation-locations",
     name: "reservationLocations",
     meta: {

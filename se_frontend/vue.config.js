@@ -16,12 +16,11 @@ module.exports = defineConfig({
       }),
     ],
   },
-  // devServer: {
-  //   client: {
-  //     overlay: {
-  //       runtimeErrors: false,
-  //     },
-  //   },
+  devServer: {
+    client: {
+      overlay: false,
+    },
+  },
   //   // 代理,解决跨域问题。但打包上线后就没有这个代理了，需要后端解决跨域问题
   //   proxy: {
   //     "/api": {

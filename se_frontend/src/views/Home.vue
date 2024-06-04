@@ -19,7 +19,9 @@ const store = useStore();
 //   });
 // });
 onMounted(async () => {
-  circleUrl.value = userInfo.value.avatar;
+  circleUrl.value = userInfo.value.avatar
+    .replace(/\\/g, "")
+    .replace(/(^"|"$)/g, "");
   console.log(circleUrl.value);
   const response = await fetchTodoList("self");
   tables.value[activeTab.value] = response.data.map((item) => {
@@ -27,7 +29,7 @@ onMounted(async () => {
       return {
         ...item,
         endTime: item.endTime.replace("T", " "),
-        creatTime: item.creatTime.replace("T", " "),
+        createTime: item.createTime.replace("T", " "),
       };
     }
     return item;
@@ -278,7 +280,7 @@ const handleDelete = async (message) => {
     <el-table class="table" :data="tables[activeTab]">
       <el-table-column prop="endTime" :label="$t('labels.endTime')" />
       <el-table-column prop="content" :label="$t('labels.content')" />
-      <el-table-column prop="creatTime" :label="$t('labels.createTime')" />
+      <el-table-column prop="createTime" :label="$t('labels.createTime')" />
       <el-table-column :label="$t('operation')">
         <template #default="scope">
           <el-button
